@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256">
+    <defs>
+        <!-- 桌面图标专用：深色渐变背景，模拟现代操作系统图标风格 -->
+        <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#1E293B"/>
+            <stop offset="100%" stop-color="#020617"/>
+        </linearGradient>
+        <linearGradient id="strokeGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#00F2FE"/>
+            <stop offset="100%" stop-color="#4F46E5"/>
+        </linearGradient>
+        <!-- 霓虹发光滤镜（增强核心科技感） -->
+        <filter id="neonGlow" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+            <feMerge>
+                <feMergeNode in="coloredBlur"/>
+                <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+        </filter>
+    </defs>
+
+    <!-- 1. 图标背景底框：符合应用图标规范的圆角方形 -->
+    <rect width="256" height="256" rx="56" fill="url(#bgGradient)"/>
+    <rect width="256" height="256" rx="56" fill="none" stroke="url(#strokeGradient)" stroke-width="6"/>
+
+    <!-- 2. 背景网格装饰（增强“灵境”科技感，仅在放大时可见） -->
+    <g opacity="0.15">
+        <path d="M 40 120 L 216 120 M 40 136 L 216 136 M 120 40 L 120 216 M 136 40 L 136 216" stroke="#00F2FE" stroke-width="2"/>
+    </g>
+
+    <!-- 3. 核心科技元素：六边形框架（象征“灵境/科幻”） -->
+    <polygon points="128,44 212,86 212,170 128,212 44,170 44,86" 
+             fill="none" stroke="#4F46E5" stroke-width="12" stroke-linejoin="round"/>
+
+    <!-- 4. 六边形内部的连接线（电路/矩阵感） -->
+    <path d="M 128 44 L 128 84 M 128 172 L 128 212 M 44 128 L 84 128 M 172 128 L 212 128" 
+          stroke="#00F2FE" stroke-width="6" stroke-linecap="round" opacity="0.6"/>
+
+    <!-- 5. 核心任务标志：大对勾（“待办事项”的通用隐喻），带霓虹发光 -->
+    <path d="M 84 128 L 116 160 L 172 96" 
+          fill="none" stroke="#00F2FE" stroke-width="24" stroke-linecap="round" stroke-linejoin="round" filter="url(#neonGlow)"/>
+
+    <!-- 6. 对勾底部的科技感应点（AI/智能感应） -->
+    <circle cx="172" cy="96" r="10" fill="#4F46E5" filter="url(#neonGlow)"/>
+    <circle cx="172" cy="96" r="4" fill="#00F2FE"/>
+
+    <!-- 7. 顶部的“灵境”标识点缀（可选，小而精） -->
+    <path d="M 208 48 L 220 48 L 220 60" fill="none" stroke="#00F2FE" stroke-width="4" stroke-linecap="round"/>
+    <path d="M 36 196 L 48 196 L 48 208" fill="none" stroke="#4F46E5" stroke-width="4" stroke-linecap="round"/>
+
+</svg>
