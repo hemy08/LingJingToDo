@@ -1,0 +1,2172 @@
+:root {
+    --bg-page: #f5f7fa;
+    --card-bg: #ffffff;
+    --border-light: #e9ecef;
+    --text-primary: #1e2a3e;
+    --text-secondary: #5a6e7c;
+    --accent-blue: #0077c8;
+    --accent-blue-light: #e6f0fa;
+    --tag-bg: #f0f2f5;
+    --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.04);
+    --shadow-md: 0 8px 20px rgba(0, 0, 0, 0.06);
+    --danger: #e74c3c;
+    --success: #2c7a4d;
+    --warning: #f39c12;
+    --transition: all 0.2s ease;
+    --tree-hover: #eef2fa;
+    --due-warning: #ffe6e5;
+    --checklist-bg: #fafcff;
+    --splitter-width: 6px;
+}
+
+body.dark {
+    --bg-page: #121826;
+    --card-bg: #1e293b;
+    --border-light: #2d3a4e;
+    --text-primary: #e9edf2;
+    --text-secondary: #94a3b8;
+    --accent-blue: #3b82f6;
+    --accent-blue-light: #1e293b;
+    --tag-bg: #334155;
+    --tree-hover: #2d3a4e;
+    --due-warning: #4a2626;
+    --checklist-bg: #1e2a3a;
+}
+
+body.eye {
+    --bg-page: #e8f5e9;
+    --card-bg: #fef9e6;
+    --border-light: #c8e6c9;
+    --text-primary: #2c3e2f;
+    --text-secondary: #5d6e5e;
+    --accent-blue: #2e7d32;
+    --accent-blue-light: #dcfce7;
+    --tag-bg: #e8f0e8;
+    --tree-hover: #dcfce7;
+    --due-warning: #ffe0e0;
+    --checklist-bg: #fef9e6;
+}
+
+body.orange {
+    --bg-page: #fff3e0;
+    --card-bg: #ffffffd9;
+    --border-light: #ffe0b3;
+    --text-primary: #4e2e1e;
+    --text-secondary: #b66a1a;
+    --accent-blue: #e67e22;
+    --accent-blue-light: #ffebcc;
+    --tag-bg: #ffe6cc;
+    --tree-hover: #ffe6cc;
+    --due-warning: #ffcccc;
+    --checklist-bg: #fff5e6;
+}
+
+body.purple {
+    --bg-page: #f3e8ff;
+    --card-bg: #ffffff;
+    --border-light: #d9c8f0;
+    --text-primary: #2e1e4e;
+    --text-secondary: #7e5aa6;
+    --accent-blue: #8e44ad;
+    --accent-blue-light: #f0e4ff;
+    --tag-bg: #ede2f5;
+    --tree-hover: #ede2f5;
+    --due-warning: #f0d9ff;
+    --checklist-bg: #faf5ff;
+}
+
+body.red {
+    --bg-page: #ffe8e8;
+    --card-bg: #fff5f5;
+    --border-light: #ffc9c9;
+    --text-primary: #5e2e2e;
+    --text-secondary: #c0392b;
+    --accent-blue: #e74c3c;
+    --accent-blue-light: #ffe0e0;
+    --tag-bg: #ffe0e0;
+    --tree-hover: #ffe0e0;
+    --due-warning: #ffcccc;
+    --checklist-bg: #fff0f0;
+}
+
+body.skyblue {
+    --bg-page: #e0f2fe;
+    --card-bg: #ffffff;
+    --border-light: #bae6fd;
+    --text-primary: #0c4a6e;
+    --text-secondary: #0284c7;
+    --accent-blue: #0284c7;
+    --accent-blue-light: #e0f2fe;
+    --tag-bg: #f0f9ff;
+    --tree-hover: #f0f9ff;
+    --due-warning: #ffe0e0;
+    --checklist-bg: #ffffff;
+}
+
+body.navy {
+    --bg-page: #0f172a;
+    --card-bg: #1e293b;
+    --border-light: #334155;
+    --text-primary: #e2e8f0;
+    --text-secondary: #94a3b8;
+    --accent-blue: #3b82f6;
+    --accent-blue-light: #1e293b;
+    --tag-bg: #1e293b;
+    --tree-hover: #334155;
+    --due-warning: #4a2626;
+    --checklist-bg: #1e293b;
+}
+
+body.deep-purple {
+    --bg-page: #1e1b4b;
+    --card-bg: #2e2a5e;
+    --border-light: #4338ca;
+    --text-primary: #e0e7ff;
+    --text-secondary: #c7d2fe;
+    --accent-blue: #8b5cf6;
+    --accent-blue-light: #312e81;
+    --tag-bg: #312e81;
+    --tree-hover: #4338ca;
+    --due-warning: #4a2626;
+    --checklist-bg: #2e2a5e;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: var(--bg-page);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    color: var(--text-primary);
+    transition: background 0.3s, color 0.2s;
+    min-height: 100vh;
+    font-size: 14px;
+}
+
+body.font-small {
+    font-size: 12px;
+}
+
+body.font-medium {
+    font-size: 14px;
+}
+
+body.font-large {
+    font-size: 16px;
+}
+
+body.font-xlarge {
+    font-size: 18px;
+}
+
+.fas {
+    color: #ff1744;
+}
+
+.far {
+    color: #ff1744;
+}
+
+.app {
+    display: flex;
+    width: 100%;
+    min-height: 100vh;
+}
+
+.sidebar {
+    width: 25%;
+    background: var(--card-bg);
+    padding: 20px 16px;
+    box-shadow: var(--shadow-sm);
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    transition: width 0.05s linear;
+}
+
+.splitter {
+    width: var(--splitter-width);
+    background: var(--border-light);
+    cursor: col-resize;
+    transition: background 0.2s;
+    position: relative;
+    flex-shrink: 0;
+}
+
+.splitter:hover,
+.splitter.active {
+    background: var(--accent-blue);
+}
+
+.main-content {
+    flex: 1;
+    padding: 20px 24px 40px;
+    overflow-y: auto;
+    min-width: 0;
+}
+
+@media (max-width: 1000px) {
+    .app {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        width: 100% !important;
+        border-right: none;
+        border-bottom: 1px solid var(--border-light);
+    }
+
+    .splitter {
+        display: none;
+    }
+
+    .main-content {
+        width: 100%;
+    }
+}
+
+/* 原有样式保持完整 */
+.calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.calendar-title {
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+.calendar-nav {
+    display: flex;
+    gap: 8px;
+}
+
+.cal-btn {
+    background: var(--tag-bg);
+    border: none;
+    border-radius: 30px;
+    padding: 4px 10px;
+    cursor: pointer;
+    font-size: 0.7rem;
+}
+
+.cal-weekdays {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    text-align: center;
+    font-size: 0.65rem;
+    font-weight: 500;
+    margin-bottom: 8px;
+    color: var(--text-secondary);
+}
+
+.cal-days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+}
+
+.cal-day {
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    border-radius: 40px;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.cal-day:hover {
+    background: var(--accent-blue-light);
+}
+
+.cal-day.selected {
+    background: var(--accent-blue);
+    color: white;
+}
+
+.cal-day.other-month {
+    color: var(--text-secondary);
+    opacity: 0.5;
+}
+
+.task-tree {
+    background: var(--bg-page);
+    border-radius: 20px;
+    padding: 12px;
+}
+
+.task-tree-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.task-tree-title {
+    font-weight: 600;
+    font-size: 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--accent-blue);
+}
+
+.tree-stats {
+    display: flex;
+    gap: 12px;
+    font-size: 0.7rem;
+}
+
+.tree-stats span {
+    background: var(--card-bg);
+    padding: 2px 8px;
+    border-radius: 30px;
+}
+
+.tree-node {
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    transition: background 0.1s;
+    margin: 2px 0;
+}
+
+.tree-node:hover {
+    background: var(--tree-hover);
+}
+
+.tree-node.main-node {
+    font-weight: 500;
+    margin-left: 0;
+}
+
+.tree-node.sub-node {
+    margin-left: 20px;
+    color: var(--text-secondary);
+}
+
+.right-config-bar {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    background: var(--card-bg);
+    border-radius: 28px;
+    padding: 12px 20px;
+    margin-bottom: 20px;
+    box-shadow: var(--shadow-sm);
+}
+
+.config-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    align-items: center;
+}
+
+.config-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.7rem;
+}
+
+.config-item label {
+    font-weight: 500;
+}
+
+.config-item input,
+.config-item select {
+    background: var(--tag-bg);
+    border: 1px solid var(--border-light);
+    border-radius: 40px;
+    padding: 4px 8px;
+    color: var(--text-primary);
+}
+
+.config-item input {
+    width: 60px;
+    text-align: center;
+}
+
+.btn-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.btn-sm {
+    background: var(--tag-bg);
+    border: none;
+    border-radius: 40px;
+    padding: 4px 20px;
+    cursor: pointer;
+    font-size: 0.65rem;
+}
+
+.btn-primary {
+    background: var(--accent-blue);
+    color: white;
+}
+
+@keyframes highlightFlash {
+    0% {
+        box-shadow: 0 0 0 0 rgba(var(--accent-blue-rgb), 0.7);
+        border-color: var(--accent-blue);
+        background: var(--accent-blue-light);
+    }
+
+    50% {
+        box-shadow: 0 0 0 6px rgba(var(--accent-blue-rgb), 0);
+        border-color: var(--accent-blue);
+        background: var(--accent-blue-light);
+    }
+
+    100% {
+        box-shadow: 0 0 0 0 rgba(var(--accent-blue-rgb), 0);
+        border-color: var(--border-light);
+        background: var(--card-bg);
+    }
+}
+
+.task-highlight {
+    animation: highlightFlash 0.8s ease-in-out;
+    border-color: var(--accent-blue) !important;
+    background: var(--accent-blue-light) !important;
+}
+
+.main-task-card.due-warning,
+.subtask-card.due-warning {
+    background: var(--due-warning) !important;
+    border-left: 4px solid var(--danger);
+}
+
+#mainTasksContainer {
+    display: grid;
+    gap: 20px;
+}
+
+.main-task-card {
+    background: var(--card-bg);
+    border-radius: 24px;
+    border: 1px solid var(--border-light);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: all 0.1s;
+    scroll-margin: 80px;
+}
+
+.main-card-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 12px 6px;
+    flex-wrap: wrap;
+}
+
+.drag-handle-main {
+    cursor: grab;
+    color: var(--text-secondary);
+}
+
+.main-title {
+    font-weight: 600;
+    font-size: 1.1em;
+    flex: 1;
+    word-break: break-word;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.main-title-text {
+    cursor: pointer;
+    border-bottom: 1px dashed transparent;
+    transition: border-color 0.1s;
+}
+
+.main-title-text:hover {
+    border-bottom-color: var(--accent-blue);
+}
+
+.edit-title-icon {
+    opacity: 0;
+    font-size: 0.8em;
+    transition: opacity 0.1s;
+    color: var(--text-secondary);
+}
+
+.main-title:hover .edit-title-icon {
+    opacity: 1;
+}
+
+.main-actions {
+    display: flex;
+    gap: 6px;
+    margin-left: auto;
+    align-items: center;
+}
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 40px;
+    height: 22px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--tag-bg);
+    transition: 0.3s;
+    border-radius: 34px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 16px;
+    width: 16px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: 0.3s;
+    border-radius: 50%;
+}
+
+input:checked+.slider {
+    background-color: var(--accent-blue);
+}
+
+input:checked+.slider:before {
+    transform: translateX(18px);
+}
+
+.meta-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 6px 12px;
+    font-size: 0.8em;
+    color: var(--text-secondary);
+    flex-wrap: wrap;
+    border-top: 1px solid var(--border-light);
+    border-bottom: 1px solid var(--border-light);
+    background: var(--checklist-bg);
+}
+
+.meta-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    background: var(--tag-bg);
+    padding: 2px 8px;
+    border-radius: 40px;
+}
+
+.action-buttons {
+    display: inline-flex;
+    gap: 8px;
+    margin-left: auto;
+}
+
+.icon-text-btn {
+    background: var(--accent-blue-light);
+    border: none;
+    border-radius: 40px;
+    padding: 3px 8px;
+    font-size: 0.8em;
+    cursor: pointer;
+    color: var(--accent-blue);
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.main-desc-area {
+    padding: 8px 12px;
+    font-size: 0.85em;
+    color: var(--text-secondary);
+    background: rgba(0, 0, 0, 0.02);
+    border-top: 1px solid var(--border-light);
+    cursor: pointer;
+    max-height: 100px;
+    overflow-y: auto;
+    white-space: pre-wrap;
+}
+
+.subtask-grid {
+    display: grid;
+    gap: 10px;
+    padding: 12px;
+    background: var(--bg-page);
+}
+
+.subtask-card {
+    background: var(--card-bg);
+    border-radius: 18px;
+    border: 1px solid var(--border-light);
+    overflow: hidden;
+    transition: all 0.1s;
+    scroll-margin: 80px;
+}
+
+.subtask-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 10px 4px;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.subtask-title-area {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex: 1;
+}
+
+.drag-sub-handle {
+    cursor: grab;
+    color: var(--text-secondary);
+    font-size: 0.8em;
+}
+
+.subtask-title {
+    font-weight: 500;
+    font-size: 0.9em;
+    word-break: break-word;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+}
+
+.subtask-title-text {
+    border-bottom: 1px dashed transparent;
+}
+
+.subtask-title-text:hover {
+    border-bottom-color: var(--accent-blue);
+}
+
+.subtask-right-actions {
+    display: flex;
+    gap: 4px;
+}
+
+.checklist-area {
+    padding: 6px 10px 8px;
+    background: var(--checklist-bg);
+    border-top: 1px solid var(--border-light);
+    max-height: 150px;
+    overflow-y: auto;
+}
+
+.checklist-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 0;
+    font-size: 0.8em;
+}
+
+.checklist-item input {
+    margin: 0;
+    cursor: pointer;
+    width: 16px;
+    height: 16px;
+}
+
+.checklist-item span {
+    flex: 1;
+    word-break: break-word;
+}
+
+.checklist-item .checked {
+    text-decoration: line-through;
+    color: var(--text-secondary);
+    opacity: 0.7;
+}
+
+.empty-checklist {
+    font-size: 0.75em;
+    color: var(--text-secondary);
+    text-align: center;
+    padding: 8px;
+}
+
+.add-main-task {
+    margin-top: 28px;
+    display: flex;
+    gap: 12px;
+}
+
+.add-main-task input {
+    flex: 1;
+    padding: 6px 12px;
+    border-radius: 60px;
+    border: 1px solid var(--border-light);
+    background: var(--card-bg);
+    color: var(--text-primary);
+    font-size: 0.9em;
+}
+
+.add-main-task button {
+    border-radius: 60px;
+}
+
+footer {
+    text-align: center;
+    padding: 16px;
+    font-size: 0.7em;
+    color: var(--text-secondary);
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: var(--card-bg);
+    border-radius: 28px;
+    width: 500px;
+    max-width: 90%;
+    padding: 20px;
+    color: var(--text-primary);
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+.modal-content h3 {
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.modal-buttons {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+    margin-top: 20px;
+}
+
+.config-list {
+    margin: 12px 0;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.config-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border-light);
+}
+
+.config-name {
+    font-size: 0.85rem;
+}
+
+.delete-config-btn {
+    background: transparent;
+    border: none;
+    color: var(--danger);
+    cursor: pointer;
+    font-size: 1rem;
+    padding: 4px;
+    border-radius: 40px;
+    transition: background 0.1s;
+}
+
+.delete-config-btn:hover {
+    background: var(--tag-bg);
+}
+
+.add-config {
+    display: flex;
+    gap: 12px;
+    margin-top: 12px;
+}
+
+.add-config input {
+    flex: 1;
+    padding: 8px 12px;
+    border-radius: 40px;
+    border: 1px solid var(--border-light);
+    background: var(--card-bg);
+    color: var(--text-primary);
+}
+
+.checklist-editor {
+    max-height: 400px;
+    overflow-y: auto;
+    margin: 12px 0;
+}
+
+.checklist-editor-item {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 8px;
+    align-items: center;
+}
+
+.checklist-editor-item input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+}
+
+.checklist-editor-item input[type="text"] {
+    flex: 1;
+    padding: 6px 10px;
+    border-radius: 40px;
+    border: 1px solid var(--border-light);
+    background: var(--card-bg);
+    color: var(--text-primary);
+}
+
+.checklist-editor-item button {
+    background: transparent;
+    border: none;
+    color: var(--danger);
+    cursor: pointer;
+}
+
+.right-top-bar {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.theme-selector {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    background: var(--card-bg);
+    padding: 4px 10px;
+    border-radius: 60px;
+}
+
+.theme-btn {
+    background: transparent;
+    border: none;
+    border-radius: 40px;
+    padding: 3px 8px;
+    cursor: pointer;
+    font-size: 0.7rem;
+    color: var(--text-primary);
+}
+
+.theme-btn.active {
+    background: var(--accent-blue);
+    color: white;
+}
+
+.alert-bar {
+    background: var(--card-bg);
+    border-left: 4px solid var(--warning);
+    border-radius: 16px;
+    padding: 8px 12px;
+    margin-bottom: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.75em;
+}
+
+.unsave-badge {
+    background: var(--danger);
+    color: white;
+    border-radius: 40px;
+    padding: 2px 8px;
+    font-size: 0.7rem;
+}
+
+.resizing {
+    user-select: none;
+    cursor: col-resize;
+}
+/* ========================================
+   App.vue 组件样式
+   ======================================== */
+
+.app {
+  display: flex;
+  height: 100vh;
+  background: var(--bg-page);
+}
+
+.sidebar {
+  background: var(--card-bg);
+  border-right: 1px solid var(--border-light);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.splitter {
+  width: 6px;
+  cursor: col-resize;
+  background: var(--border-light);
+  transition: background 0.2s;
+}
+
+.splitter:hover {
+  background: var(--accent-blue);
+}
+
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  background: var(--card-bg);
+  border-bottom: 1px solid var(--border-light);
+}
+
+.toolbar-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.toolbar-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.unsaved-indicator {
+  color: var(--warning);
+  font-size: 0.85rem;
+}
+
+.task-tree {
+  padding: 12px;
+  border-top: 1px solid var(--border-light);
+}
+
+.task-tree-title {
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+
+.task-tree-container {
+  font-size: 0.75rem;
+}
+
+.tree-node {
+  padding: 4px 8px;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background 0.2s;
+}
+
+.tree-node:hover {
+  background: var(--tree-hover);
+}
+
+.empty-tree {
+  text-align: center;
+  padding: 8px;
+  color: var(--text-secondary);
+  font-size: 0.7rem;
+}
+
+.btn-sm {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 6px;
+  background: var(--tag-bg);
+  color: var(--text-primary);
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: all 0.2s;
+}
+
+.btn-sm:hover {
+  background: var(--accent-blue-light);
+  color: var(--accent-blue);
+}
+
+.btn-primary {
+  background: var(--accent-blue);
+  color: white;
+}
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: var(--card-bg);
+  padding: 24px;
+  border-radius: 16px;
+  width: 600px;
+  max-width: 90vw;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+}
+
+.modal-content h3 {
+  margin-bottom: 20px;
+  color: var(--text-primary);
+  font-size: 1.2rem;
+}
+
+.theme-modal {
+  width: 800px;
+}
+
+.theme-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.theme-card {
+  border: 2px solid var(--border-light);
+  border-radius: 12px;
+  padding: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: var(--card-bg);
+}
+
+.theme-card:hover {
+  border-color: var(--accent-blue);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.theme-card.active {
+  border-color: var(--accent-blue);
+  box-shadow: 0 4px 12px rgba(0, 119, 200, 0.2);
+}
+
+.theme-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+  color: var(--text-primary);
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.theme-preview {
+  border-radius: 8px;
+  padding: 12px;
+  min-height: 100px;
+}
+
+.preview-card {
+  border-radius: 6px;
+  padding: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.preview-title {
+  font-weight: 600;
+  margin-bottom: 8px;
+  font-size: 0.9rem;
+}
+
+.preview-meta {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.preview-tag {
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.config-list {
+  margin: 16px 0;
+  max-height: 300px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.config-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  border-radius: 10px;
+  background: var(--tag-bg);
+  border: 1px solid var(--border-light);
+  transition: all 0.2s;
+}
+
+.config-card:hover {
+  border-color: var(--accent-blue);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.card-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+}
+
+.card-emoji {
+  font-size: 1.3rem;
+  line-height: 1;
+}
+
+.card-text {
+  color: var(--text-primary);
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+.card-delete-btn {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 6px;
+  background: #fee;
+  color: #dc2626;
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: 500;
+  border: 1px solid #fecaca;
+}
+
+.card-delete-btn:hover {
+  background: #dc2626;
+  color: white;
+  border-color: #dc2626;
+}
+
+.add-config {
+  display: flex;
+  gap: 8px;
+  margin: 16px 0;
+}
+
+.add-config input {
+  flex: 1;
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1px solid var(--border-light);
+  background: var(--card-bg);
+  color: var(--text-primary);
+  font-size: 0.9rem;
+}
+
+.modal-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 20px;
+}
+
+/* ========================================
+   TaskPanel 组件样式
+   ======================================== */
+
+.task-panel {
+  padding: 16px;
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.task-add-area {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.task-input {
+  flex: 1;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--border-light);
+  background: var(--card-bg);
+  color: var(--text-primary);
+  font-size: 0.9rem;
+}
+
+.task-input:focus {
+  outline: none;
+  border-color: var(--accent-blue);
+}
+
+.settings-area {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 16px;
+  padding: 12px;
+  background: var(--tag-bg);
+  border-radius: 8px;
+  flex-wrap: wrap;
+}
+
+.setting-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.setting-item label {
+  font-size: 0.85rem;
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.setting-item select {
+  padding: 4px 8px;
+  border-radius: 4px;
+  border: 1px solid var(--border-light);
+  background: var(--card-bg);
+  color: var(--text-primary);
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+/* 任务列表 - 瀑布流布局 */
+.task-list {
+  column-count: 2;
+  column-gap: 16px;
+  width: 100%;
+}
+
+/* 列表布局 - 两列显示 */
+.task-list.list-layout {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  column-count: unset;
+}
+
+.task-list.list-layout .task-card {
+  flex: 0 0 calc(50% - 8px);
+  width: calc(50% - 8px);
+  max-width: calc(50% - 8px);
+  break-inside: unset;
+}
+
+/* 树形布局 */
+.task-list.tree-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  column-count: unset;
+}
+
+.task-list.tree-layout .task-card {
+  flex: none;
+  width: 100%;
+  max-width: 100%;
+  break-inside: unset;
+  margin-left: 0;
+}
+
+/* 树形布局的子任务缩进 */
+.task-list.tree-layout .subtasks-section {
+  margin-left: 40px;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-left: 2px solid var(--accent-blue);
+  border-top: none;
+  padding-left: 16px;
+}
+
+.task-list.tree-layout .subtasks-list {
+  position: relative;
+}
+
+.task-list.tree-layout .subtasks-list::before {
+  content: '';
+  position: absolute;
+  left: -16px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--border-light);
+}
+
+.task-list.tree-layout .subtask-card {
+  position: relative;
+  margin-left: 0;
+}
+
+.task-list.tree-layout .subtask-card::before {
+  content: '';
+  position: absolute;
+  left: -16px;
+  top: 50%;
+  width: 12px;
+  height: 2px;
+  background: var(--border-light);
+}
+
+/* 树形布局的连接线 */
+.task-list.tree-layout .subtask-card:last-child::after {
+  content: '';
+  position: absolute;
+  left: -16px;
+  top: 50%;
+  bottom: 0;
+  width: 2px;
+  background: var(--card-bg);
+}
+
+.task-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border-light);
+  border-radius: 12px;
+  padding: 16px;
+  transition: all 0.2s;
+  break-inside: avoid;
+  margin-bottom: 16px;
+  user-select: none;
+  position: relative;
+}
+
+.task-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-color: var(--accent-blue);
+}
+
+/* 拖动图标 */
+.drag-handle {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  padding: 4px 6px;
+  cursor: grab;
+  color: var(--text-secondary);
+  opacity: 0.5;
+  transition: all 0.2s;
+  border-radius: 4px;
+  z-index: 10;
+}
+
+.drag-handle:hover {
+  opacity: 1;
+  color: var(--accent-blue);
+  background: var(--tag-bg);
+}
+
+.drag-handle:active {
+  cursor: grabbing;
+}
+
+/* 拖拽样式 */
+.sortable-ghost {
+  opacity: 0.4;
+  background: var(--accent-blue-light, #e3f2fd) !important;
+}
+
+.sortable-chosen {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2) !important;
+  transform: scale(1.02);
+}
+
+.sortable-drag {
+  opacity: 1 !important;
+}
+
+.task-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  padding-bottom: 12px;
+  padding-left: 24px;
+  border-bottom: 2px solid var(--border-light);
+}
+
+.task-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+  flex: 1;
+}
+
+.task-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.action-btn {
+  padding: 8px 14px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 500;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.add-subtask-btn {
+  background: var(--accent-blue);
+  color: white;
+  box-shadow: 0 2px 4px rgba(0, 119, 200, 0.2);
+}
+
+.add-subtask-btn:hover {
+  background: var(--accent-blue-dark, #005a9e);
+  box-shadow: 0 4px 8px rgba(0, 119, 200, 0.3);
+  transform: translateY(-1px);
+}
+
+.delete-btn {
+  background: #fee;
+  color: #dc2626;
+  border: 1px solid #fecaca;
+  box-shadow: 0 2px 4px rgba(220, 38, 38, 0.1);
+}
+
+.delete-btn:hover {
+  background: #dc2626;
+  color: white;
+  border-color: #dc2626;
+  box-shadow: 0 4px 8px rgba(220, 38, 38, 0.2);
+  transform: translateY(-1px);
+}
+
+.task-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* 状态、类型、优先级在一行 */
+.task-meta-row {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.meta-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: 1;
+  min-width: 150px;
+}
+
+.meta-label {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.meta-select {
+  flex: 1;
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--border-light);
+  background: var(--card-bg);
+  color: var(--text-primary);
+  cursor: pointer;
+  font-size: 0.85rem;
+  min-width: 0;
+}
+
+.meta-select:focus {
+  outline: none;
+  border-color: var(--accent-blue);
+}
+
+.task-description {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  padding: 8px 12px;
+  background: var(--tag-bg);
+  border-radius: 6px;
+}
+
+/* 子任务列表样式 */
+.subtasks-section {
+  margin-top: 8px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border-light);
+}
+
+.subtasks-header {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.subtasks-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* 子任务卡片 */
+.subtask-card {
+  background: var(--tag-bg);
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+  padding: 12px;
+  position: relative;
+  transition: all 0.2s;
+}
+
+.subtask-card:hover {
+  border-color: var(--accent-blue);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.subtask-drag-handle {
+  top: 6px;
+  left: 6px;
+  padding: 2px 4px;
+  font-size: 0.75rem;
+}
+
+.subtask-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  padding-left: 20px;
+}
+
+.subtask-title {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  flex: 1;
+}
+
+.subtask-delete-btn {
+  padding: 4px 8px;
+  border: none;
+  border-radius: 4px;
+  background: #fee;
+  color: #dc2626;
+  cursor: pointer;
+  font-size: 0.75rem;
+  transition: all 0.2s;
+}
+
+.subtask-delete-btn:hover {
+  background: #dc2626;
+  color: white;
+}
+
+.subtask-card-body {
+  padding-left: 20px;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--text-secondary);
+}
+
+.empty-state i {
+  font-size: 3rem;
+  margin-bottom: 16px;
+  opacity: 0.5;
+}
+
+.empty-state p {
+  margin: 8px 0;
+}
+
+.empty-hint {
+  font-size: 0.85rem;
+  opacity: 0.7;
+}
+
+.btn-primary {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 8px;
+  background: var(--accent-blue);
+  color: white;
+  cursor: pointer;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s;
+}
+
+.btn-primary:hover {
+  background: var(--accent-blue-dark, #005a9e);
+}
+
+/* 模态窗口样式 */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: var(--card-bg);
+  padding: 24px;
+  border-radius: 16px;
+  width: 500px;
+  max-width: 90vw;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+}
+
+.modal-content h3 {
+  margin-bottom: 20px;
+  color: var(--text-primary);
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.form-group {
+  margin-bottom: 16px;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 0.9rem;
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.form-input {
+  width: 100%;
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1px solid var(--border-light);
+  background: var(--card-bg);
+  color: var(--text-primary);
+  font-size: 0.9rem;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: var(--accent-blue);
+}
+
+.form-select {
+  width: 100%;
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1px solid var(--border-light);
+  background: var(--card-bg);
+  color: var(--text-primary);
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.form-select:focus {
+  outline: none;
+  border-color: var(--accent-blue);
+}
+
+.modal-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 20px;
+}
+
+.btn-sm {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 6px;
+  background: var(--tag-bg);
+  color: var(--text-primary);
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.btn-sm:hover {
+  background: var(--accent-blue-light);
+  color: var(--accent-blue);
+}
+
+/* 子任务表格模式 */
+.subtasks-list.table-mode {
+  display: table;
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.subtasks-list.table-mode .subtask-card {
+  display: table-row;
+  background: var(--card-bg);
+  border: none;
+  border-bottom: 1px solid var(--border-light);
+  border-radius: 0;
+  padding: 0;
+  margin: 0;
+}
+
+.subtasks-list.table-mode .subtask-card:last-child {
+  border-bottom: none;
+}
+
+.subtasks-list.table-mode .subtask-card:hover {
+  background: var(--tag-bg);
+  box-shadow: none;
+}
+
+.subtasks-list.table-mode .subtask-drag-handle {
+  display: table-cell;
+  position: static;
+  padding: 8px 12px;
+  vertical-align: middle;
+  width: 40px;
+  text-align: center;
+  border-right: 1px solid var(--border-light);
+}
+
+.subtasks-list.table-mode .subtask-card-header {
+  display: table-cell;
+  padding: 8px 12px;
+  vertical-align: middle;
+  border-right: 1px solid var(--border-light);
+}
+
+.subtasks-list.table-mode .subtask-title {
+  font-size: 0.85rem;
+}
+
+.subtasks-list.table-mode .subtask-delete-btn {
+  padding: 4px 8px;
+  font-size: 0.75rem;
+}
+
+.subtasks-list.table-mode .subtask-card-body {
+  display: table-cell;
+  padding: 8px 12px;
+  vertical-align: middle;
+}
+
+/* 切换按钮样式 */
+.toggle-subtask-btn {
+  background: var(--tag-bg);
+  color: var(--text-primary);
+  border: 1px solid var(--border-light);
+}
+
+.toggle-subtask-btn:hover {
+  background: var(--accent-blue-light, #e3f2fd);
+  color: var(--accent-blue);
+  border-color: var(--accent-blue);
+}
+
+/* 导航树子任务样式 */
+.subtask-nodes {
+  margin-left: 20px;
+  margin-top: 4px;
+}
+
+.tree-node.subtask-node {
+  padding-left: 8px;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+/* 导航树选中样式 */
+.tree-node.selected {
+  background: var(--accent-blue-light, #e3f2fd) !important;
+  color: var(--accent-blue) !important;
+  border-left: 3px solid var(--accent-blue);
+  font-weight: 600;
+}
+
+.tree-node:hover {
+  background: var(--tag-bg);
+  cursor: pointer;
+}
+
+/* 任务卡片选中样式 */
+.task-card.selected {
+  border: 2px solid var(--accent-blue) !important;
+  box-shadow: 0 0 0 4px rgba(0, 119, 200, 0.1), 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+  background: linear-gradient(135deg, var(--card-bg) 0%, rgba(0, 119, 200, 0.05) 100%) !important;
+}
+
+.task-card.selected .task-title {
+  color: var(--accent-blue);
+  font-weight: 700;
+}
+
+/* 子任务卡片选中样式 */
+.subtask-card.selected {
+  border: 2px solid var(--accent-blue) !important;
+  background: linear-gradient(135deg, var(--tag-bg) 0%, rgba(0, 119, 200, 0.05) 100%) !important;
+}
+
+/* 子任务表格样式 */
+.subtask-table {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--card-bg);
+}
+
+.subtask-table thead {
+  background: var(--tag-bg);
+}
+
+.subtask-table th {
+  padding: 8px 12px;
+  text-align: left;
+  font-weight: 600;
+  color: var(--text-primary);
+  border-bottom: 2px solid var(--border-light);
+  font-size: 0.85rem;
+}
+
+.subtask-table td {
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border-light);
+  vertical-align: middle;
+}
+
+.subtask-table tbody tr:hover {
+  background: var(--tag-bg);
+}
+
+.subtask-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* 表格列宽 */
+.col-index {
+  width: 40px;
+  text-align: center;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.col-drag {
+  width: 40px;
+  text-align: center;
+}
+
+.col-title {
+  min-width: 150px;
+}
+
+.col-status,
+.col-type,
+.col-priority {
+  width: 120px;
+}
+
+.col-remark {
+  min-width: 100px;
+}
+
+.col-action {
+  width: 60px;
+  text-align: center;
+}
+
+/* 内联输入框 */
+.inline-input {
+  width: 100%;
+  padding: 4px 8px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--text-primary);
+  font-size: 0.85rem;
+  transition: all 0.2s;
+}
+
+.inline-input:hover {
+  border-color: var(--border-light);
+  background: var(--card-bg);
+}
+
+.inline-input:focus {
+  outline: none;
+  border-color: var(--accent-blue);
+  background: var(--card-bg);
+}
+
+/* 内联选择框 */
+.inline-select {
+  width: 100%;
+  padding: 4px 8px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--text-primary);
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.inline-select:hover {
+  border-color: var(--border-light);
+  background: var(--card-bg);
+}
+
+.inline-select:focus {
+  outline: none;
+  border-color: var(--accent-blue);
+  background: var(--card-bg);
+}
+
+/* 表格选项 */
+.table-options {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 8px;
+  padding: 4px 8px;
+}
+
+.wrap-toggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+
+.wrap-toggle:hover {
+  color: var(--text-primary);
+}
+
+.wrap-toggle input[type="checkbox"] {
+  cursor: pointer;
+}
+
+/* 自动换行模式 */
+.subtask-table.auto-wrap .cell-content {
+  white-space: normal;
+  word-wrap: break-word;
+  word-break: break-all;
+}
+
+.subtask-table.auto-wrap .inline-input {
+  white-space: normal;
+  word-wrap: break-word;
+  word-break: break-all;
+}
+
+/* 不换行模式 */
+.subtask-table:not(.auto-wrap) .cell-content {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.subtask-table:not(.auto-wrap) .inline-input {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 单元格内容 */
+.cell-content {
+  width: 100%;
+  min-height: 20px;
+}
+
+/* 列宽拖动 */
+.subtask-table col {
+  cursor: col-resize;
+}
+
+.subtask-table col:hover {
+  background: var(--accent-blue-light);
+}
+
+/* 表格行高自适应 */
+.subtask-table tbody tr {
+  height: auto;
+}
+
+.subtask-table td {
+  height: auto;
+  min-height: 32px;
+}
+
+/* 编辑输入框 */
+.edit-input {
+  width: 100%;
+  padding: 4px 8px;
+  border: 2px solid var(--accent-blue);
+  border-radius: 4px;
+  background: var(--card-bg);
+  color: var(--text-primary);
+  font-size: inherit;
+  font-weight: inherit;
+  outline: none;
+}
+
+.task-edit-input {
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+/* 双击编辑提示 */
+.task-title,
+.subtask-title {
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.task-title:hover,
+.subtask-title:hover {
+  color: var(--accent-blue);
+}
+
+/* Emoji选择器 */
+.emoji-selector {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+
+.emoji-option {
+  font-size: 1.2rem;
+  padding: 4px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 1px solid transparent;
+}
+
+.emoji-option:hover {
+  background: var(--tag-bg);
+  border-color: var(--border-light);
+}
+
+.emoji-option.selected {
+  background: var(--accent-blue-light, #e3f2fd);
+  border-color: var(--accent-blue);
+  box-shadow: 0 0 0 2px rgba(0, 119, 200, 0.2);
+}
+
+/* 配置输入框 */
+.config-input {
+  flex: 1;
+  padding: 6px 10px;
+  border: 1px solid var(--border-light);
+  border-radius: 6px;
+  background: var(--card-bg);
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  transition: all 0.2s;
+}
+
+.config-input:focus {
+  outline: none;
+  border-color: var(--accent-blue);
+  box-shadow: 0 0 0 2px rgba(0, 119, 200, 0.1);
+}
+
+/* 修改配置卡片布局 */
+.config-card .card-left {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+}
