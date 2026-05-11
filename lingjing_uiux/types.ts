@@ -11,21 +11,21 @@ export interface Task {
   closedDate?: string
 }
 
-export interface Status {
+export interface TaskStatus {
   id: string
   name: string
   color: string
   emoji: string
 }
 
-export interface Type {
+export interface TaskType {
   id: string
   name: string
   color: string
   emoji: string
 }
 
-export interface Priority {
+export interface TaskPriority {
   id: string
   name: string
   color: string

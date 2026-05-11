@@ -50,14 +50,14 @@
 
 <script setup lang="ts">
 import { ref, watch } from 'vue'
-import type { Status, Type, Priority, Task } from '../../types'
+import type { TaskStatus, TaskType, TaskPriority, Task } from '../../types'
 
 const props = defineProps<{
   visible: boolean
   parentTask: Task | null
-  statuses: Status[]
-  types: Type[]
-  priorities: Priority[]
+  statuses: TaskStatus[]
+  types: TaskType[]
+  priorities: TaskPriority[]
 }>()
 
 const emit = defineEmits<{

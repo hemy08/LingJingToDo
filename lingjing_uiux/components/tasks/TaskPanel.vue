@@ -205,7 +205,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import type { Task, Status, Type, Priority } from '../../types'
+import type { Task, TaskStatus, TaskType, TaskPriority } from '../../types'
 import TaskCard from './TaskCard.vue'
 import SubtaskCard from './SubtaskCard.vue'
 import SubtaskTable from './SubtaskTable.vue'
@@ -217,9 +217,9 @@ import SubtaskModal from './SubtaskModal.vue'
 const props = defineProps<{
   selectedTaskId?: number | null
   tasks: Task[]
-  statuses: Status[]
-  types: Type[]
-  priorities: Priority[]
+  statuses: TaskStatus[]
+  types: TaskType[]
+  priorities: TaskPriority[]
   config?: {
     fontSize?: string
     dragMode?: 'insert' | 'swap'

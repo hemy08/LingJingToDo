@@ -103,13 +103,13 @@
 
 <script setup lang="ts">
 
-import type { Task, Status, Type, Priority } from '../../types'
+import type { Task, TaskStatus, TaskType, TaskPriority } from '../../types'
 
 defineProps<{
   subtasks: Task[]
-  statuses: Status[]
-  types: Type[]
-  priorities: Priority[]
+  statuses: TaskStatus[]
+  types: TaskType[]
+  priorities: TaskPriority[]
 }>()
 
 const emit = defineEmits<{

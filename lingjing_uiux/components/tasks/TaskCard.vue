@@ -116,9 +116,9 @@ import { ref, nextTick, computed } from 'vue'
 
 const props = defineProps<{
   task: Task
-  statuses: Status[]
-  types: Type[]
-  priorities: Priority[]
+  statuses: TaskStatus[]
+  types: TaskType[]
+  priorities: TaskPriority[]
   subtaskDisplayMode: 'card' | 'table'
   selectedTaskId?: number | null
 }>()
@@ -131,7 +131,7 @@ const emit = defineEmits<{
   select: [taskId: number | null]
 }>()
 
-import type { Task, Status, Type, Priority } from '../../types'
+import type { Task, TaskStatus, TaskType, TaskPriority } from '../../types'
 
 
 // 检查是否可以关闭任务

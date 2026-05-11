@@ -69,61 +69,47 @@
   </div>
 
   <!-- 自定义对话框 -->
-  <div v-if="dialogVisible" class="dialog-overlay" @click.self="dialogVisible = false">
-    <div class="dialog-box">
-      <div class="dialog-header">
-        <i :class="dialogIcon"></i>
-        <span>{{ dialogTitle }}</span>
-      </div>
-      <div class="dialog-content">{{ dialogMessage }}</div>
-      <div class="dialog-buttons">
-        <button v-if="dialogType === 'confirm'" class="btn-sm" @click="handleDialogCancel">取消</button>
-        <button class="btn-sm btn-primary" @click="handleDialogConfirm">确定</button>
-      </div>
-    </div>
-  </div>
 </template>
 
 <script setup lang="ts">
 import { ref, watch, onUnmounted } from 'vue'
-import { invoke } from '@tauri-apps/api/core'
-import type { Type } from '../../types'
+import { typeApi } from '../../connections/config_apis'
+import { useDialog } from '../../composables/useDialog'
+import { createConfigHandlers } from './config_common'
+import type { TaskType } from '../../types'
 
 interface Props {
   visible: boolean
-  types: Type[]
+  types: TaskType[]
 }
 
 interface Emits {
   (e: 'update:visible', value: boolean): void
-  (e: 'updated', types: Type[]): void
+  (e: 'updated', types: TaskType[]): void
 }
 
 const props = defineProps<Props>()
 const emit = defineEmits<Emits>()
 
 // 可用的emoji列表
-const availableEmojis = ['🐛', '🔧', '⚡', '🚑', '💡', '♻️', '⬆️', '📚', '🏠', '📝',
-  '📦', '🚀', '📌', '🔒', '🔑', '💡', '💬', '📢', '🔍', '🏷️', '🎯', '🎮', '🎨', '🎵','🎯',]
+const availableEmojis = ['✅', '❎', '⚠️', 'ℹ️', '⏳', '⏸️', '▶️', '🟢', '🔴', '🟡', '🔵', '⚫️', '💀', '🛡️', '🔔',
+    '📋', '📌', '📝', '⏹️', '📅','🔒','⏰','🚀'
+]
 
 // 本地类型列表
-const localTypes = ref<Type[]>([])
+const localTypes = ref<TaskType[]>([])
 const newTypeName = ref('')
-const newTypeEmoji = ref('📁')
+const newTypeEmoji = ref('📋')
 const modifiedIds = ref<Set<string>>(new Set())
-
-// 对话框状态
-const dialogVisible = ref(false)
-const dialogType = ref<'alert' | 'confirm'>('alert')
-const dialogTitle = ref('')
-const dialogMessage = ref('')
-const dialogIcon = ref('fas fa-info-circle')
-const dialogCallback = ref<(() => void) | null>(null)
 
 // 模态框大小
 const modalWidth = ref(800)
 const modalHeight = ref(600)
 const modalRef = ref<HTMLElement | null>(null)
+
+// 创建配置处理函数
+const { handleSave: configHandleSave, handleClose: configHandleClose, handleDelete: configHandleDelete, handleAdd: configHandleAdd, handleMoveUp, handleMoveDown, handleStartResize } = createConfigHandlers<TaskType>()
+const { showAlert } = useDialog()
 
 // 是否有修改
 const hasModifications = () => modifiedIds.value.size > 0
@@ -132,43 +118,15 @@ const hasModifications = () => modifiedIds.value.size > 0
 watch(() => props.visible, async (newVisible) => {
   if (newVisible) {
     try {
-      const result = await invoke<Type[]>('get_types')
+      const result = await typeApi.getAll()
       localTypes.value = result
       modifiedIds.value.clear()
     } catch (error) {
       console.error('获取类型列表失败:', error)
-      showDialog('alert', '错误', '获取类型列表失败')
+      showAlert('错误', '获取类型列表失败')
     }
   }
 })
-
-// 显示对话框
-const showDialog = (
-  type: 'alert' | 'confirm',
-  title: string,
-  message: string,
-  callback?: () => void
-) => {
-  dialogType.value = type
-  dialogTitle.value = title
-  dialogMessage.value = message
-  dialogIcon.value = type === 'alert' ? 'fas fa-info-circle' : 'fas fa-question-circle'
-  dialogCallback.value = callback || null
-  dialogVisible.value = true
-}
-
-// 对话框确认
-const handleDialogConfirm = () => {
-  dialogVisible.value = false
-  if (dialogCallback.value) {
-    dialogCallback.value()
-  }
-}
-
-// 对话框取消
-const handleDialogCancel = () => {
-  dialogVisible.value = false
-}
 
 // 标记为已修改
 const markAsModified = (id: string) => {
@@ -177,133 +135,74 @@ const markAsModified = (id: string) => {
 
 // 上移（本地操作）
 const moveUp = (index: number) => {
-  if (index > 0) {
-    const temp = localTypes.value[index]
-    localTypes.value[index] = localTypes.value[index - 1]
-    localTypes.value[index - 1] = temp
-    modifiedIds.value.add(localTypes.value[index].id)
-    modifiedIds.value.add(localTypes.value[index - 1].id)
-  }
+  handleMoveUp(index, localTypes, modifiedIds)
 }
 
 // 下移（本地操作）
 const moveDown = (index: number) => {
-  if (index < localTypes.value.length - 1) {
-    const temp = localTypes.value[index]
-    localTypes.value[index] = localTypes.value[index + 1]
-    localTypes.value[index + 1] = temp
-    modifiedIds.value.add(localTypes.value[index].id)
-    modifiedIds.value.add(localTypes.value[index + 1].id)
-  }
+  handleMoveDown(index, localTypes, modifiedIds)
 }
 
-// 添加类型（本地操作）
+// 添加状态（本地操作）
 const addType = () => {
-  if (!newTypeName.value.trim()) {
-    showDialog('alert', '提示', '请输入类型名称')
-    return
-  }
-  
-  if (localTypes.value.some(t => t.name === newTypeName.value.trim())) {
-    showDialog('alert', '提示', '类型已存在')
-    return
-  }
-
-  const newType: Type = {
-    id: `ty_custom_${Date.now()}`,
-    name: newTypeName.value.trim(),
-    color: "#a0aec0",
-    emoji: newTypeEmoji.value
-  }
-
-  localTypes.value.push(newType)
-  modifiedIds.value.add(newType.id)
-  newTypeName.value = ''
-  newTypeEmoji.value = '📁'
+  configHandleAdd(
+    newTypeName,
+    newTypeEmoji,
+    localTypes,
+    modifiedIds,
+    '类型',
+    't_custom',
+    (id, name, emoji) => ({
+      id,
+      name,
+      color: "#a0aec0",
+      emoji
+    })
+  )
+  newTypeEmoji.value = '📋'
 }
 
-// 删除类型（本地操作）
+// 删除状态（本地操作）
 const deleteType = async (id: string) => {
-  if (localTypes.value.length <= 1) {
-    showDialog('alert', '提示', '至少保留一个类型')
-    return
-  }
+  await configHandleDelete(
+    id,
+    localTypes,
+    typeApi.delete.bind(typeApi),
+    modifiedIds,
+    (result) => emit('updated', result),
+    '类型'
+  )
+}
 
-  showDialog('confirm', '确认', '确定删除该类型吗?', async () => {
-    try {
-      const result = await invoke<Type[]>('delete_type', { id })
-      localTypes.value = result
-      modifiedIds.value.delete(id)
-      emit('updated', result)
-    } catch (error) {
-      console.error('删除类型失败:', error)
-      showDialog('alert', '错误', '删除类型失败')
-    }
-  })
+// 保存全部修改（发送全部数据）
+const handleSave = async () => {
+  await configHandleSave(
+    localTypes,
+    typeApi.update.bind(typeApi),
+    modifiedIds,
+    (result) => emit('updated', result),
+    () => emit('update:visible', false),
+    '类型',
+    true
+  )
 }
 
 // 关闭窗口（先保存未保存的修改）
-const handleSave = async () => {
-  try {
-    const result = await invoke<Type[]>('update_types', { types: localTypes.value })
-    localTypes.value = result
-    modifiedIds.value.clear()
-    emit('updated', result)
-    showDialog('alert', '成功', '所有类型已保存',() => {
-      emit('update:visible', false)
-    })
-  } catch (error) {
-    console.error('保存类型失败:', error)
-    showDialog('alert', '错误', '保存类型失败')
-  }
-}
-
 const handleClose = async () => {
-  if (hasModifications()) {
-    showDialog('confirm', '提示', '有未保存的修改，是否保存?', async () => {
-      try {
-        const result = await invoke<Type[]>('update_types', { types: localTypes.value })
-        localTypes.value = result
-        modifiedIds.value.clear()
-        emit('updated', result)
-        emit('update:visible', false)
-      } catch (error) {
-        console.error('保存类型失败:', error)
-        showDialog('alert', '错误', '保存类型失败')
-      }
-    })
-  } else {
-    emit('update:visible', false)
-  }
+  await configHandleClose(
+    hasModifications,
+    localTypes,
+    typeApi.update.bind(typeApi),
+    modifiedIds,
+    (result) => emit('updated', result),
+    () => emit('update:visible', false),
+    '类型'
+  )
 }
 
 // 拖动调整大小
 const startResize = (direction: string, event: MouseEvent) => {
-  event.preventDefault()
-  
-  const startX = event.clientX
-  const startY = event.clientY
-  const startWidth = modalWidth.value
-  const startHeight = modalHeight.value
-  
-  const handleMouseMove = (e: MouseEvent) => {
-    if (direction === 'right' || direction === 'corner') {
-      const newWidth = startWidth + (e.clientX - startX)
-      modalWidth.value = Math.max(400, Math.min(800, newWidth))
-    }
-    if (direction === 'bottom' || direction === 'corner') {
-      const newHeight = startHeight + (e.clientY - startY)
-      modalHeight.value = Math.max(400, Math.min(800, newHeight))
-    }
-  }
-  
-  const handleMouseUp = () => {
-    document.removeEventListener('mousemove', handleMouseMove)
-    document.removeEventListener('mouseup', handleMouseUp)
-  }
-  
-  document.addEventListener('mousemove', handleMouseMove)
-  document.addEventListener('mouseup', handleMouseUp)
+  handleStartResize(direction, event, modalWidth, modalHeight)
 }
 
 // 清理事件监听器
@@ -311,3 +210,4 @@ onUnmounted(() => {
   // 清理代码
 })
 </script>
+

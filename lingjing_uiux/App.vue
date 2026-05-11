@@ -1,42 +1,46 @@
 <script setup lang="ts">
 
+// 使用对话框 composable
+const { dialogState, handleButtonClick, handleOverlayClick } = useDialog()
+
 // 选中的任务ID
 const selectedTaskId = ref<number | null>(null)
 
 // 可用的emoji列表
 import { ref, reactive, onMounted } from 'vue'
+import { useDialog } from './composables/useDialog'
 import CalendarPanel from './components/calendar/CalendarPanel.vue'
 import TaskPanel from './components/tasks/TaskPanel.vue'
 import StatusModal from './components/config/StatusModal.vue'
 import TypeModal from './components/config/TypeModal.vue'
 import PriorityModal from './components/config/PriorityModal.vue'
 import {invoke} from "@tauri-apps/api/core";
-import type { Status, Type, Priority } from './types'
+import type { TaskStatus, TaskType, TaskPriority } from './types'
 
 
-async function LingJing_GetStatus(): Promise<Status[]> {
-  const result = await invoke<Status[]>('get_statuses')
+async function LingJing_GetStatus(): Promise<TaskStatus[]> {
+  const result = await invoke<TaskStatus[]>('get_statuses')
   console.log('result', result)
   return result
 }
 
-async function LingJing_GetTypes(): Promise<Type[]> {
-  const result = await invoke<Type[]>('get_types')
+async function LingJing_GetTypes(): Promise<TaskType[]> {
+  const result = await invoke<TaskType[]>('get_types')
   console.log('result', result)
   return result
 }
 
 
-async function LingJing_GetPriorities(): Promise<Priority[]> {
-  const result = await invoke<Priority[]>('get_priorities')
+async function LingJing_GetPriorities(): Promise<TaskPriority[]> {
+  const result = await invoke<TaskPriority[]>('get_priorities')
   console.log('result', result)
   return result
 }
 
 const config = reactive<{
-  statuses: Status[]
-  types: Type[]
-  priorities: Priority[]
+  statuses: TaskStatus[]
+  types: TaskType[]
+  priorities: TaskPriority[]
 }>({
   statuses: [],
   types: [],
@@ -297,6 +301,26 @@ onMounted(async () => {
         </div>
       </div>
     </div>
+    <!-- 全局对话框 -->
+    <div v-if="dialogState.visible" class="dialog-overlay" @click="handleOverlayClick">
+      <div class="dialog-box">
+        <div class="dialog-header">
+          <i :class="dialogState.icon"></i>
+          <span>{{ dialogState.title }}</span>
+        </div>
+        <div class="dialog-content">{{ dialogState.message }}</div>
+        <div class="dialog-buttons">
+          <button 
+            v-for="button in dialogState.buttons" 
+            :key="button.text"
+            :class="['btn-sm', button.type || '']"
+            @click="handleButtonClick(button)"
+          >
+            {{ button.text }}
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -305,5 +329,87 @@ onMounted(async () => {
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
 #app { width: 100%; height: 100vh; }
+
+/* 对话框样式 */
+.dialog-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+}
+
+.dialog-box {
+  background: var(--card-bg, #fff);
+  border-radius: 8px;
+  padding: 20px;
+  min-width: 300px;
+  max-width: 500px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.dialog-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 15px;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.dialog-header i {
+  color: var(--primary-color, #3b82f6);
+}
+
+.dialog-content {
+  margin-bottom: 20px;
+  line-height: 1.5;
+  color: var(--text-color, #333);
+}
+
+.dialog-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.btn-sm {
+  padding: 6px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background: #fff;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s;
+}
+
+.btn-sm:hover {
+  background: #f5f5f5;
+}
+
+.btn-sm.btn-primary {
+  background: var(--primary-color, #3b82f6);
+  color: #fff;
+  border-color: var(--primary-color, #3b82f6);
+}
+
+.btn-sm.btn-primary:hover {
+  background: var(--primary-hover, #2563eb);
+}
+
+.btn-sm.btn-danger {
+  background: #dc2626;
+  color: #fff;
+  border-color: #dc2626;
+}
+
+.btn-sm.btn-danger:hover {
+  background: #b91c1c;
+}
 </style>
 
