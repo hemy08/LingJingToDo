@@ -179,6 +179,7 @@
 import { ref } from 'vue'
 import type { Task, TaskStatus, TaskType, TaskPriority } from '../../types'
 import { taskApi } from '../../connections/task_apis'
+
 import TaskAddArea from './TaskAddArea.vue'
 import SettingsPanel from './SettingsPanel.vue'
 import TaskCard from './TaskCard.vue'

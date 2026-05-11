@@ -38,6 +38,7 @@ import CalendarPanel from './components/calendar/CalendarPanel.vue'
 import TaskPanel from './components/tasks/TaskPanel.vue'
 import StatusModal from './components/config/StatusModal.vue'
 import ThemeManager from './components/themes/ThemeManager.vue'
+import StatusBar from './components/common/StatusBar.vue'
 import TypeModal from './components/config/TypeModal.vue'
 import PriorityModal from './components/config/PriorityModal.vue'
 import {invoke} from "@tauri-apps/api/core";
@@ -76,6 +77,25 @@ const config = reactive<{
 const todoData = reactive<Record<string, any[]>>({})
 const currentDate = ref('')
 const isDirty = ref(false)
+
+// 状态提示
+const statusVisible = ref(false)
+const statusMessage = ref('')
+const statusDetail = ref('')
+const statusType = ref<'success' | 'error' | 'warning' | 'info'>('success')
+
+// 显示状态提示
+const showStatus = (message: string, detail?: string, type: 'success' | 'error' | 'warning' | 'info' = 'success') => {
+  statusMessage.value = message
+  statusDetail.value = detail || ''
+  statusType.value = type
+  statusVisible.value = true
+  
+  // 3秒后自动关闭
+  setTimeout(() => {
+    statusVisible.value = false
+  }, 3000)
+}
 const showThemeModal = ref(false)
 const showStatusModal = ref(false)
 const showTypeModal = ref(false)
