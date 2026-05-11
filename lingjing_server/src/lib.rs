@@ -1,7 +1,10 @@
 mod config;
+mod tasks;
 
 use config::ConfigState;
+use tasks::TaskData;
 use tauri::Manager;
+use std::sync::Mutex;
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
@@ -18,6 +21,12 @@ pub fn run() {
             let config_state = ConfigState::new(app.handle());
             app.manage(config_state);
             log::info!("配置状态初始化完成");
+            
+            log::info!("初始化任务数据状态");
+            let task_data = Mutex::new(TaskData::load());
+            app.manage(task_data);
+            log::info!("任务数据状态初始化完成");
+            
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![
@@ -33,6 +42,19 @@ pub fn run() {
             config::get_themes,
             config::get_recent_files,
             config::add_recent_file,
+            tasks::get_tasks,
+            tasks::add_task,
+            tasks::update_task,
+            tasks::delete_task,
+            tasks::reorder_tasks,
+            tasks::get_all_tasks,
+            tasks::import_tasks,
+            tasks::generate_main_task_id,
+            tasks::generate_subtask_id,
+            tasks::add_subtask,
+            tasks::update_subtask,
+            tasks::delete_subtask,
+            tasks::query_tasks,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

@@ -1,14 +1,14 @@
 export interface Task {
-  id: number
+  id: string
   title: string
-  statusId: string
-  typeId: string
-  priorityId: string
-  dueDate?: string
+  status_id: string
+  type_id: string
+  priority_id: string
+  due_date?: string
   subtasks?: Task[]
   remark?: string
-  createdDate?: string
-  closedDate?: string
+  created_date?: string
+  closed_date?: string
 }
 
 export interface TaskStatus {

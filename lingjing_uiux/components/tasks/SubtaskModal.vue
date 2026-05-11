@@ -8,7 +8,7 @@
       </div>
       <div class="form-group">
         <label class="form-label">📌 状态:</label>
-        <select v-model="formData.statusId" class="form-select">
+        <select v-model="formData.status_id" class="form-select">
           <option v-for="status in statuses" :key="status.id" :value="status.id">
             {{ status.name }}
           </option>
@@ -16,7 +16,7 @@
       </div>
       <div class="form-group">
         <label class="form-label">🏷️ 类型:</label>
-        <select v-model="formData.typeId" class="form-select">
+        <select v-model="formData.type_id" class="form-select">
           <option v-for="type in types" :key="type.id" :value="type.id">
             {{ type.name }}
           </option>
@@ -24,7 +24,7 @@
       </div>
       <div class="form-group">
         <label class="form-label">📁 优先级:</label>
-        <select v-model="formData.priorityId" class="form-select">
+        <select v-model="formData.priority_id" class="form-select">
           <option v-for="priority in priorities" :key="priority.id" :value="priority.id">
             {{ priority.name }}
           </option>
@@ -32,7 +32,7 @@
       </div>
       <div class="form-group">
         <label class="form-label">📅 截止日期:</label>
-        <input v-model="formData.dueDate" type="date" class="form-input" />
+        <input v-model="formData.due_date" type="date" class="form-input" />
       </div>
       <div class="modal-buttons">
         <button class="btn-sm" @click="$emit('close')">
@@ -68,10 +68,10 @@ const emit = defineEmits<{
 // 表单数据
 const formData = ref({
   title: '',
-  statusId: '',
-  typeId: '',
-  priorityId: '',
-  dueDate: ''
+  status_id: '',
+  type_id: '',
+  priority_id: '',
+  due_date: ''
 })
 
 // 监听visible变化,重置表单
@@ -79,10 +79,10 @@ watch(() => props.visible, (newVal) => {
   if (newVal) {
     formData.value = {
       title: '',
-      statusId: props.statuses[0]?.id || '',
-      typeId: props.types[0]?.id || '',
-      priorityId: props.priorities[0]?.id || '',
-      dueDate: ''
+      status_id: props.statuses[0]?.id || '',
+      type_id: props.types[0]?.id || '',
+      priority_id: props.priorities[0]?.id || '',
+      due_date: ''
     }
   }
 })
@@ -92,12 +92,12 @@ const handleSubmit = () => {
   if (!formData.value.title.trim()) return
 
   const newSubtask: Task = {
-    id: Date.now(),
+    id: `TASK${Date.now()}`,
     title: formData.value.title.trim(),
-    statusId: formData.value.statusId,
-    typeId: formData.value.typeId,
-    priorityId: formData.value.priorityId,
-    dueDate: formData.value.dueDate,
+    status_id: formData.value.status_id,
+    type_id: formData.value.type_id,
+    priority_id: formData.value.priority_id,
+    due_date: formData.value.due_date,
     subtasks: []
   }
 

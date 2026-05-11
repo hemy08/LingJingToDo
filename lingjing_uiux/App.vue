@@ -92,9 +92,6 @@ const ensureDate = (date: string) => {
   if (!todoData[date]) todoData[date] = []
 }
 
-const markDirty = () => {
-  if (!isDirty.value) isDirty.value = true
-}
 
 const handleStatusUpdated = (statuses: any) => {
   config.statuses = statuses
@@ -137,8 +134,8 @@ onMounted(async () => {
   ensureDate(currentDate.value)
   if (todoData[currentDate.value].length === 0) {
     todoData[currentDate.value].push({
-      id: 10001, title: "示例主任务", statusId: "st_doing", typeId: "ty_work", priorityId: "p3",
-      dueDate: "2026-05-10", description: "", useSubtasks: true, subtasks: [], checklist: [], createdAt: Date.now()
+      id: 10001, title: "示例主任务", status_id: "st_doing", type_id: "ty_work", priority_id: "p3",
+      due_date: "2026-05-10", description: "", useSubtasks: true, subtasks: [], checklist: [], createdAt: Date.now()
     })
   }
 })
@@ -200,7 +197,7 @@ onMounted(async () => {
         :statuses="config.statuses"
         :types="config.types"
         :priorities="config.priorities"
-        @dirty="markDirty"
+        v-model:is-dirty="isDirty"
       />
     </div>
 

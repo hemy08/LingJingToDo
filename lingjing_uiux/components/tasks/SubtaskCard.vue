@@ -34,8 +34,8 @@
           <label class="meta-label">📌 状态:</label>
           <select 
             class="meta-select"
-            :value="subtask.statusId"
-            @change="$emit('update', { ...subtask, statusId: ($event.target as HTMLSelectElement).value })"
+            :value="subtask.status_id"
+            @change="$emit('update', { ...subtask, status_id: ($event.target as HTMLSelectElement).value })"
           >
             <option v-for="status in statuses" :key="status.id" :value="status.id">{{ status.emoji }} {{ status.name }}
             </option>
@@ -45,8 +45,8 @@
           <label class="meta-label">🏷️ 类型:</label>
           <select 
             class="meta-select"
-            :value="subtask.typeId"
-            @change="$emit('update', { ...subtask, typeId: ($event.target as HTMLSelectElement).value })"
+            :value="subtask.type_id"
+            @change="$emit('update', { ...subtask, type_id: ($event.target as HTMLSelectElement).value })"
           >
             <option v-for="type in types" :key="type.id" :value="type.id">{{ type.emoji }} {{ type.name }}
             </option>
@@ -56,8 +56,8 @@
           <label class="meta-label">📁 优先级:</label>
           <select 
             class="meta-select"
-            :value="subtask.priorityId"
-            @change="$emit('update', { ...subtask, priorityId: ($event.target as HTMLSelectElement).value })"
+            :value="subtask.priority_id"
+            @change="$emit('update', { ...subtask, priority_id: ($event.target as HTMLSelectElement).value })"
           >
             <option v-for="priority in priorities" :key="priority.id" :value="priority.id">{{ priority.emoji }} {{ priority.name }}
             </option>
@@ -80,7 +80,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   update: [task: Task]
-  delete: [taskId: number]
+  delete: [taskId: string]
 }>()
 
 import type { Task, TaskStatus, TaskType, TaskPriority } from '../../types'

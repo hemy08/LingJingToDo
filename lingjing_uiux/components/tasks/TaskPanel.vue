@@ -1,45 +1,17 @@
 <template>
   <div class="task-panel">
     <!-- 任务添加区域 -->
-    <div class="task-add-area">
-      <input
-        v-model="newTaskTitle"
-        class="task-input"
-        placeholder="输入任务标题,按回车添加..."
-        @keyup.enter="handleAddTask"
-      />
-      <button class="btn-primary" @click="handleAddTask">
-        <i class="fas fa-plus"></i>
-        添加
-      </button>
-    </div>
+    <TaskAddArea
+      :statuses="statuses"
+      :current-date="currentDate"
+      :is-dirty="isDirty"
+      @update:is-dirty="emit('update:isDirty', $event)"
+      @task-added="handleTaskAdded"
+    />
 
     <!-- 设置区域 -->
-    <div class="settings-area">
-      <div class="setting-item">
-        <label>🔤 字体大小:</label>
-        <select v-model="fontSize">
-          <option value="small">小</option>
-          <option value="medium">中</option>
-          <option value="large">大</option>
-        </select>
-      </div>
-      <div class="setting-item">
-        <label>🔄 拖动方式:</label>
-        <select v-model="dragMode">
-          <option value="insert">插入方式</option>
-          <option value="swap">交换方式</option>
-        </select>
-      </div>
-      <div class="setting-item">
-        <label>📐 布局方式:</label>
-        <select v-model="layoutMode">
-          <option value="masonry">瀑布流</option>
-          <option value="list">列表</option>
-          <option value="tree">树形</option>
-        </select>
-      </div>
-    </div>
+    <SettingsPanel :config="config" @update:config="handleConfigUpdate" />
+
 
     <!-- 任务列表 -->
     <MasonryLayout
@@ -61,7 +33,7 @@
         @delete="handleDeleteTask($event)"
         @add-subtask="openSubtaskModal"
         @toggle-subtask-mode="toggleSubtaskDisplayMode"
-        @select="$emit('select-task', $event)"
+        @select="$emit('select-task', String($event))"
       >
         <template #subtasks="{ subtasks, displayMode }">
           <SubtaskTable
@@ -108,7 +80,7 @@
         @delete="handleDeleteTask($event)"
         @add-subtask="openSubtaskModal"
         @toggle-subtask-mode="toggleSubtaskDisplayMode"
-        @select="$emit('select-task', $event)"
+        @select="$emit('select-task', String($event))"
       >
         <template #subtasks="{ subtasks, displayMode }">
           <SubtaskTable
@@ -155,7 +127,7 @@
         @delete="handleDeleteTask($event)"
         @add-subtask="openSubtaskModal"
         @toggle-subtask-mode="toggleSubtaskDisplayMode"
-        @select="$emit('select-task', $event)"
+        @select="$emit('select-task', String($event))"
       >
         <template #subtasks="{ subtasks, displayMode }">
           <SubtaskTable
@@ -206,6 +178,9 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import type { Task, TaskStatus, TaskType, TaskPriority } from '../../types'
+import { taskApi } from '../../connections/task_apis'
+import TaskAddArea from './TaskAddArea.vue'
+import SettingsPanel from './SettingsPanel.vue'
 import TaskCard from './TaskCard.vue'
 import SubtaskCard from './SubtaskCard.vue'
 import SubtaskTable from './SubtaskTable.vue'
@@ -215,12 +190,13 @@ import TreeLayout from './TreeLayout.vue'
 import SubtaskModal from './SubtaskModal.vue'
 
 const props = defineProps<{
-  selectedTaskId?: number | null
+  selectedTaskId?: string | null
   tasks: Task[]
   statuses: TaskStatus[]
   types: TaskType[]
   priorities: TaskPriority[]
   currentDate: string | null
+  isDirty: boolean
   config?: {
     fontSize?: string
     dragMode?: 'insert' | 'swap'
@@ -229,51 +205,52 @@ const props = defineProps<{
 }>()
 
 const emit = defineEmits<{
-  dirty: []
-  'select-task': [taskId: number | null]
+  'update:isDirty': [value: boolean]
+  'select-task': [taskId: string | null]
 }>()
 
 // 本地状态
-const newTaskTitle = ref('')
-const fontSize = ref(props.config?.fontSize || 'medium')
-const dragMode = ref<'insert' | 'swap'>(props.config?.dragMode || 'insert')
-const layoutMode = ref<'masonry' | 'list' | 'tree'>(props.config?.layoutMode || 'masonry')
 
 // 子任务显示模式
-const subtaskDisplayMode = ref<Record<number, 'card' | 'table'>>({})
+const subtaskDisplayMode = ref<Record<string, 'card' | 'table'>>({})
 
 // 子任务模态窗口
 const showSubtaskModal = ref(false)
 const currentParentTask = ref<Task | null>(null)
 
-// 添加任务
-const handleAddTask = () => {
-  if (!newTaskTitle.value.trim()) return
-  if (!props.currentDate) return
-  
-  const newTask: Task = {
-    id: Date.now() + Math.random() * 10000,
-    title: newTaskTitle.value.trim(),
-    statusId: props.statuses[0].id,
-    typeId: "",
-    priorityId: "",
-    dueDate: undefined
+
+// 处理任务添加
+const handleTaskAdded = async (newTask: Task) => {
+  try {
+    const updatedTasks = await taskApi.addTask(props.currentDate || '', newTask)
+    // 更新本地任务列表
+    props.tasks.length = 0
+    props.tasks.push(...updatedTasks)
+  } catch (error) {
+    console.error('添加任务失败:', error)
   }
-  
-  // 直接修改 props.tasks（因为它是响应式的）
-  props.tasks.push(newTask)
-  emit('dirty')
-  newTaskTitle.value = ''
 }
 
+// 处理配置更新
+const handleConfigUpdate = (newConfig: any) => {
+  // 更新本地配置状态
+  fontSize.value = newConfig.fontSize
+  dragMode.value = newConfig.dragMode
+  layoutMode.value = newConfig.layoutMode
+}
+const fontSize = ref(props.config?.fontSize || 'medium')
+const dragMode = ref<'insert' | 'swap'>(props.config?.dragMode || 'insert')
+const layoutMode = ref<'masonry' | 'list' | 'tree'>(props.config?.layoutMode || 'masonry')
+
+
 // 切换子任务显示模式
-const toggleSubtaskDisplayMode = (taskId: number) => {
+const toggleSubtaskDisplayMode = (taskId: string) => {
   const currentMode = subtaskDisplayMode.value[taskId] || 'card'
   subtaskDisplayMode.value[taskId] = currentMode === 'card' ? 'table' : 'card'
 }
 
 // 获取子任务显示模式
-const getSubtaskDisplayMode = (taskId: number): 'card' | 'table' => {
+const getSubtaskDisplayMode = (taskId: string): 'card' | 'table' => {
   return subtaskDisplayMode.value[taskId] || 'card'
 }
 
@@ -302,8 +279,8 @@ const addSubtask = (newSubtask: Task) => {
   closeSubtaskModal()
 }
 
-const handleDeleteSubtask = (parentId: number, subtaskId: number) => {
-  const parentTask = props.tasks.find(t => t.id === parentId)
+const handleDeleteSubtask = (parentId: string, subtaskId: string) => {
+  const parentTask = props.tasks.find(t => String(t.id) === String(parentId))
   if (!parentTask) return
 
   const updatedTask = {
@@ -315,27 +292,41 @@ const handleDeleteSubtask = (parentId: number, subtaskId: number) => {
 }
 
 // 更新任务
-const handleUpdateTask = (updatedTask: Task) => {
-  const taskIndex = props.tasks.findIndex(t => t.id === updatedTask.id)
-  if (taskIndex !== -1) {
-    props.tasks[taskIndex] = updatedTask
-    emit('dirty')
+const handleUpdateTask = async (updatedTask: Task) => {
+  try {
+    const updatedTasks = await taskApi.updateTask(props.currentDate || '', updatedTask)
+    if (updatedTasks) {
+      props.tasks.length = 0
+      props.tasks.push(...updatedTasks)
+    }
+  } catch (error) {
+    console.error('更新任务失败:', error)
   }
 }
 
 // 删除任务
-const handleDeleteTask = (taskId: number) => {
-  const index = props.tasks.findIndex(t => t.id === taskId)
-  if (index !== -1) {
-    props.tasks.splice(index, 1)
-    emit('dirty')
+const handleDeleteTask = async (taskId: string) => {
+  try {
+    const updatedTasks = await taskApi.deleteTask(props.currentDate || '', taskId)
+    if (updatedTasks) {
+      props.tasks.length = 0
+      props.tasks.push(...updatedTasks)
+    }
+  } catch (error) {
+    console.error('删除任务失败:', error)
   }
 }
 
 // 重排序任务
-const handleReorderTasks = (reorderedTasks: Task[]) => {
-  props.tasks.length = 0
-  props.tasks.push(...reorderedTasks)
-  emit('dirty')
+const handleReorderTasks = async (reorderedTasks: Task[]) => {
+  try {
+    const updatedTasks = await taskApi.reorderTasks(props.currentDate || '', reorderedTasks)
+    if (updatedTasks) {
+      props.tasks.length = 0
+      props.tasks.push(...updatedTasks)
+    }
+  } catch (error) {
+    console.error('重排序任务失败:', error)
+  }
 }
 </script>

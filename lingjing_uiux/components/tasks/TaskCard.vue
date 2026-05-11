@@ -58,9 +58,9 @@
           <label class="meta-label">📌 状态:</label>
           <select 
             class="meta-select"
-            :value="task.statusId"
-            @change="$emit('update', { ...task, statusId: ($event.target as HTMLSelectElement).value })"
-            :disabled="task.statusId === 'st_closed' && !canCloseTask"
+            :value="task.status_id"
+            @change="$emit('update', { ...task, status_id: ($event.target as HTMLSelectElement).value })"
+            :disabled="task.status_id === 'st_closed' && !canCloseTask"
           >
             <option v-for="status in statuses" :key="status.id" :value="status.id">{{ status.emoji }} {{ status.name }}
             </option>
@@ -70,8 +70,8 @@
           <label class="meta-label">🏷️ 类型:</label>
           <select 
             class="meta-select"
-            :value="task.typeId"
-            @change="$emit('update', { ...task, typeId: ($event.target as HTMLSelectElement).value })"
+            :value="task.type_id"
+            @change="$emit('update', { ...task, type_id: ($event.target as HTMLSelectElement).value })"
           >
             <option v-for="type in types" :key="type.id" :value="type.id">{{ type.emoji }} {{ type.name }}
             </option>
@@ -81,8 +81,8 @@
           <label class="meta-label">📁 优先级:</label>
           <select 
             class="meta-select"
-            :value="task.priorityId"
-            @change="$emit('update', { ...task, priorityId: ($event.target as HTMLSelectElement).value })"
+            :value="task.priority_id"
+            @change="$emit('update', { ...task, priority_id: ($event.target as HTMLSelectElement).value })"
           >
             <option v-for="priority in priorities" :key="priority.id" :value="priority.id">{{ priority.emoji }} {{ priority.name }}
             </option>
@@ -93,8 +93,8 @@
           <input 
             type="date"
             class="meta-select"
-            :value="task.dueDate"
-            @change="$emit('update', { ...task, dueDate: ($event.target as HTMLInputElement).value })"
+            :value="task.due_date"
+            @change="$emit('update', { ...task, due_date: ($event.target as HTMLInputElement).value })"
           />
         </div>
       </div>
@@ -120,15 +120,15 @@ const props = defineProps<{
   types: TaskType[]
   priorities: TaskPriority[]
   subtaskDisplayMode: 'card' | 'table'
-  selectedTaskId?: number | null
+  selectedTaskId?: string | null
 }>()
 
 const emit = defineEmits<{
   update: [task: Task]
-  delete: [taskId: number]
+  delete: [taskId: string]
   'add-subtask': [task: Task]
-  'toggle-subtask-mode': [taskId: number]
-  select: [taskId: number | null]
+  'toggle-subtask-mode': [taskId: string]
+  select: [taskId: string | null]
 }>()
 
 import type { Task, TaskStatus, TaskType, TaskPriority } from '../../types'
@@ -140,7 +140,7 @@ const canCloseTask = computed(() => {
     return true
   }
   return props.task.subtasks.every(subtask => 
-    subtask.statusId === 'st_done' || subtask.statusId === 'st_closed'
+    subtask.status_id === 'st_done' || subtask.status_id === 'st_closed'
   )
 })
 

@@ -44,8 +44,8 @@
           <td>
             <select 
               class="inline-select"
-              :value="subtask.statusId"
-              @change="$emit('update', { ...subtask, statusId: ($event.target as HTMLSelectElement).value })"
+              :value="subtask.status_id"
+              @change="$emit('update', { ...subtask, status_id: ($event.target as HTMLSelectElement).value })"
             >
               <option v-for="status in statuses" :key="status.id" :value="status.id">
                 {{ status.emoji }} {{ status.name }}
@@ -55,8 +55,8 @@
           <td>
             <select 
               class="inline-select"
-              :value="subtask.typeId"
-              @change="$emit('update', { ...subtask, typeId: ($event.target as HTMLSelectElement).value })"
+              :value="subtask.type_id"
+              @change="$emit('update', { ...subtask, type_id: ($event.target as HTMLSelectElement).value })"
             >
               <option v-for="type in types" :key="type.id" :value="type.id">
                 {{ type.emoji }} {{ type.name }}
@@ -66,8 +66,8 @@
           <td>
             <select 
               class="inline-select"
-              :value="subtask.priorityId"
-              @change="$emit('update', { ...subtask, priorityId: ($event.target as HTMLSelectElement).value })"
+              :value="subtask.priority_id"
+              @change="$emit('update', { ...subtask, priority_id: ($event.target as HTMLSelectElement).value })"
             >
               <option v-for="priority in priorities" :key="priority.id" :value="priority.id">
                 {{ priority.emoji }} {{ priority.name }}
@@ -114,7 +114,7 @@ defineProps<{
 
 const emit = defineEmits<{
   (e: 'update', task: Task): void
-  (e: 'delete', taskId: number): void
+  (e: 'delete', taskId: string): void
 }>()
 
 // 处理标题输入
