@@ -46,7 +46,7 @@
       v-if="layoutMode === 'masonry' && tasks.length > 0"
       :tasks="tasks"
       :drag-mode="dragMode"
-      @reorder="$emit('reorderTasks', $event)"
+      @reorder="handleReorderTasks($event)"
     >
       <TaskCard
         v-for="task in tasks"
@@ -57,8 +57,8 @@
         :priorities="priorities"
         :subtask-display-mode="getSubtaskDisplayMode(task.id)"
         :selected-task-id="selectedTaskId"
-        @update="$emit('updateTask', $event)"
-        @delete="$emit('deleteTask', $event)"
+        @update="handleUpdateTask($event)"
+        @delete="handleDeleteTask($event)"
         @add-subtask="openSubtaskModal"
         @toggle-subtask-mode="toggleSubtaskDisplayMode"
         @select="$emit('select-task', $event)"
@@ -70,7 +70,7 @@
             :statuses="statuses"
             :types="types"
             :priorities="priorities"
-            @update="$emit('updateTask', $event)"
+            @update="handleUpdateTask($event)"
             @delete="handleDeleteSubtask(task.id, $event)"
           />
           <div v-else class="subtasks-list">
@@ -81,7 +81,7 @@
               :statuses="statuses"
               :types="types"
               :priorities="priorities"
-              @update="$emit('updateTask', $event)"
+              @update="handleUpdateTask($event)"
               @delete="handleDeleteSubtask(task.id, $event)"
             />
           </div>
@@ -93,7 +93,7 @@
       v-if="layoutMode === 'list' && tasks.length > 0"
       :tasks="tasks"
       :drag-mode="dragMode"
-      @reorder="$emit('reorderTasks', $event)"
+      @reorder="handleReorderTasks($event)"
     >
       <TaskCard
         v-for="task in tasks"
@@ -104,8 +104,8 @@
         :priorities="priorities"
         :subtask-display-mode="getSubtaskDisplayMode(task.id)"
         :selected-task-id="selectedTaskId"
-        @update="$emit('updateTask', $event)"
-        @delete="$emit('deleteTask', $event)"
+        @update="handleUpdateTask($event)"
+        @delete="handleDeleteTask($event)"
         @add-subtask="openSubtaskModal"
         @toggle-subtask-mode="toggleSubtaskDisplayMode"
         @select="$emit('select-task', $event)"
@@ -117,7 +117,7 @@
             :statuses="statuses"
             :types="types"
             :priorities="priorities"
-            @update="$emit('updateTask', $event)"
+            @update="handleUpdateTask($event)"
             @delete="handleDeleteSubtask(task.id, $event)"
           />
           <div v-else class="subtasks-list">
@@ -128,7 +128,7 @@
               :statuses="statuses"
               :types="types"
               :priorities="priorities"
-              @update="$emit('updateTask', $event)"
+              @update="handleUpdateTask($event)"
               @delete="handleDeleteSubtask(task.id, $event)"
             />
           </div>
@@ -140,7 +140,7 @@
       v-if="layoutMode === 'tree' && tasks.length > 0"
       :tasks="tasks"
       :drag-mode="dragMode"
-      @reorder="$emit('reorderTasks', $event)"
+      @reorder="handleReorderTasks($event)"
     >
       <TaskCard
         v-for="task in tasks"
@@ -151,8 +151,8 @@
         :priorities="priorities"
         :subtask-display-mode="getSubtaskDisplayMode(task.id)"
         :selected-task-id="selectedTaskId"
-        @update="$emit('updateTask', $event)"
-        @delete="$emit('deleteTask', $event)"
+        @update="handleUpdateTask($event)"
+        @delete="handleDeleteTask($event)"
         @add-subtask="openSubtaskModal"
         @toggle-subtask-mode="toggleSubtaskDisplayMode"
         @select="$emit('select-task', $event)"
@@ -164,7 +164,7 @@
             :statuses="statuses"
             :types="types"
             :priorities="priorities"
-            @update="$emit('updateTask', $event)"
+            @update="handleUpdateTask($event)"
             @delete="handleDeleteSubtask(task.id, $event)"
           />
           <div v-else class="subtasks-list">
@@ -175,7 +175,7 @@
               :statuses="statuses"
               :types="types"
               :priorities="priorities"
-              @update="$emit('updateTask', $event)"
+              @update="handleUpdateTask($event)"
               @delete="handleDeleteSubtask(task.id, $event)"
             />
           </div>
@@ -220,6 +220,7 @@ const props = defineProps<{
   statuses: TaskStatus[]
   types: TaskType[]
   priorities: TaskPriority[]
+  currentDate: string | null
   config?: {
     fontSize?: string
     dragMode?: 'insert' | 'swap'
@@ -228,10 +229,7 @@ const props = defineProps<{
 }>()
 
 const emit = defineEmits<{
-  addTask: [title: string]
-  updateTask: [task: Task]
-  deleteTask: [taskId: number]
-  reorderTasks: [tasks: Task[]]
+  dirty: []
   'select-task': [taskId: number | null]
 }>()
 
@@ -251,7 +249,20 @@ const currentParentTask = ref<Task | null>(null)
 // 添加任务
 const handleAddTask = () => {
   if (!newTaskTitle.value.trim()) return
-  emit('addTask', newTaskTitle.value.trim())
+  if (!props.currentDate) return
+  
+  const newTask: Task = {
+    id: Date.now() + Math.random() * 10000,
+    title: newTaskTitle.value.trim(),
+    statusId: props.statuses[0].id,
+    typeId: "",
+    priorityId: "",
+    dueDate: undefined
+  }
+  
+  // 直接修改 props.tasks（因为它是响应式的）
+  props.tasks.push(newTask)
+  emit('dirty')
   newTaskTitle.value = ''
 }
 
@@ -287,7 +298,7 @@ const addSubtask = (newSubtask: Task) => {
     subtasks: [...(currentParentTask.value.subtasks || []), newSubtask]
   }
 
-  emit('updateTask', updatedTask)
+  handleUpdateTask(updatedTask)
   closeSubtaskModal()
 }
 
@@ -300,6 +311,31 @@ const handleDeleteSubtask = (parentId: number, subtaskId: number) => {
     subtasks: parentTask.subtasks?.filter(s => s.id !== subtaskId) || []
   }
 
-  emit('updateTask', updatedTask)
+  handleUpdateTask(updatedTask)
+}
+
+// 更新任务
+const handleUpdateTask = (updatedTask: Task) => {
+  const taskIndex = props.tasks.findIndex(t => t.id === updatedTask.id)
+  if (taskIndex !== -1) {
+    props.tasks[taskIndex] = updatedTask
+    emit('dirty')
+  }
+}
+
+// 删除任务
+const handleDeleteTask = (taskId: number) => {
+  const index = props.tasks.findIndex(t => t.id === taskId)
+  if (index !== -1) {
+    props.tasks.splice(index, 1)
+    emit('dirty')
+  }
+}
+
+// 重排序任务
+const handleReorderTasks = (reorderedTasks: Task[]) => {
+  props.tasks.length = 0
+  props.tasks.push(...reorderedTasks)
+  emit('dirty')
 }
 </script>
