@@ -1,12 +1,6 @@
 <template>
   <div class="subtasks-list table-mode">
-    <div class="table-options">
-      <label class="wrap-toggle">
-        <input type="checkbox" v-model="autoWrap" />
-        自动换行
-      </label>
-    </div>
-    <table class="subtask-table" :class="{ 'auto-wrap': autoWrap }">
+    <table class="subtask-table auto-wrap" >
       <colgroup>
         <col style="width: 40px">
         <col style="width: 40px">
@@ -43,7 +37,7 @@
                 type="text"
                 class="inline-input"
                 :value="subtask.title"
-                @change="$emit('update', { ...subtask, title: ($event.target as HTMLInputElement).value })"
+                @input="handleTitleInput(subtask, ($event.target as HTMLInputElement).value)"
               />
             </div>
           </td>
@@ -87,7 +81,7 @@
                 class="inline-input"
                 placeholder="添加备注..."
                 :value="subtask.remark || ''"
-                @change="$emit('update', { ...subtask, remark: ($event.target as HTMLInputElement).value })"
+                @input="handleRemarkInput(subtask, ($event.target as HTMLInputElement).value)"
               />
             </div>
           </td>
@@ -108,7 +102,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+
 import type { Task, Status, Type, Priority } from '../../types'
 
 defineProps<{
@@ -118,10 +112,19 @@ defineProps<{
   priorities: Priority[]
 }>()
 
-defineEmits<{
-  update: [task: Task]
-  delete: [taskId: number]
+const emit = defineEmits<{
+  (e: 'update', task: Task): void
+  (e: 'delete', taskId: number): void
 }>()
 
-const autoWrap = ref(true)
+// 处理标题输入
+const handleTitleInput = (subtask: Task, value: string) => {
+  emit('update', { ...subtask, title: value })
+}
+
+// 处理备注输入
+const handleRemarkInput = (subtask: Task, value: string) => {
+  emit('update', { ...subtask, remark: value })
+}
+
 </script>

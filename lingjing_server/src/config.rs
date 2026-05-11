@@ -3,6 +3,7 @@ use serde::{Deserialize, Serialize};
 use std::fs;
 use std::path::PathBuf;
 use std::sync::Mutex;
+use log::info;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Status {
@@ -56,6 +57,7 @@ impl Default for Config {
                 Status { id: "st_doing".to_string(), name: "进行中".to_string(), color: "#f59e0b".to_string(), emoji: "⚡".to_string() },
                 Status { id: "st_done".to_string(), name: "已完成".to_string(), color: "#3b82f6".to_string(), emoji: "✅".to_string() },
                 Status { id: "st_delay".to_string(), name: "已延期".to_string(), color: "#dc2626".to_string(), emoji: "⏰".to_string() },
+                Status { id: "st_closed".to_string(), name: "已关闭".to_string(), color: "#9ca3af".to_string(), emoji: "🔒".to_string() },
             ],
             types: vec![
                 Type { id: "ty_work".to_string(), name: "工作".to_string(), color: "#0d6efd".to_string(), emoji: "💼".to_string() },
@@ -63,12 +65,12 @@ impl Default for Config {
                 Type { id: "ty_life".to_string(), name: "生活".to_string(), color: "#20c997".to_string(), emoji: "🏠".to_string() },
             ],
             priorities: vec![
-                Priority { id: "p0".to_string(), name: "最高优先级".to_string(), color: "#e74c3c".to_string(), emoji: "🔥".to_string() },
-                Priority { id: "p1".to_string(), name: "非常紧急".to_string(), color: "#e67e22".to_string(), emoji: "⚠️".to_string() },
-                Priority { id: "p2".to_string(), name: "紧急".to_string(), color: "#f39c12".to_string(), emoji: "🔶".to_string() },
-                Priority { id: "p3".to_string(), name: "重要".to_string(), color: "#3498db".to_string(), emoji: "💎".to_string() },
-                Priority { id: "p4".to_string(), name: "中等".to_string(), color: "#2ecc71".to_string(), emoji: "📊".to_string() },
-                Priority { id: "p5".to_string(), name: "一般".to_string(), color: "#95a5a6".to_string(), emoji: "📝".to_string() },
+                Priority { id: "p0".to_string(), name: "P0 - 致命".to_string(), color: "#e74c3c".to_string(), emoji: "🚨".to_string() },
+                Priority { id: "p1".to_string(), name: "P1 - 紧急".to_string(), color: "#e67e22".to_string(), emoji: "🔥".to_string() },
+                Priority { id: "p2".to_string(), name: "P2 - 高".to_string(), color: "#f39c12".to_string(), emoji: "🔴".to_string() },
+                Priority { id: "p3".to_string(), name: "P3 - 中".to_string(), color: "#3498db".to_string(), emoji: "🟡".to_string() },
+                Priority { id: "p4".to_string(), name: "P4 - 低".to_string(), color: "#2ecc71".to_string(), emoji: "🟢".to_string() },
+                Priority { id: "p5".to_string(), name: "P5 - N".to_string(), color: "#95a5a6".to_string(), emoji: "⚪".to_string() },
                 Priority { id: "p6".to_string(), name: "不紧急".to_string(), color: "#bdc3c7".to_string(), emoji: "💤".to_string() },
             ],
             themes: vec![
@@ -118,25 +120,16 @@ impl ConfigState {
 #[tauri::command]
 pub fn get_statuses(state: tauri::State<ConfigState>) -> Vec<Status> {
     let config = state.config.lock().unwrap();
-    config.statuses.clone()
-}
-
-#[tauri::command]
-pub fn add_status(state: tauri::State<ConfigState>, status: Status) -> Vec<Status> {
-    let mut config = state.config.lock().unwrap();
-    config.statuses.push(status);
     let result = config.statuses.clone();
-    drop(config);
-    state.save();
+    info!("获取状态列表: {} 个状态", result.len());
     result
 }
 
 #[tauri::command]
-pub fn update_status(state: tauri::State<ConfigState>, status: Status) -> Vec<Status> {
+pub fn update_statuses(state: tauri::State<ConfigState>, statuses: Vec<Status>) -> Vec<Status> {
     let mut config = state.config.lock().unwrap();
-    if let Some(pos) = config.statuses.iter().position(|s| s.id == status.id) {
-        config.statuses[pos] = status;
-    }
+    info!("全量更新状态列表: {} 个状态", statuses.len());
+    config.statuses = statuses;
     let result = config.statuses.clone();
     drop(config);
     state.save();
@@ -146,6 +139,7 @@ pub fn update_status(state: tauri::State<ConfigState>, status: Status) -> Vec<St
 #[tauri::command]
 pub fn delete_status(state: tauri::State<ConfigState>, id: String) -> Vec<Status> {
     let mut config = state.config.lock().unwrap();
+    info!("删除状态: {}", id);
     config.statuses.retain(|s| s.id != id);
     let result = config.statuses.clone();
     drop(config);
@@ -160,21 +154,10 @@ pub fn get_types(state: tauri::State<ConfigState>) -> Vec<Type> {
 }
 
 #[tauri::command]
-pub fn add_type(state: tauri::State<ConfigState>, type_item: Type) -> Vec<Type> {
+pub fn update_types(state: tauri::State<ConfigState>, types: Vec<Type>) -> Vec<Type> {
     let mut config = state.config.lock().unwrap();
-    config.types.push(type_item);
-    let result = config.types.clone();
-    drop(config);
-    state.save();
-    result
-}
-
-#[tauri::command]
-pub fn update_type(state: tauri::State<ConfigState>, type_item: Type) -> Vec<Type> {
-    let mut config = state.config.lock().unwrap();
-    if let Some(pos) = config.types.iter().position(|t| t.id == type_item.id) {
-        config.types[pos] = type_item;
-    }
+    info!("全量更新类型列表: {} 个类型", types.len());
+    config.types = types;
     let result = config.types.clone();
     drop(config);
     state.save();
@@ -184,35 +167,26 @@ pub fn update_type(state: tauri::State<ConfigState>, type_item: Type) -> Vec<Typ
 #[tauri::command]
 pub fn delete_type(state: tauri::State<ConfigState>, id: String) -> Vec<Type> {
     let mut config = state.config.lock().unwrap();
+    info!("删除类型: {}", id);
     config.types.retain(|t| t.id != id);
     let result = config.types.clone();
     drop(config);
     state.save();
     result
 }
-
 #[tauri::command]
 pub fn get_priorities(state: tauri::State<ConfigState>) -> Vec<Priority> {
     let config = state.config.lock().unwrap();
-    config.priorities.clone()
-}
-
-#[tauri::command]
-pub fn add_priority(state: tauri::State<ConfigState>, priority: Priority) -> Vec<Priority> {
-    let mut config = state.config.lock().unwrap();
-    config.priorities.push(priority);
     let result = config.priorities.clone();
-    drop(config);
-    state.save();
+    info!("获取优先级列表: {} 个优先级", result.len());
     result
 }
 
 #[tauri::command]
-pub fn update_priority(state: tauri::State<ConfigState>, priority: Priority) -> Vec<Priority> {
+pub fn update_priorities(state: tauri::State<ConfigState>, priorities: Vec<Priority>) -> Vec<Priority> {
     let mut config = state.config.lock().unwrap();
-    if let Some(pos) = config.priorities.iter().position(|p| p.id == priority.id) {
-        config.priorities[pos] = priority;
-    }
+    info!("全量更新优先级列表: {} 个优先级", priorities.len());
+    config.priorities = priorities;
     let result = config.priorities.clone();
     drop(config);
     state.save();
@@ -222,13 +196,13 @@ pub fn update_priority(state: tauri::State<ConfigState>, priority: Priority) -> 
 #[tauri::command]
 pub fn delete_priority(state: tauri::State<ConfigState>, id: String) -> Vec<Priority> {
     let mut config = state.config.lock().unwrap();
+    info!("删除优先级: {}", id);
     config.priorities.retain(|p| p.id != id);
     let result = config.priorities.clone();
     drop(config);
     state.save();
     result
 }
-
 #[tauri::command]
 pub fn get_themes(state: tauri::State<ConfigState>) -> Vec<Theme> {
     let config = state.config.lock().unwrap();

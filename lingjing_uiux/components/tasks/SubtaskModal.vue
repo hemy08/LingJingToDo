@@ -4,7 +4,7 @@
       <h3><i class="fas fa-plus-circle"></i> 添加子任务</h3>
       <div class="form-group">
         <label class="form-label">标题:</label>
-        <input v-model="formData.title" class="form-input" placeholder="输入子任务标题" />
+        <input v-model="formData.title" class="form-input" placeholder="输入子任务标题，回车键添加..." @keyup.enter="handleSubmit" />
       </div>
       <div class="form-group">
         <label class="form-label">📌 状态:</label>

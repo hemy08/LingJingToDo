@@ -1,38 +1,46 @@
 <script setup lang="ts">
 
-
 // 选中的任务ID
 const selectedTaskId = ref<number | null>(null)
 
 // 可用的emoji列表
-const availableEmojis = ['📋', '📌', '✅', '⏰', '🚀', '⚡', '💼', '📚', '🏠', '🔥']
 import { ref, reactive, onMounted } from 'vue'
 import CalendarPanel from './components/calendar/CalendarPanel.vue'
 import TaskPanel from './components/tasks/TaskPanel.vue'
-import ConfigManager from './components/config/ConfigManager.vue'
+import StatusModal from './components/config/StatusModal.vue'
+import TypeModal from './components/config/TypeModal.vue'
+import PriorityModal from './components/config/PriorityModal.vue'
+import {invoke} from "@tauri-apps/api/core";
+import type { Status, Type, Priority } from './types'
 
-const config = reactive({
-  statuses: [
-    { id: "st_default", name: "待规划", color: "#6c757d", emoji: "📋" },
-    { id: "st_start", name: "已启动", color: "#2b8c5e", emoji: "🚀" },
-    { id: "st_doing", name: "进行中", color: "#f59e0b", emoji: "⚡" },
-    { id: "st_done", name: "已完成", color: "#3b82f6", emoji: "✅" },
-    { id: "st_delay", name: "已延期", color: "#dc2626", emoji: "⏰" }
-  ],
-  types: [
-    { id: "ty_work", name: "工作", color: "#0d6efd", emoji: "💼" },
-    { id: "ty_study", name: "学习", color: "#6f42c1", emoji: "📚" },
-    { id: "ty_life", name: "生活", color: "#20c997", emoji: "🏠" }
-  ],
-  priorities: [
-    { id: "p0", name: "最高优先级", color: "#e74c3c", emoji: "🔥" },
-    { id: "p1", name: "非常紧急", color: "#e67e22", emoji: "⚠️" },
-    { id: "p2", name: "紧急", color: "#f39c12", emoji: "🔶" },
-    { id: "p3", name: "重要", color: "#3498db", emoji: "💎" },
-    { id: "p4", name: "中等", color: "#2ecc71", emoji: "📊" },
-    { id: "p5", name: "一般", color: "#95a5a6", emoji: "📝" },
-    { id: "p6", name: "不紧急", color: "#bdc3c7", emoji: "💤" }
-  ]
+
+async function LingJing_GetStatus(): Promise<Status[]> {
+  const result = await invoke<Status[]>('get_statuses')
+  console.log('result', result)
+  return result
+}
+
+async function LingJing_GetTypes(): Promise<Type[]> {
+  const result = await invoke<Type[]>('get_types')
+  console.log('result', result)
+  return result
+}
+
+
+async function LingJing_GetPriorities(): Promise<Priority[]> {
+  const result = await invoke<Priority[]>('get_priorities')
+  console.log('result', result)
+  return result
+}
+
+const config = reactive<{
+  statuses: Status[]
+  types: Type[]
+  priorities: Priority[]
+}>({
+  statuses: [],
+  types: [],
+  priorities: [],
 })
 
 const themes = [
@@ -58,9 +66,6 @@ const showPriorityModal = ref(false)
 const showThemeModal = ref(false)
 const showExportModal = ref(false)
 const exportFileName = ref('')
-const newStatusName = ref('')
-const newTypeName = ref('')
-const newPriorityName = ref('')
 
 const getTodayStr = () => {
   const d = new Date()
@@ -82,69 +87,19 @@ const applyTheme = (theme: string) => {
   localStorage.setItem('selected_theme', theme)
 }
 
-const addStatus = () => {
-  if (!newStatusName.value.trim()) return
-  if (config.statuses.some(s => s.name === newStatusName.value.trim())) {
-    alert('状态已存在')
-    return
-  }
-  config.statuses.push({ id: `st_custom_${Date.now()}`, name: newStatusName.value.trim(), color: "#a0aec0", emoji: "📌" })
-  newStatusName.value = ''
-  markDirty()
+const handleStatusUpdated = (statuses: any) => {
+  config.statuses = statuses
+}
+const handleTypeUpdated = (types: any) => {
+  config.types = types
 }
 
-const addType = () => {
-  if (!newTypeName.value.trim()) return
-  if (config.types.some(t => t.name === newTypeName.value.trim())) {
-    alert('类型已存在')
-    return
-  }
-  config.types.push({ id: `ty_custom_${Date.now()}`, name: newTypeName.value.trim(), color: "#a0aec0", emoji: "📁" })
-  newTypeName.value = ''
-  markDirty()
-}
-
-const addPriority = () => {
-  if (!newPriorityName.value.trim()) return
-  if (config.priorities.some(p => p.name === newPriorityName.value.trim())) {
-    alert('优先级已存在')
-    return
-  }
-  config.priorities.push({ id: `p_custom_${Date.now()}`, name: newPriorityName.value.trim(), color: "#a0aec0", emoji: "🎯" })
-  newPriorityName.value = ''
-  markDirty()
-}
-
-const deleteStatus = (id: string) => {
-  if (config.statuses.length <= 1) {
-    alert('至少保留一个状态')
-    return
-  }
-  if (confirm('确定删除该状态吗?')) {
-    config.statuses = config.statuses.filter(s => s.id !== id)
-    markDirty()
-  }
-}
-
-const deleteType = (id: string) => {
-  if (confirm('确定删除该类型吗?')) {
-    config.types = config.types.filter(t => t.id !== id)
-    markDirty()
-  }
-}
-
-const deletePriority = (id: string) => {
-  if (config.priorities.length <= 1) {
-    alert('至少保留一个优先级')
-    return
-  }
-  if (confirm('确定删除该优先级吗?')) {
-    config.priorities = config.priorities.filter(p => p.id !== id)
-    markDirty()
-  }
+const handlePriorityUpdated = (priorities: any) => {
+  config.priorities = priorities
 }
 
 const handleDateChange = (date: string) => {
+  // 切换到新日期
   currentDate.value = date
   ensureDate(date)
 }
@@ -205,7 +160,12 @@ const importExcel = () => {
   input.click()
 }
 
-onMounted(() => {
+onMounted(async () => {
+  // 从后端获取状态、类型、优先级数据
+  config.statuses = await LingJing_GetStatus()
+  config.types = await LingJing_GetTypes()
+  config.priorities = await LingJing_GetPriorities()
+
   const savedTheme = localStorage.getItem('selected_theme') || 'light'
   applyTheme(savedTheme)
   currentDate.value = getTodayStr()
@@ -217,6 +177,8 @@ onMounted(() => {
     })
   }
 })
+
+
 </script>
 
 <template>
@@ -280,7 +242,6 @@ onMounted(() => {
       @select-task="selectedTaskId = $event"
     />
     </div>
-    <ConfigManager />
 
     <!-- 主题模态框 -->
     <div v-if="showThemeModal" class="modal" @click.self="showThemeModal = false">
@@ -304,86 +265,24 @@ onMounted(() => {
     </div>
 
     <!-- 状态模态框 -->
-    <div v-if="showStatusModal" class="modal" @click.self="showStatusModal = false">
-      <div class="modal-content">
-        <h3><i class="fas fa-tags"></i> 自定义状态</h3>
-        <div class="config-list">
-          <div v-for="status in config.statuses" :key="status.id" class="config-card">
-            <div class="card-left">
-              <select v-model="status.emoji" class="emoji-select">
-                <option v-for="emoji in availableEmojis" :key="emoji" :value="emoji">{{ emoji }}</option>
-              </select>
-              <input 
-                v-model="status.name" 
-                class="config-input" 
-                placeholder="状态名称"
-              />
-            </div>
-            <button class="card-delete-btn" @click="deleteStatus(status.id)"><i class="fas fa-trash-alt"></i> 删除</button>
-          </div>
-        </div>
-        <div class="add-config">
-          <input v-model="newStatusName" type="text" placeholder="新状态名称" @keypress.enter="addStatus">
-          <button class="btn-sm btn-primary" @click="addStatus">添加</button>
-        </div>
-        <div class="modal-buttons"><button class="btn-sm" @click="showStatusModal = false">关闭</button></div>
-      </div>
-    </div>
+    <StatusModal 
+      v-model:visible="showStatusModal" 
+      :statuses="config.statuses" 
+      @updated="handleStatusUpdated" 
+    />
 
     <!-- 类型模态框 -->
-    <div v-if="showTypeModal" class="modal" @click.self="showTypeModal = false">
-      <div class="modal-content">
-        <h3><i class="fas fa-layer-group"></i> 自定义类型</h3>
-        <div class="config-list">
-          <div v-for="type in config.types" :key="type.id" class="config-card">
-            <div class="card-left">
-              <select v-model="status.emoji" class="emoji-select">
-                <option v-for="emoji in availableEmojis" :key="emoji" :value="emoji">{{ emoji }}</option>
-              </select>
-              <input 
-                v-model="type.name" 
-                class="config-input" 
-                placeholder="类型名称"
-              />
-            </div>
-            <button class="card-delete-btn" @click="deleteType(type.id)"><i class="fas fa-trash-alt"></i> 删除</button>
-          </div>
-        </div>
-        <div class="add-config">
-          <input v-model="newTypeName" type="text" placeholder="新类型名称" @keypress.enter="addType">
-          <button class="btn-sm btn-primary" @click="addType">添加</button>
-        </div>
-        <div class="modal-buttons"><button class="btn-sm" @click="showTypeModal = false">关闭</button></div>
-      </div>
-    </div>
-
+    <TypeModal 
+      v-model:visible="showTypeModal" 
+      :types="config.types" 
+      @updated="handleTypeUpdated" 
+    />
     <!-- 优先级模态框 -->
-    <div v-if="showPriorityModal" class="modal" @click.self="showPriorityModal = false">
-      <div class="modal-content">
-        <h3><i class="fas fa-flag"></i> 自定义优先级</h3>
-        <div class="config-list">
-          <div v-for="priority in config.priorities" :key="priority.id" class="config-card">
-            <div class="card-left">
-              <select v-model="status.emoji" class="emoji-select">
-                <option v-for="emoji in availableEmojis" :key="emoji" :value="emoji">{{ emoji }}</option>
-              </select>
-              <input 
-                v-model="priority.name" 
-                class="config-input" 
-                placeholder="优先级名称"
-              />
-            </div>
-            <button class="card-delete-btn" @click="deletePriority(priority.id)"><i class="fas fa-trash-alt"></i> 删除</button>
-          </div>
-        </div>
-        <div class="add-config">
-          <input v-model="newPriorityName" type="text" placeholder="新优先级名称" @keypress.enter="addPriority">
-          <button class="btn-sm btn-primary" @click="addPriority">添加</button>
-        </div>
-        <div class="modal-buttons"><button class="btn-sm" @click="showPriorityModal = false">关闭</button></div>
-      </div>
-    </div>
-
+    <PriorityModal 
+      v-model:visible="showPriorityModal" 
+      :priorities="config.priorities" 
+      @updated="handlePriorityUpdated" 
+    />
     <!-- 导出模态框 -->
     <div v-if="showExportModal" class="modal" @click.self="showExportModal = false">
       <div class="modal-content">

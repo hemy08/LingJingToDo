@@ -8,8 +8,8 @@
       <h3 
           v-if="!isEditing"
           class="task-title" 
-          @dblclick.stop="startEdit"
-          title="双击编辑"
+          @click.stop="startEdit"
+          title="单击编辑"
         >{{ task.title }}</h3>
         <input
           v-else
@@ -60,6 +60,7 @@
             class="meta-select"
             :value="task.statusId"
             @change="$emit('update', { ...task, statusId: ($event.target as HTMLSelectElement).value })"
+            :disabled="task.statusId === 'st_closed' && !canCloseTask"
           >
             <option v-for="status in statuses" :key="status.id" :value="status.id">{{ status.emoji }} {{ status.name }}
             </option>
@@ -111,7 +112,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, nextTick } from 'vue'
+import { ref, nextTick, computed } from 'vue'
 
 const props = defineProps<{
   task: Task
@@ -132,6 +133,16 @@ const emit = defineEmits<{
 
 import type { Task, Status, Type, Priority } from '../../types'
 
+
+// 检查是否可以关闭任务
+const canCloseTask = computed(() => {
+  if (!props.task.subtasks || props.task.subtasks.length === 0) {
+    return true
+  }
+  return props.task.subtasks.every(subtask => 
+    subtask.statusId === 'st_done' || subtask.statusId === 'st_closed'
+  )
+})
 
 // 编辑状态
 const isEditing = ref(false)

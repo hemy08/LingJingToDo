@@ -7,8 +7,8 @@
       <h4 
           v-if="!isEditing"
           class="subtask-title" 
-          @dblclick="startEdit"
-          title="双击编辑"
+          @click="startEdit"
+          title="单击编辑"
         >{{ subtask.title }}</h4>
         <input
           v-else

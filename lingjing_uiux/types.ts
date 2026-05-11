@@ -7,6 +7,8 @@ export interface Task {
   dueDate?: string
   subtasks?: Task[]
   remark?: string
+  createdDate?: string
+  closedDate?: string
 }
 
 export interface Status {
