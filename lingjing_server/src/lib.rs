@@ -1,5 +1,6 @@
 mod config;
 mod tasks;
+mod file_ops;
 
 use config::ConfigState;
 use tasks::TaskData;
@@ -19,6 +20,7 @@ pub fn run() {
         .plugin(tauri_plugin_opener::init())
         .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_process::init())
+        .plugin(tauri_plugin_fs::init())
         .setup(|app| {
             log::info!("初始化配置状态");
             let config_state = ConfigState::new(app.handle());
@@ -58,6 +60,9 @@ pub fn run() {
             tasks::update_subtask,
             tasks::delete_subtask,
             tasks::query_tasks,
+            tasks::get_task_statistics,
+            file_ops::open_file,
+            file_ops::save_file,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

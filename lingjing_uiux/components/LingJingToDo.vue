@@ -3,7 +3,7 @@
 // 使用对话框 composable
 import {getCurrentWindow} from "@tauri-apps/api/window";
 
-const { dialogState, handleButtonClick, handleOverlayClick } = useDialog()
+const { dialogState, handleButtonClick, handleOverlayClick, showConfirmWithClose } = useDialog()
 
 // Splitter 拖动相关
 const isSplitterActive = ref(false)
@@ -34,7 +34,7 @@ const startSplitterDrag = (event: MouseEvent) => {
 // 选中的任务ID
 
 // 可用的emoji列表
-import { ref, reactive, onMounted } from 'vue'
+import { ref, reactive, onMounted, watch } from 'vue'
 import { useDialog } from '../composables/useDialog'
 import CalendarPanel from './calendar/CalendarPanel.vue'
 import TaskPanel from './tasks/TaskPanel.vue'
@@ -57,7 +57,29 @@ const maximizeWindow = async () => {
 }
 
 const closeWindow = async () => {
-  await exit(0);
+  // 如果有未保存的数据，提示用户
+  if (isDirty.value) {
+    const result = await showConfirmWithClose(
+      '数据未保存',
+      '当前有未保存的数据，请选择操作：',
+      '保存并关闭',
+      '取消',
+      '不保存关闭'
+    )
+
+    if (result === 'confirm') {
+      // 用户选择保存并关闭
+      await handleSaveFile()
+      await exit(0)
+    } else if (result === 'close') {
+      // 用户选择不保存关闭
+      await exit(0)
+    }
+    // 如果选择取消，不做任何操作
+  } else {
+    // 没有未保存的数据，直接关闭
+    await exit(0)
+  }
 }
 
 async function LingJing_GetStatus(): Promise<TaskStatus[]> {
@@ -115,8 +137,10 @@ const showThemeModal = ref(false)
 const showStatusModal = ref(false)
 const showTypeModal = ref(false)
 const showPriorityModal = ref(false)
-const showExportModal = ref(false)
-const exportFileName = ref('')
+
+// 文件操作相关
+const currentFilePath = ref<string | null>(null)
+const currentFileType = ref<string>('json')
 
 const getTodayStr = () => {
   const d = new Date()
@@ -147,27 +171,127 @@ const handleDateChange = (date: string) => {
   currentDate.value = date
 }
 
-// 获取总任务数
-const getTotalTaskCount = () => {
-  let count = 0
-  for (const date in todoData) {
-    count += todoData[date].length
+// 任务统计数据
+const taskStatistics = ref({
+  total_count: 0,
+  main_task_count: 0,
+  subtask_count: 0,
+  due_today_count: 0,
+  overdue_count: 0
+})
+
+// 获取任务统计
+const fetchTaskStatistics = async () => {
+  try {
+    const stats = await taskApi.getTaskStatistics()
+    taskStatistics.value = stats
+  } catch (error) {
+    console.error('获取任务统计失败:', error)
   }
-  return count
 }
 
-const exportExcel = () => {  exportFileName.value = `Todo_Backup_${new Date().toISOString().slice(0, 19).replace(/:/g, '-')}`
-  showExportModal.value = true
+// 监听当前日期变化，更新统计
+watch(currentDate, () => {
+  fetchTaskStatistics()
+})
+
+// 监听任务数据变化，更新统计
+watch(() => todoData, () => {
+  fetchTaskStatistics()
+}, { deep: true })
+
+// 获取文件名（从完整路径中提取）
+const getFileName = (filePath: string) => {
+  const parts = filePath.split(/[/\\]/)
+  return parts[parts.length - 1] || filePath
 }
 
-const importExcel = () => {
-  const input = document.createElement('input')
-  input.type = 'file'
-  input.accept = '.xlsx'
-  input.onchange = (e: any) => {
-    if (e.target.files[0]) console.log('Import file:', e.target.files[0].name)
+// 打开文件
+const handleOpenFile = async () => {
+  try {
+    const { open } = await import('@tauri-apps/plugin-dialog')
+    const selected = await open({
+      multiple: false,
+      filters: [
+        { name: 'JSON', extensions: ['json'] },
+        { name: 'Excel', extensions: ['xlsx', 'xls'] },
+        { name: 'XML', extensions: ['xml'] }
+      ]
+    })
+
+    if (selected) {
+      const filePath = selected as string
+      const fileType = filePath.endsWith('.json') ? 'json' :
+                       filePath.endsWith('.xlsx') || filePath.endsWith('.xls') ? 'excel' : 'xml'
+
+      try {
+        const result = await invoke('open_file', { filePath, fileType })
+        todoData.value = result as any
+        currentFilePath.value = filePath
+        currentFileType.value = fileType
+        isDirty.value = false
+        showStatus('打开成功', `文件 ${filePath} 已成功加载`, 'success')
+      } catch (error) {
+        showStatus('打开失败', `无法加载文件: ${error}`, 'error')
+      }
+    }
+  } catch (error) {
+    showStatus('打开失败', `文件选择失败: ${error}`, 'error')
   }
-  input.click()
+}
+
+// 保存文件
+const handleSaveFile = async () => {
+  if (currentFilePath.value) {
+    try {
+      await invoke('save_file', {
+        filePath: currentFilePath.value,
+        fileType: currentFileType.value,
+        data: todoData.value
+      })
+      isDirty.value = false
+      showStatus('保存成功', `文件已保存到 ${currentFilePath.value}`, 'success')
+    } catch (error) {
+      showStatus('保存失败', `无法保存文件: ${error}`, 'error')
+    }
+  } else {
+    await handleSaveAs()
+  }
+}
+
+// 另存为
+const handleSaveAs = async () => {
+  try {
+    const { save } = await import('@tauri-apps/plugin-dialog')
+    const filePath = await save({
+      filters: [
+        { name: 'JSON', extensions: ['json'] },
+        { name: 'Excel', extensions: ['xlsx'] },
+        { name: 'XML', extensions: ['xml'] }
+      ]
+    })
+
+    if (filePath) {
+      const fileType = filePath.endsWith('.json') ? 'json' :
+                       filePath.endsWith('.xlsx') ? 'excel' : 'xml'
+
+      try {
+        await invoke('save_file', {
+          filePath,
+          fileType,
+          data: todoData.value
+        })
+        currentFilePath.value = filePath
+        currentFileType.value = fileType
+        isDirty.value = false
+        showStatus('保存成功', `文件已保存到 ${filePath}`, 'success')
+      } catch (error) {
+        showStatus('保存失败', `无法保存文件: ${error}`, 'error')
+      }
+    }
+  } catch (error) {
+    showStatus('保存失败', `文件选择失败: ${error}`, 'error')
+  }
 }
 
 onMounted(async () => {
@@ -183,6 +307,9 @@ onMounted(async () => {
       due_date: "2026-05-10", description: "", useSubtasks: true, subtasks: [], checklist: [], createdAt: Date.now()
     })
   }
+
+  // 获取任务统计
+  await fetchTaskStatistics()
 })
 
 
@@ -220,6 +347,36 @@ onMounted(async () => {
       <div class="main-area">
         <div class="sidebar" :style="{ width: sidebarWidth + 'px' }">
         <CalendarPanel :current-date="currentDate" @date-change="handleDateChange" />
+
+        <!-- 任务统计 -->
+        <div class="task-statistics">
+          <div class="stat-item">
+            <i class="fas fa-list-check"></i>
+            <span class="stat-label">总任务</span>
+            <span class="stat-value">{{ taskStatistics.total_count }}</span>
+          </div>
+          <div class="stat-item">
+            <i class="fas fa-tasks"></i>
+            <span class="stat-label">主任务</span>
+            <span class="stat-value">{{ taskStatistics.main_task_count }}</span>
+          </div>
+          <div class="stat-item">
+            <i class="fas fa-sitemap"></i>
+            <span class="stat-label">子任务</span>
+            <span class="stat-value">{{ taskStatistics.subtask_count }}</span>
+          </div>
+          <div class="stat-item stat-warning" v-if="taskStatistics.due_today_count > 0">
+            <i class="fas fa-clock"></i>
+            <span class="stat-label">今天截止</span>
+            <span class="stat-value">{{ taskStatistics.due_today_count }}</span>
+          </div>
+          <div class="stat-item stat-danger" v-if="taskStatistics.overdue_count > 0">
+            <i class="fas fa-exclamation-circle"></i>
+            <span class="stat-label">已经延期</span>
+            <span class="stat-value">{{ taskStatistics.overdue_count }}</span>
+          </div>
+        </div>
+
         <div class="task-tree">
           <div class="task-tree-title"><i class="fas fa-diagram-project"></i> 任务导航树</div>
           <div class="task-tree-container">
@@ -260,8 +417,9 @@ onMounted(async () => {
             <button class="btn-sm" @click="showStatusModal = true"><i class="fas fa-tags"></i> 状态</button>
             <button class="btn-sm" @click="showTypeModal = true"><i class="fas fa-layer-group"></i> 类型</button>
             <button class="btn-sm" @click="showPriorityModal = true"><i class="fas fa-flag"></i> 优先级</button>
-            <button class="btn-sm btn-primary" @click="exportExcel"><i class="fas fa-file-excel"></i> 导出</button>
-            <button class="btn-sm btn-primary" @click="importExcel"><i class="fas fa-upload"></i> 导入</button>
+            <button class="btn-sm btn-primary" @click="handleOpenFile"><i class="fas fa-folder-open"></i> 打开</button>
+            <button class="btn-sm btn-primary" @click="handleSaveFile"><i class="fas fa-save"></i> 保存</button>
+            <button class="btn-sm btn-primary" @click="handleSaveAs"><i class="fas fa-file-export"></i> 另存为</button>
           </div>
         </div>
         <TaskPanel
@@ -281,9 +439,13 @@ onMounted(async () => {
           <i class="fas fa-calendar-alt"></i>
           <span>当前日期: {{ currentDate }}</span>
         </div>
-        <div class="status-item">
-          <i class="fas fa-tasks"></i>
-          <span>任务总数: {{ getTotalTaskCount() }}</span>
+        <div class="status-item" v-if="currentFilePath">
+          <i class="fas fa-file-alt"></i>
+          <span class="file-path" :title="currentFilePath">{{ getFileName(currentFilePath) }}</span>
+        </div>
+        <div class="status-item" v-else>
+          <i class="fas fa-file"></i>
+          <span>未保存文件</span>
         </div>
         <div class="status-item" v-if="isDirty">
           <i class="fas fa-exclamation-circle"></i>
@@ -316,21 +478,6 @@ onMounted(async () => {
           :priorities="config.priorities"
           @updated="handlePriorityUpdated"
       />
-
-      <!-- 导出模态框 -->
-      <div v-if="showExportModal" class="modal" @click.self="showExportModal = false">
-        <div class="modal-content">
-          <h3><i class="fas fa-file-excel"></i> 导出 Excel</h3>
-          <div style="margin: 16px 0;">
-            <label style="display: block; margin-bottom: 6px;">文件名（.xlsx）</label>
-            <input v-model="exportFileName" type="text" style="width: 100%; padding: 8px 12px; border-radius: 4px; border: 1px solid var(--border-light); background: var(--card-bg); color: var(--text-primary);">
-          </div>
-          <div class="modal-buttons">
-            <button class="btn-sm btn-primary" @click="showExportModal = false">导出</button>
-            <button class="btn-sm" @click="showExportModal = false">取消</button>
-          </div>
-        </div>
-      </div>
 
       <!-- 全局对话框 -->
       <div v-if="dialogState.visible" class="dialog-overlay" @click="handleOverlayClick">
@@ -365,5 +512,12 @@ onMounted(async () => {
 </template>
 
 <style>
-@import '../assets/todo.css';
+@import '../assets/main.css';
+@import '../assets/buttons.css';
+@import '../assets/config.css';
+@import '../assets/statusbar.css';
+@import '../assets/titlebar.css';
+@import '../assets/tasks.css';
+@import '../assets/components.css';
+@import '../assets/themes.css';
 </style>

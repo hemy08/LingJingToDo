@@ -12,6 +12,30 @@
     <!-- 设置区域 -->
     <SettingsPanel :config="config" @update:config="handleConfigUpdate" />
 
+    <!-- 图例说明 -->
+    <div class="legend-bar">
+      <span class="legend-emoji">任务属性</span>
+      <div class="legend-item">
+        <span class="legend-emoji">🕐</span>
+        <span class="legend-text">创建日期</span>
+      </div>
+      <div class="legend-item">
+        <span class="legend-emoji">📅</span>
+        <span class="legend-text">截止时间</span>
+      </div>
+      <div class="legend-item">
+        <span class="legend-emoji">🏷️</span>
+        <span class="legend-text">类型</span>
+      </div>
+      <div class="legend-item">
+        <span class="legend-emoji">📌</span>
+        <span class="legend-text">状态</span>
+      </div>
+      <div class="legend-item">
+        <span class="legend-emoji">📁</span>
+        <span class="legend-text">优先级</span>
+      </div>
+    </div>
 
     <!-- 任务列表 -->
     <MasonryLayout

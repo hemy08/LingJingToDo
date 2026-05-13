@@ -58,8 +58,8 @@ const handleClose = () => {
   bottom: 20px;
   left: 50%;
   transform: translateX(-50%);
-  min-width: 300px;
-  max-width: 600px;
+  min-width: 400px;
+  max-width: 800px;
   padding: 12px 20px;
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);

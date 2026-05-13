@@ -73,5 +73,16 @@ export const taskApi = {
       statusId,
       priorityId
     })
+  },
+
+  // 获取任务统计
+  async getTaskStatistics(): Promise<{
+    total_count: number
+    main_task_count: number
+    subtask_count: number
+    due_today_count: number
+    overdue_count: number
+  }> {
+    return await invoke('get_task_statistics')
   }
 }

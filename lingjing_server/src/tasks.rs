@@ -18,6 +18,7 @@ pub struct Task {
     pub subtasks: Option<Vec<Task>>,
     pub remark: Option<String>,
     pub created_date: Option<String>,
+    pub created_at: Option<String>,
     pub closed_date: Option<String>,
 }
 
@@ -34,33 +35,67 @@ impl TaskData {
     }
 
     pub fn load() -> Self {
-        let path = Self::get_data_path();
-        info!("加载任务数据，路径: {:?}", path);
-        if path.exists() {
-            if let Ok(content) = fs::read_to_string(&path) {
-                if let Ok(data) = serde_json::from_str::<TaskData>(&content) {
-                    info!("任务数据加载成功，共 {} 个日期", data.tasks.len());
-                    return data;
+        // 从按天的文件加载数据
+        let exe_path = env::current_exe().expect("无法获取可执行文件路径");
+        let exe_dir = exe_path.parent().expect("无法获取可执行文件所在目录");
+
+        let mut tasks_dir = exe_dir.to_path_buf();
+        tasks_dir.push("data");
+        tasks_dir.push("tasks");
+
+        let mut tasks = HashMap::new();
+
+        // 如果tasks目录存在，读取所有日期的文件
+        if tasks_dir.exists() {
+            if let Ok(entries) = fs::read_dir(&tasks_dir) {
+                for entry in entries.flatten() {
+                    let path = entry.path();
+                    if path.extension().map_or(false, |ext| ext == "json") {
+                        if let Some(filename) = path.file_stem() {
+                            let date = filename.to_string_lossy().to_string();
+                            if let Ok(content) = fs::read_to_string(&path) {
+                                if let Ok(date_tasks) = serde_json::from_str::<Vec<Task>>(&content) {
+                                    info!("加载日期 {} 的任务数据，共 {} 个任务", date, date_tasks.len());
+                                    tasks.insert(date, date_tasks);
+                                }
+                            }
+                        }
+                    }
                 }
-                warn!("任务数据解析失败");
             }
-            warn!("任务数据文件读取失败");
         }
-        info!("任务数据文件不存在，创建新实例");
-        Self::new()
+
+        if tasks.is_empty() {
+            info!("任务数据文件不存在，创建新实例");
+        } else {
+            info!("任务数据加载成功，共 {} 个日期", tasks.len());
+        }
+
+        TaskData { tasks }
     }
 
     pub fn save(&self) {
-        let path = Self::get_data_path();
-        debug!("保存任务数据，路径: {:?}", path);
+        // 按天保存任务数据
+        for (date, tasks) in &self.tasks {
+            self.save_date(date, tasks);
+        }
+        info!("任务数据保存成功，共 {} 个日期", self.tasks.len());
+    }
+
+    // 保存指定日期的任务数据
+    fn save_date(&self, date: &str, tasks: &[Task]) {
+        let path = Self::get_date_path(date);
+        debug!("保存日期 {} 的任务数据，路径: {:?}", date, path);
+
         if let Some(parent) = path.parent() {
             let _ = fs::create_dir_all(parent);
         }
-        if let Ok(content) = serde_json::to_string_pretty(&self) {
+
+        if let Ok(content) = serde_json::to_string_pretty(&tasks) {
             if let Err(e) = fs::write(&path, content) {
-                error!("保存任务数据失败: {}", e);
+                error!("保存日期 {} 的任务数据失败: {}", date, e);
             } else {
-                info!("任务数据保存成功，共 {} 个日期", self.tasks.len());
+                info!("日期 {} 的任务数据保存成功，共 {} 个任务", date, tasks.len());
             }
         }
     }
@@ -69,11 +104,23 @@ impl TaskData {
         // 获取当前可执行文件所在目录
         let exe_path = env::current_exe().expect("无法获取可执行文件路径");
         let exe_dir = exe_path.parent().expect("无法获取可执行文件所在目录");
-        
+
         // 在 exe 所在目录下创建 data 目录
         let mut path = exe_dir.to_path_buf();
         path.push("data");
         path.push("tasks.json");
+        path
+    }
+
+    // 获取指定日期的数据文件路径
+    fn get_date_path(date: &str) -> PathBuf {
+        let exe_path = env::current_exe().expect("无法获取可执行文件路径");
+        let exe_dir = exe_path.parent().expect("无法获取可执行文件所在目录");
+
+        let mut path = exe_dir.to_path_buf();
+        path.push("data");
+        path.push("tasks");
+        path.push(format!("{}.json", date));
         path
     }
 
@@ -84,8 +131,14 @@ impl TaskData {
         tasks
     }
 
-    pub fn add_task(&mut self, date: &str, task: Task) -> Vec<Task> {
+    pub fn add_task(&mut self, date: &str, mut task: Task) -> Vec<Task> {
         info!("添加任务到日期 {}，任务ID: {}, 标题: {}", date, task.id, task.title);
+        
+        // 如果没有创建时间，自动设置
+        if task.created_at.is_none() {
+            task.created_at = Some(chrono::Local::now().to_rfc3339());
+        }
+        
         let tasks = self.tasks.entry(date.to_string()).or_insert_with(Vec::new);
         tasks.push(task);
         let result = tasks.clone();
@@ -306,4 +359,71 @@ pub fn query_tasks(
         status_id.as_deref(),
         priority_id.as_deref(),
     )
+}
+
+// 任务统计结构
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct TaskStatistics {
+    pub total_count: usize,
+    pub main_task_count: usize,
+    pub subtask_count: usize,
+    pub due_today_count: usize,
+    pub overdue_count: usize,
+}
+
+// 获取任务统计
+#[tauri::command]
+pub fn get_task_statistics(state: State<Mutex<TaskData>>) -> TaskStatistics {
+    let data = state.lock().unwrap();
+
+    // 获取今天的日期
+    let today = chrono::Local::now().format("%Y-%m-%d").to_string();
+
+    // 获取当天的任务
+    let today_tasks = data.tasks.get(&today).cloned().unwrap_or_default();
+
+    // 主任务数
+    let main_task_count = today_tasks.len();
+
+    // 子任务数
+    let subtask_count = today_tasks.iter()
+        .filter_map(|task| task.subtasks.as_ref())
+        .map(|subtasks| subtasks.len())
+        .sum();
+
+    // 总任务数
+    let total_count = main_task_count + subtask_count;
+
+    // 今天截止的任务数
+    let due_today_count = today_tasks.iter()
+        .filter(|task| task.due_date.as_ref().map_or(false, |d| d == &today))
+        .count();
+
+    // 已经延期的任务数（当前时间在截止时间后，并且任务未关闭或完成）
+    let now = chrono::Local::now().format("%Y-%m-%d").to_string();
+    let overdue_count = today_tasks.iter()
+        .filter(|task| {
+            // 检查是否有截止日期
+            if let Some(due_date) = &task.due_date {
+                // 检查是否已过期
+                if due_date < &now {
+                    // 检查任务状态是否不是关闭或完成
+                    let status = task.status_id.as_str();
+                    status != "st_closed" && status != "st_done"
+                } else {
+                    false
+                }
+            } else {
+                false
+            }
+        })
+        .count();
+
+    TaskStatistics {
+        total_count,
+        main_task_count,
+        subtask_count,
+        due_today_count,
+        overdue_count,
+    }
 }

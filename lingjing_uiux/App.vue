@@ -1,288 +1,160 @@
 <script setup lang="ts">
+import { ref } from 'vue'
+import { getCurrentWindow  } from '@tauri-apps/api/window';
+import LingJingToDo from './components/LingJingToDo.vue'
+import HistoryFiles from './components/HistoryFiles.vue'
 
-// 使用对话框 composable
-const { dialogState, handleButtonClick, handleOverlayClick } = useDialog()
-
-// Splitter 拖动相关
-const isSplitterActive = ref(false)
-const sidebarWidth = ref(280) // 默认侧边栏宽度
-
-const startSplitterDrag = (event: MouseEvent) => {
-  event.preventDefault()
-  isSplitterActive.value = true
-  
-  const startX = event.clientX
-  const startWidth = sidebarWidth.value
-  
-  const handleMouseMove = (e: MouseEvent) => {
-    const newWidth = startWidth + (e.clientX - startX)
-    sidebarWidth.value = Math.max(300, Math.min(600, newWidth))
-  }
-  
-  const handleMouseUp = () => {
-    isSplitterActive.value = false
-    document.removeEventListener('mousemove', handleMouseMove)
-    document.removeEventListener('mouseup', handleMouseUp)
-  }
-  
-  document.addEventListener('mousemove', handleMouseMove)
-  document.addEventListener('mouseup', handleMouseUp)
+// 窗口控制 - 使用 Tauri v2 API
+const minimizeWindow = async () => {
+  await getCurrentWindow().minimize();
 }
 
-// 选中的任务ID
-
-// 可用的emoji列表
-import { ref, reactive, onMounted } from 'vue'
-import { useDialog } from './composables/useDialog'
-import CalendarPanel from './components/calendar/CalendarPanel.vue'
-import TaskPanel from './components/tasks/TaskPanel.vue'
-import StatusModal from './components/config/StatusModal.vue'
-import ThemeManager from './components/themes/ThemeManager.vue'
-import StatusBar from './components/common/StatusBar.vue'
-import TypeModal from './components/config/TypeModal.vue'
-import PriorityModal from './components/config/PriorityModal.vue'
-import {invoke} from "@tauri-apps/api/core";
-import type { TaskStatus, TaskType, TaskPriority } from './types'
-
-
-async function LingJing_GetStatus(): Promise<TaskStatus[]> {
-  const result = await invoke<TaskStatus[]>('get_statuses')
-  console.log('result', result)
-  return result
+const maximizeWindow = async () => {
+  await getCurrentWindow().toggleMaximize();
 }
 
-async function LingJing_GetTypes(): Promise<TaskType[]> {
-  const result = await invoke<TaskType[]>('get_types')
-  console.log('result', result)
-  return result
+const closeWindow = async () => {
+  await getCurrentWindow().close();
 }
 
-
-async function LingJing_GetPriorities(): Promise<TaskPriority[]> {
-  const result = await invoke<TaskPriority[]>('get_priorities')
-  console.log('result', result)
-  return result
+const maximize = async () => {
+  await getCurrentWindow().toggleMaximize();
 }
 
-const config = reactive<{
-  statuses: TaskStatus[]
-  types: TaskType[]
-  priorities: TaskPriority[]
-}>({
-  statuses: [],
-  types: [],
-  priorities: [],
-})
+const showMainApp = ref(false)
+const selectedFile = ref<string | null>(null)
 
-const todoData = reactive<Record<string, any[]>>({})
-const currentDate = ref('')
-const isDirty = ref(false)
+// 历史文件组件引用
+const historyFilesRef = ref<InstanceType<typeof HistoryFiles> | null>(null)
 
-// 状态提示
-const statusVisible = ref(false)
-const statusMessage = ref('')
-const statusDetail = ref('')
-const statusType = ref<'success' | 'error' | 'warning' | 'info'>('success')
-
-// 显示状态提示
-const showStatus = (message: string, detail?: string, type: 'success' | 'error' | 'warning' | 'info' = 'success') => {
-  statusMessage.value = message
-  statusDetail.value = detail || ''
-  statusType.value = type
-  statusVisible.value = true
-  
-  // 3秒后自动关闭
-  setTimeout(() => {
-    statusVisible.value = false
-  }, 3000)
-}
-const showThemeModal = ref(false)
-const showStatusModal = ref(false)
-const showTypeModal = ref(false)
-const showPriorityModal = ref(false)
-const showExportModal = ref(false)
-const exportFileName = ref('')
-
-const getTodayStr = () => {
-  const d = new Date()
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
-}
-
-const ensureDate = (date: string) => {
-  if (!todoData[date]) todoData[date] = []
-}
-
-
-const handleStatusUpdated = (statuses: any) => {
-  config.statuses = statuses
-}
-const handleTypeUpdated = (types: any) => {
-  config.types = types
-}
-
-const handlePriorityUpdated = (priorities: any) => {
-  config.priorities = priorities
-}
-
-const handleDateChange = (date: string) => {
-  // 切换到新日期
-  currentDate.value = date
-  ensureDate(date)
-}
-
-const exportExcel = () => {
-  exportFileName.value = `Todo_Backup_${new Date().toISOString().slice(0, 19).replace(/:/g, '-')}`
-  showExportModal.value = true
-}
-
-const importExcel = () => {
-  const input = document.createElement('input')
-  input.type = 'file'
-  input.accept = '.xlsx'
-  input.onchange = (e: any) => {
-    if (e.target.files[0]) console.log('Import file:', e.target.files[0].name)
-  }
-  input.click()
-}
-
-onMounted(async () => {
-  // 从后端获取状态、类型、优先级数据
-  config.statuses = await LingJing_GetStatus()
-  config.types = await LingJing_GetTypes()
-  config.priorities = await LingJing_GetPriorities()
-  currentDate.value = getTodayStr()
-  ensureDate(currentDate.value)
-  if (todoData[currentDate.value].length === 0) {
-    todoData[currentDate.value].push({
-      id: 10001, title: "示例主任务", status_id: "st_doing", type_id: "ty_work", priority_id: "p3",
-      due_date: "2026-05-10", description: "", useSubtasks: true, subtasks: [], checklist: [], createdAt: Date.now()
+// 导入 Excel 文件
+const importExcel = async () => {
+  try {
+    // 使用 Tauri 的文件对话框 API
+    const { open } = await import('@tauri-apps/plugin-dialog')
+    const selected = await open({
+      multiple: false,
+      filters: [{
+        name: 'Excel',
+        extensions: ['xlsx', 'xls']
+      }]
     })
+
+    if (selected && typeof selected === 'string') {
+      // 添加到历史记录
+      historyFilesRef.value?.addHistoryFile(selected)
+      
+      selectedFile.value = selected
+      showMainApp.value = true
+      // 进入主界面后自动最大化窗口
+      await maximize()
+    }
+  } catch (error) {
+    console.error('导入文件失败:', error)
   }
-})
+}
 
+// 处理历史文件选择
+const handleFileSelected = async (filePath: string) => {
+  selectedFile.value = filePath
+  showMainApp.value = true
+  // 进入主界面后自动最大化窗口
+  await maximize()
+}
 
+// 新建空白项目
+const createNewProject = async () => {
+  selectedFile.value = null
+  showMainApp.value = true
+  // 进入主界面后自动最大化窗口
+  await maximize()
+}
 </script>
-
 <template>
-  <div class="app">
-    <div class="sidebar" :style="{ width: sidebarWidth + 'px' }">
-      <CalendarPanel :current-date="currentDate" @date-change="handleDateChange" />
-      <div class="task-tree">
-        <div class="task-tree-title"><i class="fas fa-diagram-project"></i> 任务导航树</div>
-        <div class="task-tree-container">
-          <div 
-            v-for="task in todoData[currentDate] || []" 
-            :key="task.id" 
-            class="tree-node"
-            
-            
-          >
-            📌 {{ task.title }}
-            <!-- 子任务 -->
-            <div v-if="task.subtasks && task.subtasks.length > 0" class="subtask-nodes">
-              <div 
-                v-for="subtask in task.subtasks" 
-                :key="subtask.id" 
-                class="tree-node subtask-node"
-                
-                
-              >
-                └─ {{ subtask.title }}
-              </div>
-            </div>
-          </div>
-          <div v-if="!todoData[currentDate]?.length" class="empty-tree">暂无任务</div>
-        </div>
+  <!-- 主应用界面 -->
+  <LingJingToDo v-if="showMainApp" @back="showMainApp = false" />
+
+  <!-- 欢迎界面 -->
+  <div v-else class="welcome-container" @contextmenu.prevent>
+    <!-- 自定义标题栏 -->
+    <div class="titlebar" data-tauri-drag-region>
+      <div class="titlebar-left">
+        <span class="app-icon">✨</span>
+        <span class="app-title">灵境待办</span>
+      </div>
+      <div class="titlebar-right">
+        <button class="titlebar-btn" @click="minimizeWindow" title="最小化">
+          <svg width="12" height="12" viewBox="0 0 12 12">
+            <rect y="5" width="12" height="2" fill="currentColor"/>
+          </svg>
+        </button>
+        <button class="titlebar-btn" @click="maximizeWindow" title="最大化">
+          <svg width="12" height="12" viewBox="0 0 12 12">
+            <rect x="1" y="1" width="10" height="10" stroke="currentColor" stroke-width="2" fill="none"/>
+          </svg>
+        </button>
+        <button class="titlebar-btn close-btn" @click="closeWindow" title="关闭">
+          <svg width="12" height="12" viewBox="0 0 12 12">
+            <path d="M1 1L11 11M11 1L1 11" stroke="currentColor" stroke-width="2"/>
+          </svg>
+        </button>
       </div>
     </div>
-    <div class="splitter" :class="{ active: isSplitterActive }" @mousedown="startSplitterDrag"></div>
-    <div class="main-content">
-      <div class="toolbar">
-        <div class="toolbar-left">
-          <h2>灵境待办 v1.0.0</h2>
-          <span v-if="isDirty" class="unsaved-indicator">● 未保存</span>
+
+    <!-- 欢迎内容 -->
+    <div class="welcome-content">
+      <!-- Logo 和标题 -->
+      <div class="welcome-header">
+        <div class="logo-container">
+          <div class="logo-icon">✨</div>
+          <div class="logo-glow"></div>
         </div>
-        <div class="toolbar-right">
-          <button class="btn-sm" @click="showThemeModal = true"><i class="fas fa-palette"></i> 主题</button>
-          <button class="btn-sm" @click="showStatusModal = true"><i class="fas fa-tags"></i> 状态</button>
-          <button class="btn-sm" @click="showTypeModal = true"><i class="fas fa-layer-group"></i> 类型</button>
-          <button class="btn-sm" @click="showPriorityModal = true"><i class="fas fa-flag"></i> 优先级</button>
-          <button class="btn-sm btn-primary" @click="exportExcel"><i class="fas fa-file-excel"></i> 导出</button>
-          <button class="btn-sm btn-primary" @click="importExcel"><i class="fas fa-upload"></i> 导入</button>
-        </div>
+        <h1 class="welcome-title">灵境待办</h1>
+        <p class="welcome-subtitle">高效管理您的任务，让工作更有条理</p>
       </div>
-      <TaskPanel 
-        :tasks="todoData[currentDate] || []"
-        :current-date="currentDate"
-        :statuses="config.statuses"
-        :types="config.types"
-        :priorities="config.priorities"
-        v-model:is-dirty="isDirty"
+
+      <!-- 操作按钮 -->
+      <div class="welcome-actions">
+        <button class="action-btn primary" @click="importExcel">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="17 8 12 3 7 8"/>
+            <line x1="12" y1="3" x2="12" y2="15"/>
+          </svg>
+          <span>导入 Excel 文件</span>
+        </button>
+        <button class="action-btn secondary" @click="createNewProject">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/>
+            <line x1="12" y1="18" x2="12" y2="12"/>
+            <line x1="9" y1="15" x2="15" y2="15"/>
+          </svg>
+          <span>新建空白项目</span>
+        </button>
+      </div>
+
+      <!-- 历史文件列表 -->
+      <HistoryFiles 
+        ref="historyFilesRef"
+        @file-selected="handleFileSelected"
       />
-    </div>
 
-    <!-- 主题模态框 -->
-    <ThemeManager
-      v-model:visible="showThemeModal"
-    />
-
-    <!-- 状态模态框 -->
-    <StatusModal 
-      v-model:visible="showStatusModal" 
-      :statuses="config.statuses" 
-      @updated="handleStatusUpdated" 
-    />
-
-    <!-- 类型模态框 -->
-    <TypeModal 
-      v-model:visible="showTypeModal" 
-      :types="config.types" 
-      @updated="handleTypeUpdated" 
-    />
-    <!-- 优先级模态框 -->
-    <PriorityModal 
-      v-model:visible="showPriorityModal" 
-      :priorities="config.priorities" 
-      @updated="handlePriorityUpdated" 
-    />
-    <!-- 导出模态框 -->
-    <div v-if="showExportModal" class="modal" @click.self="showExportModal = false">
-      <div class="modal-content">
-        <h3><i class="fas fa-file-excel"></i> 导出 Excel</h3>
-        <div style="margin: 16px 0;">
-          <label style="display: block; margin-bottom: 6px;">文件名（.xlsx）</label>
-          <input v-model="exportFileName" type="text" style="width: 100%; padding: 8px 12px; border-radius: 4px; border: 1px solid var(--border-light); background: var(--card-bg); color: var(--text-primary);">
-        </div>
-        <div class="modal-buttons">
-          <button class="btn-sm btn-primary" @click="showExportModal = false">导出</button>
-          <button class="btn-sm" @click="showExportModal = false">取消</button>
-        </div>
-      </div>
-    </div>
-    <!-- 全局对话框 -->
-    <div v-if="dialogState.visible" class="dialog-overlay" @click="handleOverlayClick">
-      <div class="dialog-box">
-        <div class="dialog-header">
-          <i :class="dialogState.icon"></i>
-          <span>{{ dialogState.title }}</span>
-        </div>
-        <div class="dialog-content">{{ dialogState.message }}</div>
-        <div class="dialog-buttons">
-          <button 
-            v-for="button in dialogState.buttons" 
-            :key="button.text"
-            :class="['btn-sm', button.type || '']"
-            @click="handleButtonClick(button)"
-          >
-            {{ button.text }}
-          </button>
-        </div>
+      <!-- 版本信息 -->
+      <div class="welcome-footer">
+        <p>版本 1.0.0 | © 2026 by Hemy08 灵境待办 zhaojunwei008@yeah.net</p>
       </div>
     </div>
   </div>
 </template>
 
 <style>
-@import './assets/todo.css';
+@import './assets/main.css';
+@import './assets/buttons.css';
+@import './assets/config.css';
+@import './assets/statusbar.css';
+@import './assets/titlebar.css';
+@import './assets/tasks.css';
+@import './assets/components.css';
+@import './assets/themes.css';
 </style>
-

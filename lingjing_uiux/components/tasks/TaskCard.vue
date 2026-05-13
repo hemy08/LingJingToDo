@@ -54,8 +54,36 @@
     </div>
     <div class="task-card-body">
       <div class="task-meta-row">
+        <!-- 创建日期 -->
+        <div class="meta-item" v-if="task.created_at">
+          <label class="meta-label">🕐</label>
+          <span class="meta-text" :title="task.created_at">{{ formatDate(task.created_at) }}</span>
+        </div>
+        <!-- 截止日期 -->
         <div class="meta-item">
-          <label class="meta-label">📌 状态:</label>
+          <label class="meta-label">📅</label>
+          <input 
+            type="date"
+            class="meta-select"
+            :value="task.due_date"
+            @change="$emit('update', { ...task, due_date: ($event.target as HTMLInputElement).value })"
+          />
+        </div>
+        <!-- 类型 -->
+        <div class="meta-item">
+          <label class="meta-label">🏷️</label>
+          <select 
+            class="meta-select"
+            :value="task.type_id"
+            @change="$emit('update', { ...task, type_id: ($event.target as HTMLSelectElement).value })"
+          >
+            <option v-for="type in types" :key="type.id" :value="type.id">{{ type.emoji }} {{ type.name }}
+            </option>
+          </select>
+        </div>
+        <!-- 状态 -->
+        <div class="meta-item">
+          <label class="meta-label">📌</label>
           <select 
             class="meta-select"
             :value="task.status_id"
@@ -66,19 +94,9 @@
             </option>
           </select>
         </div>
+        <!-- 优先级 -->
         <div class="meta-item">
-          <label class="meta-label">🏷️ 类型:</label>
-          <select 
-            class="meta-select"
-            :value="task.type_id"
-            @change="$emit('update', { ...task, type_id: ($event.target as HTMLSelectElement).value })"
-          >
-            <option v-for="type in types" :key="type.id" :value="type.id">{{ type.emoji }} {{ type.name }}
-            </option>
-          </select>
-        </div>
-        <div class="meta-item">
-          <label class="meta-label">📁 优先级:</label>
+          <label class="meta-label">📁</label>
           <select 
             class="meta-select"
             :value="task.priority_id"
@@ -87,15 +105,6 @@
             <option v-for="priority in priorities" :key="priority.id" :value="priority.id">{{ priority.emoji }} {{ priority.name }}
             </option>
           </select>
-        </div>
-        <div class="meta-item">
-          <label class="meta-label">📅 截止时间:</label>
-          <input 
-            type="date"
-            class="meta-select"
-            :value="task.due_date"
-            @change="$emit('update', { ...task, due_date: ($event.target as HTMLInputElement).value })"
-          />
         </div>
       </div>
 
@@ -168,6 +177,17 @@ const saveEdit = () => {
 // 取消编辑
 const cancelEdit = () => {
   isEditing.value = false
+}
+
+// 格式化日期
+const formatDate = (dateStr: string) => {
+  if (!dateStr) return ''
+  const date = new Date(dateStr)
+  return date.toLocaleDateString('zh-CN', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit'
+  })
 }
 
 </script>

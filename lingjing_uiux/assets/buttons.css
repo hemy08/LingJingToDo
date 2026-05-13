@@ -1,0 +1,101 @@
+/* ========== 按钮样式 ========== */
+
+.btn-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.btn-sm {
+    background: var(--tag-bg);
+    border: none;
+    border-radius: 40px;
+    padding: 4px 20px;
+    cursor: pointer;
+    font-size: 0.65rem;
+}
+
+.btn-primary {
+    background: var(--accent-blue);
+    color: white;
+}
+
+/* 工具栏按钮样式 */
+.toolbar-right button {
+  color: var(--toolbar-text);
+  border-color: var(--toolbar-border);
+  background: var(--toolbar-button-bg);
+}
+
+.toolbar-right button:hover {
+  background: var(--toolbar-button-hover);
+  border-color: var(--toolbar-border);
+}
+
+.toolbar-right button.btn-primary {
+  background: var(--toolbar-button-hover);
+  color: var(--toolbar-text);
+  border-color: var(--toolbar-border);
+}
+
+.toolbar-right button.btn-primary:hover {
+  background: var(--toolbar-button-bg);
+  border-color: var(--toolbar-border);
+}
+
+/* 模态框按钮 */
+.modal-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.modal-buttons button {
+  padding: 8px 16px;
+  border-radius: 6px;
+  border: 1px solid var(--border-light);
+  background: var(--card-bg);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.modal-buttons button:hover {
+  background: var(--tag-bg);
+}
+
+/* 欢迎界面按钮 */
+.action-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 32px;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.action-btn.primary {
+  background: white;
+  color: #667eea;
+}
+
+.action-btn.primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 30px rgba(0, 0, 0, 0.3);
+}
+
+.action-btn.secondary {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.action-btn.secondary:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: translateY(-2px);
+}
