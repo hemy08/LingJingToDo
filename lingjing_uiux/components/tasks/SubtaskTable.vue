@@ -2,38 +2,35 @@
   <div class="subtasks-list table-mode">
     <table class="subtask-table auto-wrap" >
       <colgroup>
+        <col style="width: 20px">
+        <col style="width: 300px">
+        <col style="width: 120px">
+        <col style="width: 120px">
+        <col style="width: 120px">
+        <col style="width: 120px">
+        <col style="width: 120px">
+        <col style="width: 300px">
         <col style="width: 40px">
-        <col style="width: 40px">
-        <col style="width: 150px">
-        <col style="width: 120px">
-        <col style="width: 120px">
-        <col style="width: 120px">
-        <col style="width: 100px">
-        <col style="width: 60px">
       </colgroup>
       <thead>
         <tr>
           <th>#</th>
-          <th></th>
           <th>任务</th>
-          <th>状态</th>
-          <th>类型</th>
-          <th>优先级</th>
+          <th>🕐创建日期</th>
+          <th>📅截止日期</th>
+          <th>🏷️状态</th>
+          <th>📌类型</th>
+          <th>📁优先级</th>
           <th>备注</th>
-          <th>操作</th>
+          <th>Op</th>
         </tr>
       </thead>
       <tbody>
         <tr v-for="(subtask, index) in subtasks" :key="subtask.id">
           <td>{{ index + 1 }}</td>
           <td>
-            <div class="drag-handle subtask-drag-handle" title="拖动排序">
-              <i class="fas fa-grip-vertical"></i>
-            </div>
-          </td>
-          <td>
             <div class="cell-content" :title="subtask.title">
-              <input 
+              <input
                 type="text"
                 class="inline-input"
                 :value="subtask.title"
@@ -42,7 +39,23 @@
             </div>
           </td>
           <td>
-            <select 
+            <input
+              type="date"
+              class="inline-date"
+              :value="subtask.created_at"
+              @change="$emit('update', { ...subtask, created_at: ($event.target as HTMLInputElement).value })"
+            />
+          </td>
+          <td>
+            <input
+              type="date"
+              class="inline-date"
+              :value="subtask.due_date"
+              @change="$emit('update', { ...subtask, due_date: ($event.target as HTMLInputElement).value })"
+            />
+          </td>
+          <td>
+            <select
               class="inline-select"
               :value="subtask.status_id"
               @change="$emit('update', { ...subtask, status_id: ($event.target as HTMLSelectElement).value })"
@@ -53,7 +66,7 @@
             </select>
           </td>
           <td>
-            <select 
+            <select
               class="inline-select"
               :value="subtask.type_id"
               @change="$emit('update', { ...subtask, type_id: ($event.target as HTMLSelectElement).value })"
@@ -125,6 +138,17 @@ const handleTitleInput = (subtask: Task, value: string) => {
 // 处理备注输入
 const handleRemarkInput = (subtask: Task, value: string) => {
   emit('update', { ...subtask, remark: value })
+}
+
+// 格式化日期
+const formatDate = (dateStr: string) => {
+  if (!dateStr) return ''
+  const date = new Date(dateStr)
+  return date.toLocaleDateString('zh-CN', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit'
+  })
 }
 
 </script>

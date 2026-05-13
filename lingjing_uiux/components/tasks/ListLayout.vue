@@ -1,17 +1,18 @@
 <template>
-  <div ref="layoutRef" class="task-list list-layout">
+  <div ref="layoutRef" class="task-list list-layout" :style="listStyle">
     <slot></slot>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, watch } from 'vue'
+import { ref, onMounted, watch, computed } from 'vue'
 import Sortable from 'sortablejs'
 import type { Task } from '../../types'
 
 const props = defineProps<{
   tasks: Task[]
   dragMode: 'insert' | 'swap'
+  columns?: number
 }>()
 
 const emit = defineEmits<{
@@ -20,6 +21,14 @@ const emit = defineEmits<{
 
 const layoutRef = ref<HTMLElement | null>(null)
 let sortableInstance: Sortable | null = null
+
+// 计算列表样式
+const listStyle = computed(() => {
+  const cols = props.columns || 2
+  return {
+    '--list-columns': cols
+  }
+})
 
 const initSortable = () => {
   if (!layoutRef.value) return

@@ -89,6 +89,7 @@
       v-if="layoutMode === 'list' && tasks.length > 0"
       :tasks="tasks"
       :drag-mode="dragMode"
+      :columns="listColumns"
       @reorder="handleReorderTasks($event)"
     >
       <TaskCard
@@ -263,10 +264,12 @@ const handleConfigUpdate = (newConfig: any) => {
   fontSize.value = newConfig.fontSize
   dragMode.value = newConfig.dragMode
   layoutMode.value = newConfig.layoutMode
+  listColumns.value = newConfig.listColumns
 }
 const fontSize = ref(props.config?.fontSize || 'medium')
 const dragMode = ref<'insert' | 'swap'>(props.config?.dragMode || 'insert')
 const layoutMode = ref<'masonry' | 'list' | 'tree'>(props.config?.layoutMode || 'masonry')
+const listColumns = ref(props.config?.listColumns || 2)
 
 
 // 切换子任务显示模式
@@ -295,6 +298,7 @@ const closeSubtaskModal = () => {
 // 添加子任务
 const addSubtask = (newSubtask: Task) => {
   if (!currentParentTask.value) return
+
 
   const updatedTask = {
     ...currentParentTask.value,

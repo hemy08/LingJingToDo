@@ -98,6 +98,8 @@ const handleSubmit = () => {
     type_id: formData.value.type_id,
     priority_id: formData.value.priority_id,
     due_date: formData.value.due_date,
+    created_at: new Date().toISOString(),
+    created_date: new Date().toISOString(),
     subtasks: []
   }
 

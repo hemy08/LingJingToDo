@@ -1,6 +1,6 @@
 /* ========== 标题栏样式 ========== */
 
-.titlebar {
+.app-titlebar {
   height: 32px;
   display: flex;
   justify-content: space-between;
@@ -9,13 +9,17 @@
   backdrop-filter: blur(10px);
   padding: 0 8px;
   z-index: 100;
+  cursor: default;
+  user-select: none;
 }
 
-.titlebar-left {
+.app-titlebar-left {
   display: flex;
   align-items: center;
   gap: 8px;
   color: var(--toolbar-text);
+  cursor: default;
+  user-select: none;
 }
 
 .app-icon {

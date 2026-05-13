@@ -203,28 +203,10 @@ pub fn delete_priority(state: tauri::State<ConfigState>, id: String) -> Vec<Prio
     state.save();
     result
 }
+
 #[tauri::command]
 pub fn get_themes(state: tauri::State<ConfigState>) -> Vec<Theme> {
     let config = state.config.lock().unwrap();
     config.themes.clone()
 }
 
-#[tauri::command]
-pub fn get_recent_files(state: tauri::State<ConfigState>) -> Vec<String> {
-    let config = state.config.lock().unwrap();
-    config.recent_files.clone()
-}
-
-#[tauri::command]
-pub fn add_recent_file(state: tauri::State<ConfigState>, file_path: String) -> Vec<String> {
-    let mut config = state.config.lock().unwrap();
-    config.recent_files.retain(|f| f != &file_path);
-    config.recent_files.insert(0, file_path);
-    if config.recent_files.len() > 10 {
-        config.recent_files.truncate(10);
-    }
-    let result = config.recent_files.clone();
-    drop(config);
-    state.save();
-    result
-}

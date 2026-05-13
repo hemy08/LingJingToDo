@@ -1,12 +1,9 @@
 <template>
   <div class="subtask-card">
-    <div class="drag-handle subtask-drag-handle" title="拖动排序">
-      <i class="fas fa-grip-vertical"></i>
-    </div>
     <div class="subtask-card-header">
-      <h4 
+      <h4
           v-if="!isEditing"
-          class="subtask-title" 
+          class="subtask-title"
           @click="startEdit"
           title="单击编辑"
         >{{ subtask.title }}</h4>
@@ -30,20 +27,30 @@
     </div>
     <div class="subtask-card-body">
       <div class="task-meta-row">
+        <!-- 起始日期 -->
         <div class="meta-item">
-          <label class="meta-label">📌 状态:</label>
-          <select 
+          <label class="meta-label">🕐</label>
+          <input
+            type="date"
             class="meta-select"
-            :value="subtask.status_id"
-            @change="$emit('update', { ...subtask, status_id: ($event.target as HTMLSelectElement).value })"
-          >
-            <option v-for="status in statuses" :key="status.id" :value="status.id">{{ status.emoji }} {{ status.name }}
-            </option>
-          </select>
+            :value="subtask.created_at"
+            @change="$emit('update', { ...subtask, created_at: ($event.target as HTMLInputElement).value })"
+          />
         </div>
+        <!-- 截止日期 -->
         <div class="meta-item">
-          <label class="meta-label">🏷️ 类型:</label>
-          <select 
+          <label class="meta-label">📅</label>
+          <input
+            type="date"
+            class="meta-select"
+            :value="subtask.due_date"
+            @change="$emit('update', { ...subtask, due_date: ($event.target as HTMLInputElement).value })"
+          />
+        </div>
+        <!-- 类型 -->
+        <div class="meta-item">
+          <label class="meta-label">🏷️</label>
+          <select
             class="meta-select"
             :value="subtask.type_id"
             @change="$emit('update', { ...subtask, type_id: ($event.target as HTMLSelectElement).value })"
@@ -52,9 +59,22 @@
             </option>
           </select>
         </div>
+        <!-- 状态 -->
         <div class="meta-item">
-          <label class="meta-label">📁 优先级:</label>
-          <select 
+          <label class="meta-label">📌</label>
+          <select
+            class="meta-select"
+            :value="subtask.status_id"
+            @change="$emit('update', { ...subtask, status_id: ($event.target as HTMLSelectElement).value })"
+          >
+            <option v-for="status in statuses" :key="status.id" :value="status.id">{{ status.emoji }} {{ status.name }}
+            </option>
+          </select>
+        </div>
+        <!-- 优先级 -->
+        <div class="meta-item">
+          <label class="meta-label">📁</label>
+          <select
             class="meta-select"
             :value="subtask.priority_id"
             @change="$emit('update', { ...subtask, priority_id: ($event.target as HTMLSelectElement).value })"
@@ -63,6 +83,21 @@
             </option>
           </select>
         </div>
+      </div>
+
+      <!-- 详细信息区域 -->
+      <div class="task-detail-section">
+        <div class="detail-header">
+          <i class="fas fa-info-circle"></i>
+          <span>详细信息</span>
+        </div>
+        <textarea
+          class="detail-textarea"
+          :value="subtask.remark || ''"
+          @change="$emit('update', { ...subtask, remark: ($event.target as HTMLTextAreaElement).value })"
+          placeholder="添加子任务详细描述..."
+          rows="2"
+        ></textarea>
       </div>
     </div>
   </div>
@@ -107,6 +142,17 @@ const saveEdit = () => {
 // 取消编辑
 const cancelEdit = () => {
   isEditing.value = false
+}
+
+// 格式化日期
+const formatDate = (dateStr: string) => {
+  if (!dateStr) return ''
+  const date = new Date(dateStr)
+  return date.toLocaleDateString('zh-CN', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit'
+  })
 }
 
 </script>

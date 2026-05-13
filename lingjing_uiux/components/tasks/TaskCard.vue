@@ -23,7 +23,7 @@
         />
       <div class="task-actions">
         <button 
-          class="action-btn toggle-subtask-btn"
+          class="components-action-btn toggle-subtask-btn"
           @click="$emit('toggle-subtask-mode', task.id)"
           @mousedown.stop
           @click.stop
@@ -33,7 +33,7 @@
           {{ subtaskDisplayMode === 'card' ? '表格' : '卡片' }}
         </button>
         <button 
-          class="action-btn add-subtask-btn"
+          class="components-action-btn add-subtask-btn"
           @click="$emit('add-subtask', task)"
           @mousedown.stop
           @click.stop
@@ -42,7 +42,7 @@
           添加子任务
         </button>
         <button 
-          class="action-btn delete-btn"
+          class="components-action-btn delete-btn"
           @click="$emit('delete', task.id)"
           @mousedown.stop
           @click.stop
@@ -106,6 +106,21 @@
             </option>
           </select>
         </div>
+      </div>
+
+      <!-- 详细信息编辑区域 -->
+      <div class="task-detail-section">
+        <div class="detail-header">
+          <i class="fas fa-info-circle"></i>
+          <span>详细信息</span>
+        </div>
+        <textarea
+          class="detail-textarea"
+          :value="task.remark || ''"
+          @change="$emit('update', { ...task, remark: ($event.target as HTMLTextAreaElement).value })"
+          placeholder="添加任务详细描述..."
+          rows="3"
+        ></textarea>
       </div>
 
       <!-- 子任务区域 -->

@@ -77,8 +77,8 @@ const createNewProject = async () => {
   <!-- 欢迎界面 -->
   <div v-else class="welcome-container" @contextmenu.prevent>
     <!-- 自定义标题栏 -->
-    <div class="titlebar" data-tauri-drag-region>
-      <div class="titlebar-left">
+    <div class="app-titlebar" data-tauri-drag-region>
+      <div class="app-titlebar-left" data-tauri-drag-region>
         <span class="app-icon">✨</span>
         <span class="app-title">灵境待办</span>
       </div>

@@ -7,18 +7,21 @@ const { dialogState, handleButtonClick, handleOverlayClick, showConfirmWithClose
 
 // Splitter 拖动相关
 const isSplitterActive = ref(false)
-const sidebarWidth = ref(280) // 默认侧边栏宽度
+const sidebarWidthPercent = ref(10) // 默认侧边栏宽度百分比
 
 const startSplitterDrag = (event: MouseEvent) => {
   event.preventDefault()
   isSplitterActive.value = true
 
   const startX = event.clientX
-  const startWidth = sidebarWidth.value
+  const startWidth = sidebarWidthPercent.value
+  const windowWidth = window.innerWidth
 
   const handleMouseMove = (e: MouseEvent) => {
-    const newWidth = startWidth + (e.clientX - startX)
-    sidebarWidth.value = Math.max(300, Math.min(600, newWidth))
+    const deltaX = e.clientX - startX
+    const deltaPercent = (deltaX / windowWidth) * 100
+    const newWidth = startWidth + deltaPercent
+    sidebarWidthPercent.value = Math.max(10, Math.min(40, newWidth))
   }
 
   const handleMouseUp = () => {
@@ -36,6 +39,7 @@ const startSplitterDrag = (event: MouseEvent) => {
 // 可用的emoji列表
 import { ref, reactive, onMounted, watch } from 'vue'
 import { useDialog } from '../composables/useDialog'
+import { taskApi } from '../connections/task_apis'
 import CalendarPanel from './calendar/CalendarPanel.vue'
 import TaskPanel from './tasks/TaskPanel.vue'
 import StatusModal from './config/StatusModal.vue'
@@ -225,7 +229,7 @@ const handleOpenFile = async () => {
                        filePath.endsWith('.xlsx') || filePath.endsWith('.xls') ? 'excel' : 'xml'
 
       try {
-        const result = await invoke('open_file', { filePath, fileType })
+        const result = await invoke('open_file', { file_path: filePath, file_type: fileType })
         todoData.value = result as any
         currentFilePath.value = filePath
         currentFileType.value = fileType
@@ -245,10 +249,11 @@ const handleSaveFile = async () => {
   if (currentFilePath.value) {
     try {
       await invoke('save_file', {
-        filePath: currentFilePath.value,
-        fileType: currentFileType.value,
+        file_path: currentFilePath.value,
+        file_type: currentFileType.value,
         data: todoData.value
       })
+      console.log('文件保存成功', todoData.value)
       isDirty.value = false
       showStatus('保存成功', `文件已保存到 ${currentFilePath.value}`, 'success')
     } catch (error) {
@@ -277,8 +282,8 @@ const handleSaveAs = async () => {
 
       try {
         await invoke('save_file', {
-          filePath,
-          fileType,
+          file_path: filePath,
+          file_type: fileType,
           data: todoData.value
         })
         currentFilePath.value = filePath
@@ -318,8 +323,8 @@ onMounted(async () => {
 <template>
   <div class="app-wrapper">
     <!-- 自定义标题栏 -->
-    <div class="titlebar" data-tauri-drag-region>
-      <div class="titlebar-left">
+    <div class="app-titlebar" data-tauri-drag-region>
+      <div class="app-titlebar-left" data-tauri-drag-region>
         <span class="app-icon">✨</span>
         <span class="app-title">灵境待办</span>
       </div>
@@ -345,7 +350,7 @@ onMounted(async () => {
     <div class="app-container">
       <!-- 主内容区域 -->
       <div class="main-area">
-        <div class="sidebar" :style="{ width: sidebarWidth + 'px' }">
+        <div class="sidebar" :style="{ width: sidebarWidthPercent + '%' }">
         <CalendarPanel :current-date="currentDate" @date-change="handleDateChange" />
 
         <!-- 任务统计 -->

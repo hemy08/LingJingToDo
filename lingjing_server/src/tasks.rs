@@ -28,6 +28,7 @@ pub struct TaskData {
 }
 
 impl TaskData {
+    #[allow(dead_code)]
     pub fn new() -> Self {
         TaskData {
             tasks: HashMap::new(),
@@ -100,6 +101,7 @@ impl TaskData {
         }
     }
 
+    #[allow(dead_code)]
     fn get_data_path() -> PathBuf {
         // 获取当前可执行文件所在目录
         let exe_path = env::current_exe().expect("无法获取可执行文件路径");

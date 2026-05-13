@@ -225,7 +225,9 @@ body.font-xlarge {
 }
 
 .sidebar {
-    width: 25%;
+    width: 10%;
+    min-width: 10%;
+    max-width: 20%;
     background: var(--card-bg);
     padding: 20px 16px;
     box-shadow: var(--shadow-sm);
@@ -234,6 +236,7 @@ body.font-xlarge {
     flex-direction: column;
     gap: 20px;
     transition: width 0.05s linear;
+    flex-shrink: 0;
 }
 
 .splitter {
@@ -265,10 +268,6 @@ body.font-xlarge {
         width: 100% !important;
         border-right: none;
         border-bottom: 1px solid var(--border-light);
-    }
-
-    .splitter {
-        display: none;
     }
 
     .main-content {

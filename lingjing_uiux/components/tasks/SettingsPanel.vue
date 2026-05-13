@@ -23,6 +23,15 @@
         <option value="tree">树形</option>
       </select>
     </div>
+    <div class="setting-item" v-if="layoutMode === 'list'">
+      <label>📊 列表列数:</label>
+      <select v-model="listColumns">
+        <option :value="1">1列</option>
+        <option :value="2">2列</option>
+        <option :value="3">3列</option>
+        <option :value="4">4列</option>
+      </select>
+    </div>
   </div>
 </template>
 
@@ -34,6 +43,7 @@ const props = defineProps<{
     fontSize?: string
     dragMode?: 'insert' | 'swap'
     layoutMode?: 'masonry' | 'list' | 'tree'
+    listColumns?: number
   }
 }>()
 
@@ -42,19 +52,22 @@ const emit = defineEmits<{
     fontSize: string
     dragMode: 'insert' | 'swap'
     layoutMode: 'masonry' | 'list' | 'tree'
+    listColumns: number
   }]
 }>()
 
 const fontSize = ref(props.config?.fontSize || 'medium')
 const dragMode = ref<'insert' | 'swap'>(props.config?.dragMode || 'insert')
 const layoutMode = ref<'masonry' | 'list' | 'tree'>(props.config?.layoutMode || 'masonry')
+const listColumns = ref(props.config?.listColumns || 2)
 
 // 监听变化并发出更新
-watch([fontSize, dragMode, layoutMode], () => {
+watch([fontSize, dragMode, layoutMode, listColumns], () => {
   emit('update:config', {
     fontSize: fontSize.value,
     dragMode: dragMode.value,
-    layoutMode: layoutMode.value
+    layoutMode: layoutMode.value,
+    listColumns: listColumns.value
   })
 })
 </script>

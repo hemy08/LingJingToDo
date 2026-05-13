@@ -78,12 +78,13 @@
   flex-wrap: wrap;
   gap: 16px;
   column-count: unset;
+  --list-columns: 2;
 }
 
 .task-list.list-layout .task-card {
-  flex: 0 0 calc(50% - 8px);
-  width: calc(50% - 8px);
-  max-width: calc(50% - 8px);
+  flex: 0 0 calc((100% / var(--list-columns)) - 8px);
+  width: calc((100% / var(--list-columns)) - 8px);
+  max-width: calc((100% / var(--list-columns)) - 8px);
   break-inside: unset;
 }
 
@@ -229,20 +230,20 @@
 
 .task-actions {
   display: flex;
-  gap: 8px;
+  gap: 6px;
 }
 
-.action-btn {
-  padding: 8px 14px;
+.components-action-btn {
+  padding: 6px 8px;
   border: none;
-  border-radius: 8px;
+  border-radius: 4px;
   cursor: pointer;
   font-size: 0.85rem;
   font-weight: 500;
   transition: all 0.2s;
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 4px;
 }
 
 .add-subtask-btn {
@@ -303,7 +304,7 @@
 .meta-select {
   flex: 1;
   padding: 6px 10px;
-  border-radius: 6px;
+  border-radius: 2px;
   border: 1px solid var(--border-light);
   background: var(--card-bg);
   color: var(--text-primary);
@@ -330,6 +331,49 @@
   margin-top: 8px;
   padding-top: 12px;
   border-top: 1px solid var(--border-light);
+}
+
+/* 任务详细信息区域 */
+.task-detail-section {
+  margin-top: 12px;
+  padding: 12px;
+  background: var(--tag-bg);
+  border-radius: 8px;
+  border: 1px solid var(--border-light);
+}
+
+.detail-header {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.detail-textarea {
+  width: 100%;
+  min-height: 60px;
+  padding: 8px;
+  border: 1px solid var(--border-light);
+  border-radius: 6px;
+  background: var(--card-bg);
+  color: var(--text-primary);
+  font-size: 0.85rem;
+  font-family: inherit;
+  resize: vertical;
+  line-height: 1.5;
+}
+
+.detail-textarea:focus {
+  outline: none;
+  border-color: var(--accent-blue);
+}
+
+.detail-textarea::placeholder {
+  color: var(--text-secondary);
+  opacity: 0.6;
 }
 
 .subtasks-header {
@@ -759,9 +803,8 @@
 /* 内联选择框 */
 .inline-select {
   width: 100%;
-  padding: 4px 8px;
   border: 1px solid transparent;
-  border-radius: 4px;
+  border-radius: 2px;
   background: transparent;
   color: var(--text-primary);
   font-size: 0.85rem;
@@ -778,6 +821,35 @@
   outline: none;
   border-color: var(--accent-blue);
   background: var(--card-bg);
+}
+
+/* 日期输入框 */
+.inline-date {
+  width: 100%;
+  border: 1px solid transparent;
+  border-radius: 2px;
+  background: transparent;
+  color: var(--text-primary);
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.inline-date:hover {
+  border-color: var(--border-light);
+  background: var(--card-bg);
+}
+
+.inline-date:focus {
+  outline: none;
+  border-color: var(--accent-blue);
+  background: var(--card-bg);
+}
+
+/* 日期文本显示 */
+.date-text {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
 }
 
 /* 表格选项 */
