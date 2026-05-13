@@ -5,6 +5,7 @@ use config::ConfigState;
 use tasks::TaskData;
 use tauri::Manager;
 use std::sync::Mutex;
+use tauri_plugin_process;
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
@@ -16,6 +17,8 @@ pub fn run() {
     
     tauri::Builder::default()
         .plugin(tauri_plugin_opener::init())
+        .plugin(tauri_plugin_dialog::init())
+        .plugin(tauri_plugin_process::init())
         .setup(|app| {
             log::info!("初始化配置状态");
             let config_state = ConfigState::new(app.handle());

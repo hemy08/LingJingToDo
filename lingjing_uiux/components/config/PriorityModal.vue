@@ -108,7 +108,14 @@ const modalHeight = ref(600)
 const modalRef = ref<HTMLElement | null>(null)
 
 // 创建配置处理函数
-const { handleSave: configHandleSave, handleClose: configHandleClose, handleDelete: configHandleDelete, handleAdd: configHandleAdd, handleMoveUp, handleMoveDown, handleStartResize } = createConfigHandlers<TaskPriority>()
+const {
+  handleSave: configHandleSave,
+  handleClose: configHandleClose,
+  handleDelete: configHandleDelete,
+  handleAdd: configHandleAdd,
+  handleMoveUp: handleMoveUp,
+  handleMoveDown: handleMoveDown,
+  handleStartResize: handleStartResize } = createConfigHandlers<TaskPriority>()
 const { showAlert } = useDialog()
 
 // 是否有修改

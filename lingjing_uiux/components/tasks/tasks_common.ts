@@ -69,7 +69,8 @@ export function createTaskHandlers(
  */
 export function createSubtaskHandlers(
   tasks: Ref<Task[]>,
-  currentDate: Ref<string | null>
+  currentDate: Ref<string | null>,
+  showStatus: (message: string, detail?: string, type?: 'success' | 'error' | 'warning' | 'info') => void
 ) {
   // 子任务模态窗口状态
   const showSubtaskModal = ref(false)
@@ -99,10 +100,12 @@ export function createSubtaskHandlers(
       )
       if (updatedTasks) {
         tasks.value = updatedTasks
+        showStatus('子任务添加成功', newSubtask.title, 'success')
       }
       closeSubtaskModal()
     } catch (error) {
       console.error('添加子任务失败:', error)
+      showStatus('子任务添加失败', String(error), 'error')
     }
   }
 
@@ -116,9 +119,11 @@ export function createSubtaskHandlers(
       )
       if (updatedTasks) {
         tasks.value = updatedTasks
+        showStatus('子任务删除成功', '', 'success')
       }
     } catch (error) {
       console.error('删除子任务失败:', error)
+      showStatus('子任务删除失败', String(error), 'error')
     }
   }
 
@@ -132,9 +137,11 @@ export function createSubtaskHandlers(
       )
       if (updatedTasks) {
         tasks.value = updatedTasks
+        showStatus('子任务更新成功', subtask.title, 'success')
       }
     } catch (error) {
       console.error('更新子任务失败:', error)
+      showStatus('子任务更新失败', String(error), 'error')
     }
   }
 

@@ -208,6 +208,7 @@ const props = defineProps<{
 const emit = defineEmits<{
   'update:isDirty': [value: boolean]
   'select-task': [taskId: string | null]
+  'show-status': [message: string, detail?: string, type?: 'success' | 'error' | 'warning' | 'info']
 }>()
 
 // 本地状态

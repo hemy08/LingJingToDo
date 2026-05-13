@@ -1,6 +1,7 @@
 use log::{info, debug, warn, error};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
+use std::env;
 use std::fs;
 use std::path::PathBuf;
 use std::sync::Mutex;
@@ -37,7 +38,7 @@ impl TaskData {
         info!("加载任务数据，路径: {:?}", path);
         if path.exists() {
             if let Ok(content) = fs::read_to_string(&path) {
-                if let Ok(data) = serde_json::from_str(&content) {
+                if let Ok(data) = serde_json::from_str::<TaskData>(&content) {
                     info!("任务数据加载成功，共 {} 个日期", data.tasks.len());
                     return data;
                 }
@@ -65,7 +66,12 @@ impl TaskData {
     }
 
     fn get_data_path() -> PathBuf {
-        let mut path = PathBuf::from(".");
+        // 获取当前可执行文件所在目录
+        let exe_path = env::current_exe().expect("无法获取可执行文件路径");
+        let exe_dir = exe_path.parent().expect("无法获取可执行文件所在目录");
+        
+        // 在 exe 所在目录下创建 data 目录
+        let mut path = exe_dir.to_path_buf();
         path.push("data");
         path.push("tasks.json");
         path
