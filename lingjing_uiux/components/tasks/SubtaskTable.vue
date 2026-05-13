@@ -39,12 +39,7 @@
             </div>
           </td>
           <td>
-            <input
-              type="date"
-              class="inline-date"
-              :value="subtask.created_at"
-              @change="$emit('update', { ...subtask, created_at: ($event.target as HTMLInputElement).value })"
-            />
+            <span class="date-text" v-if="subtask.created_at">{{ formatDate(subtask.created_at) }}</span>
           </td>
           <td>
             <input
@@ -105,7 +100,7 @@
               @mousedown.stop
               @click.stop
             >
-              <i class="fas fa-trash"></i>
+              <i class="fas fa-trash">删除</i>
             </button>
           </td>
         </tr>

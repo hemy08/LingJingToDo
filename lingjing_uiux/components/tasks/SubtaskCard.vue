@@ -12,9 +12,10 @@
           v-model="editTitle"
           class="edit-input"
           @blur="saveEdit"
-          @keyup.enter="saveEdit"
-          @keyup.escape="cancelEdit"
+          @keyup.enter.prevent="saveEdit"
+          @keyup.escape.prevent="cancelEdit"
           ref="editInput"
+          @click.stop
         />
       <button 
         class="subtask-delete-btn"
@@ -22,20 +23,15 @@
         @mousedown.stop
         @click.stop
       >
-        <i class="fas fa-trash"></i>
+        <i class="fas fa-trash">删除</i>
       </button>
     </div>
     <div class="subtask-card-body">
       <div class="task-meta-row">
-        <!-- 起始日期 -->
-        <div class="meta-item">
+        <!-- 创建日期 -->
+        <div class="meta-item" v-if="subtask.created_at">
           <label class="meta-label">🕐</label>
-          <input
-            type="date"
-            class="meta-select"
-            :value="subtask.created_at"
-            @change="$emit('update', { ...subtask, created_at: ($event.target as HTMLInputElement).value })"
-          />
+          <span class="meta-text" :title="subtask.created_at">{{ formatDate(subtask.created_at) }}</span>
         </div>
         <!-- 截止日期 -->
         <div class="meta-item">
@@ -104,7 +100,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, nextTick } from 'vue'
 
 const props = defineProps<{
   subtask: Task
@@ -124,11 +120,18 @@ import type { Task, TaskStatus, TaskType, TaskPriority } from '../../types'
 // 编辑状态
 const isEditing = ref(false)
 const editTitle = ref('')
+const editInput = ref<HTMLInputElement | null>(null)
 
 // 开始编辑
 const startEdit = () => {
   isEditing.value = true
   editTitle.value = props.subtask.title
+  // 下一帧聚焦输入框
+  nextTick(() => {
+    if (editInput.value) {
+      editInput.value.focus()
+    }
+  })
 }
 
 // 保存编辑
@@ -142,6 +145,7 @@ const saveEdit = () => {
 // 取消编辑
 const cancelEdit = () => {
   isEditing.value = false
+  editTitle.value = props.subtask.title
 }
 
 // 格式化日期

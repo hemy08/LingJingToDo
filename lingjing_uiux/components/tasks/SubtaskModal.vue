@@ -103,6 +103,7 @@ const handleSubmit = () => {
     subtasks: []
   }
 
+  console.log("newSubtask", newSubtask)
   emit('submit', newSubtask)
 }
 </script>

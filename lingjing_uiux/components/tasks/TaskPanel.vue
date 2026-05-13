@@ -66,7 +66,7 @@
             :statuses="statuses"
             :types="types"
             :priorities="priorities"
-            @update="handleUpdateTask($event)"
+            @update="handleUpdateSubtask(task.id, $event)"
             @delete="handleDeleteSubtask(task.id, $event)"
           />
           <div v-else class="subtasks-list">
@@ -77,7 +77,7 @@
               :statuses="statuses"
               :types="types"
               :priorities="priorities"
-              @update="handleUpdateTask($event)"
+              @update="handleUpdateSubtask(task.id, $event)"
               @delete="handleDeleteSubtask(task.id, $event)"
             />
           </div>
@@ -114,7 +114,7 @@
             :statuses="statuses"
             :types="types"
             :priorities="priorities"
-            @update="handleUpdateTask($event)"
+            @update="handleUpdateSubtask(task.id, $event)"
             @delete="handleDeleteSubtask(task.id, $event)"
           />
           <div v-else class="subtasks-list">
@@ -125,7 +125,7 @@
               :statuses="statuses"
               :types="types"
               :priorities="priorities"
-              @update="handleUpdateTask($event)"
+              @update="handleUpdateSubtask(task.id, $event)"
               @delete="handleDeleteSubtask(task.id, $event)"
             />
           </div>
@@ -161,7 +161,7 @@
             :statuses="statuses"
             :types="types"
             :priorities="priorities"
-            @update="handleUpdateTask($event)"
+            @update="handleUpdateSubtask(task.id, $event)"
             @delete="handleDeleteSubtask(task.id, $event)"
           />
           <div v-else class="subtasks-list">
@@ -172,7 +172,7 @@
               :statuses="statuses"
               :types="types"
               :priorities="priorities"
-              @update="handleUpdateTask($event)"
+              @update="handleUpdateSubtask(task.id, $event)"
               @delete="handleDeleteSubtask(task.id, $event)"
             />
           </div>
@@ -201,10 +201,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, toRef } from 'vue'
 import type { Task, TaskStatus, TaskType, TaskPriority } from '../../types'
 import { taskApi } from '../../connections/task_apis'
-
 import TaskAddArea from './TaskAddArea.vue'
 import SettingsPanel from './SettingsPanel.vue'
 import TaskCard from './TaskCard.vue'
@@ -307,6 +306,29 @@ const addSubtask = (newSubtask: Task) => {
 
   handleUpdateTask(updatedTask)
   closeSubtaskModal()
+}
+
+const handleUpdateSubtaskApi = async (parentId: string, subtask: Task) => {
+  try {
+    const updatedTasks = await taskApi.updateSubtask(
+        props.currentDate || '',
+        parentId,
+        subtask
+    )
+    if (updatedTasks) {
+      props.tasks.length = 0
+      props.tasks.push(...updatedTasks)
+    }
+  } catch (error) {
+    console.error('更新子任务失败:', error)
+  }
+}
+
+const handleUpdateSubtask = async (parentId: string, subtask: Task) => {
+  const parentTask = props.tasks.find(t => String(t.id) === String(parentId))
+  if (!parentTask) return
+
+  await handleUpdateSubtaskApi(parentId, subtask)
 }
 
 const handleDeleteSubtask = (parentId: string, subtaskId: string) => {
