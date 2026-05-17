@@ -1,9 +1,26 @@
 <script setup lang="ts">
 
 // 使用对话框 composable
-import {getCurrentWindow} from "@tauri-apps/api/window";
+import { ref, reactive, onMounted, watch, computed } from 'vue'
+import { useDialog } from '../composables/useDialog'
+import { taskApi } from '../connections/task_apis'
+import { invoke } from "@tauri-apps/api/core"
+import type { Task, TaskStatus, TaskType, TaskPriority } from '../types'
+import CalendarPanel from './calendar/CalendarPanel.vue'
+import TaskPanel from './tasks/TaskPanel.vue'
+import StatusModal from './config/StatusModal.vue'
+import ThemeManager from './themes/ThemeManager.vue'
+import StatusBar from './common/StatusBar.vue'
+import TypeModal from './config/TypeModal.vue'
+import PriorityModal from './config/PriorityModal.vue'
+// 新增组件
+import CustomTitleBar from './common/CustomTitleBar.vue'
+import TaskStatistics from './tasks/TaskStatistics.vue'
+import TaskTree from './tasks/TaskTree.vue'
+import BottomStatusBar from './common/BottomStatusBar.vue'
 
 const { dialogState, handleButtonClick, handleOverlayClick, showConfirmWithClose } = useDialog()
+import { exit } from '@tauri-apps/plugin-process';
 
 // Splitter 拖动相关
 const isSplitterActive = ref(false)
@@ -32,32 +49,6 @@ const startSplitterDrag = (event: MouseEvent) => {
 
   document.addEventListener('mousemove', handleMouseMove)
   document.addEventListener('mouseup', handleMouseUp)
-}
-
-// 选中的任务ID
-
-// 可用的emoji列表
-import { ref, reactive, onMounted, watch } from 'vue'
-import { useDialog } from '../composables/useDialog'
-import { taskApi } from '../connections/task_apis'
-import CalendarPanel from './calendar/CalendarPanel.vue'
-import TaskPanel from './tasks/TaskPanel.vue'
-import StatusModal from './config/StatusModal.vue'
-import ThemeManager from './themes/ThemeManager.vue'
-import StatusBar from './common/StatusBar.vue'
-import TypeModal from './config/TypeModal.vue'
-import PriorityModal from './config/PriorityModal.vue'
-import {invoke} from "@tauri-apps/api/core";
-import type { TaskStatus, TaskType, TaskPriority } from '../types'
-import { exit } from '@tauri-apps/plugin-process';
-
-
-const minimizeWindow = async () => {
-  await getCurrentWindow().minimize();
-}
-
-const maximizeWindow = async () => {
-  await getCurrentWindow().toggleMaximize();
 }
 
 const closeWindow = async () => {
@@ -118,6 +109,116 @@ const config = reactive<{
 const todoData = reactive<Record<string, any[]>>({})
 const currentDate = ref('')
 const isDirty = ref(false)
+
+// 计算从当前日期往后的所有任务
+const tasksFromDate = computed(() => {
+  if (!currentDate.value) return []
+
+  // 获取所有日期并排序
+  const allDates = Object.keys(todoData).sort()
+
+  // 过滤出从当前日期开始的日期
+  const datesFromCurrent = allDates.filter(date => date >= currentDate.value)
+
+  // 合并所有任务
+  const allTasks: Task[] = []
+  datesFromCurrent.forEach(date => {
+    const tasks = todoData[date] || []
+    allTasks.push(...tasks)
+  })
+
+  return allTasks
+})
+
+// 处理任务添加
+const handleTaskAdded = async (newTask: Task) => {
+  try {
+    const date = currentDate.value || new Date().toISOString().split('T')[0]
+    const updatedTasks = await taskApi.addTask(date, newTask)
+
+    // 更新 todoData
+    if (!todoData[date]) {
+      todoData[date] = []
+    }
+    todoData[date].length = 0
+    todoData[date].push(...updatedTasks)
+
+    // 标记数据已修改
+    isDirty.value = true
+  } catch (error) {
+    console.error('添加任务失败:', error)
+  }
+}
+
+// 处理任务更新
+const handleTaskUpdated = async (updatedTask: Task) => {
+  try {
+    // 找到任务所属的日期
+    let taskDate = currentDate.value
+    if (!taskDate) {
+      // 在所有日期中查找任务
+      for (const [date, tasks] of Object.entries(todoData)) {
+        if (tasks.some(t => t.id === updatedTask.id)) {
+          taskDate = date
+          break
+        }
+      }
+    }
+
+    if (!taskDate) {
+      console.error('找不到任务所属日期')
+      return
+    }
+
+    const updatedTasks = await taskApi.updateTask(taskDate, updatedTask)
+
+    // 更新 todoData
+    if (updatedTasks && todoData[taskDate]) {
+      todoData[taskDate].length = 0
+      todoData[taskDate].push(...updatedTasks)
+    }
+
+    // 标记数据已修改
+    isDirty.value = true
+  } catch (error) {
+    console.error('更新任务失败:', error)
+  }
+}
+
+// 处理任务删除
+const handleTaskDeleted = async (taskId: string) => {
+  try {
+    // 找到任务所属的日期
+    let taskDate = currentDate.value
+    if (!taskDate) {
+      // 在所有日期中查找任务
+      for (const [date, tasks] of Object.entries(todoData)) {
+        if (tasks.some(t => t.id === taskId)) {
+          taskDate = date
+          break
+        }
+      }
+    }
+
+    if (!taskDate) {
+      console.error('找不到任务所属日期')
+      return
+    }
+
+    const updatedTasks = await taskApi.deleteTask(taskDate, taskId)
+
+    // 更新 todoData
+    if (updatedTasks && todoData[taskDate]) {
+      todoData[taskDate].length = 0
+      todoData[taskDate].push(...updatedTasks)
+    }
+
+    // 标记数据已修改
+    isDirty.value = true
+  } catch (error) {
+    console.error('删除任务失败:', error)
+  }
+}
 
 // 状态提示
 const statusVisible = ref(false)
@@ -204,12 +305,6 @@ watch(() => todoData, () => {
   fetchTaskStatistics()
 }, { deep: true })
 
-// 获取文件名（从完整路径中提取）
-const getFileName = (filePath: string) => {
-  const parts = filePath.split(/[/\\]/)
-  return parts[parts.length - 1] || filePath
-}
-
 // 打开文件
 const handleOpenFile = async () => {
   try {
@@ -229,8 +324,16 @@ const handleOpenFile = async () => {
                        filePath.endsWith('.xlsx') || filePath.endsWith('.xls') ? 'excel' : 'xml'
 
       try {
-        const result = await invoke('open_file', { file_path: filePath, file_type: fileType })
-        todoData.value = result as any
+        const result = await invoke('open_file', { filePath: filePath, fileType: fileType })
+        // 清空现有数据
+        Object.keys(todoData).forEach(key => delete todoData[key])
+        // 加载新数据
+        const data = result as Record<string, any[]>
+        Object.assign(todoData, data)
+
+        // 同步到后端
+        await taskApi.importTasks(todoData)
+
         currentFilePath.value = filePath
         currentFileType.value = fileType
         isDirty.value = false
@@ -249,11 +352,11 @@ const handleSaveFile = async () => {
   if (currentFilePath.value) {
     try {
       await invoke('save_file', {
-        file_path: currentFilePath.value,
-        file_type: currentFileType.value,
-        data: todoData.value
+        filePath: currentFilePath.value,
+        fileType: currentFileType.value,
+        data: todoData
       })
-      console.log('文件保存成功', todoData.value)
+      console.log('文件保存成功', todoData)
       isDirty.value = false
       showStatus('保存成功', `文件已保存到 ${currentFilePath.value}`, 'success')
     } catch (error) {
@@ -282,9 +385,9 @@ const handleSaveAs = async () => {
 
       try {
         await invoke('save_file', {
-          file_path: filePath,
-          file_type: fileType,
-          data: todoData.value
+          filePath: filePath,
+          fileType: fileType,
+          data: todoData
         })
         currentFilePath.value = filePath
         currentFileType.value = fileType
@@ -323,29 +426,7 @@ onMounted(async () => {
 <template>
   <div class="app-wrapper">
     <!-- 自定义标题栏 -->
-    <div class="app-titlebar" data-tauri-drag-region>
-      <div class="app-titlebar-left" data-tauri-drag-region>
-        <span class="app-icon">✨</span>
-        <span class="app-title">灵境待办</span>
-      </div>
-      <div class="titlebar-right">
-        <button class="titlebar-btn" @click="minimizeWindow" title="最小化">
-          <svg width="12" height="12" viewBox="0 0 12 12">
-            <rect y="5" width="12" height="2" fill="currentColor"/>
-          </svg>
-        </button>
-        <button class="titlebar-btn" @click="maximizeWindow" title="最大化">
-          <svg width="12" height="12" viewBox="0 0 12 12">
-            <rect x="1" y="1" width="10" height="10" stroke="currentColor" stroke-width="2" fill="none"/>
-          </svg>
-        </button>
-        <button class="titlebar-btn close-btn" @click="closeWindow" title="关闭">
-          <svg width="12" height="12" viewBox="0 0 12 12">
-            <path d="M1 1L11 11M11 1L1 11" stroke="currentColor" stroke-width="2"/>
-          </svg>
-        </button>
-      </div>
-    </div>
+    <CustomTitleBar @close="closeWindow" />
 
     <div class="app-container">
       <!-- 主内容区域 -->
@@ -354,63 +435,11 @@ onMounted(async () => {
         <CalendarPanel :current-date="currentDate" @date-change="handleDateChange" />
 
         <!-- 任务统计 -->
-        <div class="task-statistics">
-          <div class="stat-item">
-            <i class="fas fa-list-check"></i>
-            <span class="stat-label">总任务</span>
-            <span class="stat-value">{{ taskStatistics.total_count }}</span>
-          </div>
-          <div class="stat-item">
-            <i class="fas fa-tasks"></i>
-            <span class="stat-label">主任务</span>
-            <span class="stat-value">{{ taskStatistics.main_task_count }}</span>
-          </div>
-          <div class="stat-item">
-            <i class="fas fa-sitemap"></i>
-            <span class="stat-label">子任务</span>
-            <span class="stat-value">{{ taskStatistics.subtask_count }}</span>
-          </div>
-          <div class="stat-item stat-warning" v-if="taskStatistics.due_today_count > 0">
-            <i class="fas fa-clock"></i>
-            <span class="stat-label">今天截止</span>
-            <span class="stat-value">{{ taskStatistics.due_today_count }}</span>
-          </div>
-          <div class="stat-item stat-danger" v-if="taskStatistics.overdue_count > 0">
-            <i class="fas fa-exclamation-circle"></i>
-            <span class="stat-label">已经延期</span>
-            <span class="stat-value">{{ taskStatistics.overdue_count }}</span>
-          </div>
-        </div>
-
-        <div class="task-tree">
-          <div class="task-tree-title"><i class="fas fa-diagram-project"></i> 任务导航树</div>
-          <div class="task-tree-container">
-            <div
-                v-for="task in todoData[currentDate] || []"
-                :key="task.id"
-                class="tree-node"
-
-
-            >
-              📌 {{ task.title }}
-              <!-- 子任务 -->
-              <div v-if="task.subtasks && task.subtasks.length > 0" class="subtask-nodes">
-                <div
-                    v-for="subtask in task.subtasks"
-                    :key="subtask.id"
-                    class="tree-node subtask-node"
-
-
-                >
-                  └─ {{ subtask.title }}
-                </div>
-              </div>
-            </div>
-            <div v-if="!todoData[currentDate]?.length" class="empty-tree">暂无任务</div>
-          </div>
-        </div>
-      </div>
-      <div class="splitter" :class="{ active: isSplitterActive }" @mousedown="startSplitterDrag"></div>
+        <TaskStatistics :statistics="taskStatistics" />
+·
+        <!-- 任务树 -->
+        <TaskTree :tasks="tasksFromDate" />
+      </div>      <div class="splitter" :class="{ active: isSplitterActive }" @mousedown="startSplitterDrag"></div>
       <div class="main-content">
         <div class="toolbar">
           <div class="toolbar-left">
@@ -428,35 +457,25 @@ onMounted(async () => {
           </div>
         </div>
         <TaskPanel
-            :tasks="todoData[currentDate] || []"
+            :tasks="tasksFromDate"
             :current-date="currentDate"
             :statuses="config.statuses"
             :types="config.types"
             :priorities="config.priorities"
             v-model:is-dirty="isDirty"
+            @task-added="handleTaskAdded"
+            @task-updated="handleTaskUpdated"
+            @task-deleted="handleTaskDeleted"
         />
       </div>
       </div>
 
       <!-- 底部状态栏 -->
-      <div class="bottom-status-bar">
-        <div class="status-item">
-          <i class="fas fa-calendar-alt"></i>
-          <span>当前日期: {{ currentDate }}</span>
-        </div>
-        <div class="status-item" v-if="currentFilePath">
-          <i class="fas fa-file-alt"></i>
-          <span class="file-path" :title="currentFilePath">{{ getFileName(currentFilePath) }}</span>
-        </div>
-        <div class="status-item" v-else>
-          <i class="fas fa-file"></i>
-          <span>未保存文件</span>
-        </div>
-        <div class="status-item" v-if="isDirty">
-          <i class="fas fa-exclamation-circle"></i>
-          <span>未保存</span>
-        </div>
-      </div>
+      <BottomStatusBar
+        :current-date="currentDate"
+        :file-path="currentFilePath"
+        :is-dirty="isDirty"
+      />
 
       <!-- 主题模态框 -->
       <ThemeManager
