@@ -1,6 +1,7 @@
 import { invoke } from '@tauri-apps/api/core'
 import type { RecentFile } from '../types'
-import { FileType } from '../types'
+// FileType 暂时未使用，但保留以备后用
+// import { FileType } from '../types'
 
 /**
  * 文件操作 API

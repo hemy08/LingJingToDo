@@ -38,7 +38,7 @@ const layoutMasonry = () => {
   const columnHeights = new Array(columnCount).fill(0)
   
   // 为每个元素计算位置
-  items.forEach((item, index) => {
+  items.forEach((item) => {
     // 找到最短的列
     const minHeight = Math.min(...columnHeights)
     const columnIndex = columnHeights.indexOf(minHeight)

@@ -29,7 +29,15 @@
 </template>
 
 <script setup lang="ts">
-import type { TaskStatistics as ITaskStatistics } from '../../types.ts'
+// 定义统计接口
+interface ITaskStatistics {
+  total_count: number
+  main_task_count: number
+  subtask_count: number
+  due_today_count: number
+  overdue_count: number
+  completed_count?: number
+}
 
 defineProps<{
   statistics: ITaskStatistics
