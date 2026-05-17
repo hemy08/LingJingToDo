@@ -128,12 +128,12 @@
       </div>
 
       <!-- 子任务区域 -->
-      <div v-if="task.subtasks && task.subtasks.length > 0" class="subtasks-section">
+      <div v-if="taskSubtasks && taskSubtasks.length > 0" class="subtasks-section">
         <div class="subtasks-header">
           <i class="fas fa-tasks"></i>
-          子任务 ({{ task.subtasks.length }})
+          子任务 ({{ taskSubtasks.length }})
         </div>
-        <slot name="subtasks" :subtasks="task.subtasks" :display-mode="subtaskDisplayMode"></slot>
+        <slot name="subtasks" :subtasks="taskSubtasks" :display-mode="subtaskDisplayMode"></slot>
       </div>
     </div>
   </div>
@@ -172,12 +172,17 @@ const isHighlighted = computed(() =>
   taskHighlight.isHighlighted(props.task.id)
 )
 
+// 子任务列表（响应式）
+const taskSubtasks = computed(() => {
+  return props.task.subtasks || []
+})
+
 // 检查是否可以关闭任务
 const canCloseTask = computed(() => {
-  if (!props.task.subtasks || props.task.subtasks.length === 0) {
+  if (!taskSubtasks.value || taskSubtasks.value.length === 0) {
     return true
   }
-  return props.task.subtasks.every(subtask => 
+  return taskSubtasks.value.every(subtask => 
     subtask.status_id === 'st_done' || subtask.status_id === 'st_closed'
   )
 })

@@ -74,6 +74,8 @@
             :parent-id="task.id"
             :current-date="currentDate || ''"
             :tasks="tasks"
+            @update="handleSubtaskCardUpdate(task.id, $event)"
+            @delete="handleSubtaskCardDelete(task.id, $event)"
           />
           <div v-else class="subtasks-list">
             <SubtaskCard
@@ -129,6 +131,8 @@
               :parent-id="task.id"
               :current-date="currentDate || ''"
               :tasks="tasks"
+              @update="handleSubtaskCardUpdate(task.id, $event)"
+              @delete="handleSubtaskCardDelete(task.id, $event)"
             />
             <div v-else class="subtasks-list">
               <SubtaskCard
@@ -183,6 +187,8 @@
               :parent-id="task.id"
               :current-date="currentDate || ''"
               :tasks="tasks"
+              @update="handleSubtaskCardUpdate(task.id, $event)"
+              @delete="handleSubtaskCardDelete(task.id, $event)"
             />
             <div v-else class="subtasks-list">
               <SubtaskCard

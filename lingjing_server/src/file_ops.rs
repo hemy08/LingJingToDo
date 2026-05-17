@@ -456,7 +456,6 @@ fn parse_xml(content: &str) -> Result<HashMap<String, Vec<Task>>, String> {
         .map_err(|e| format!("创建正则表达式失败: {}", e))?;
 
     // 分割内容为日期块
-    let mut current_pos = 0;
     let mut date_blocks: Vec<(String, String)> = Vec::new();
 
     for date_captures in date_regex.captures_iter(content) {
@@ -469,7 +468,6 @@ fn parse_xml(content: &str) -> Result<HashMap<String, Vec<Task>>, String> {
             let end_pos = start_pos + end_match;
             let date_content = content[start_pos..end_pos].to_string();
             date_blocks.push((date_value, date_content));
-            current_pos = end_pos + 7; // 7 是 </date> 的长度
         }
     }
 

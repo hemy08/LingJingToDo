@@ -112,7 +112,6 @@
 <script setup lang="ts">
 import { type Ref } from 'vue'
 import type { Task, TaskStatus, TaskType, TaskPriority } from '../../types'
-import { handleUpdateSubtask, handleDeleteSubtask } from './tasks_common'
 
 const props = defineProps<{
   subtasks: Task[]
@@ -124,24 +123,22 @@ const props = defineProps<{
   tasks: Task[] | Ref<Task[]>
 }>()
 
+// 确保 props 被使用（模板中会自动解包使用）
+void props
+
+const emit = defineEmits<{
+  'update': [subtask: Task]
+  'delete': [subtaskId: string]
+}>()
+
 // 处理子任务更新
 const onUpdateSubtask = (updatedSubtask: Task) => {
-  handleUpdateSubtask(
-    props.currentDate,
-    props.parentId,
-    updatedSubtask,
-    props.tasks
-  )
+  emit('update', updatedSubtask)
 }
 
 // 处理子任务删除
 const onDeleteSubtask = (subtaskId: string) => {
-  handleDeleteSubtask(
-    props.currentDate,
-    props.parentId,
-    subtaskId,
-    props.tasks
-  )
+  emit('delete', subtaskId)
 }
 
 // 处理标题输入

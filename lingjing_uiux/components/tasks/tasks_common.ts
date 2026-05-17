@@ -17,9 +17,13 @@ export const handleUpdateTask = async (
   try {
     const updatedTasks = await taskApi.updateTask(currentDate, updatedTask)
     if (updatedTasks) {
-      const taskArray = Array.isArray(tasks) ? tasks : tasks.value
-      taskArray.length = 0
-      taskArray.push(...updatedTasks)
+      // 使用响应式更新方式
+      if (Array.isArray(tasks)) {
+        tasks.length = 0
+        tasks.push(...updatedTasks)
+      } else {
+        tasks.value = updatedTasks
+      }
     }
   } catch (error) {
     console.error('更新任务失败:', error)
@@ -41,9 +45,13 @@ export const handleDeleteTask = async (
   try {
     const updatedTasks = await taskApi.deleteTask(currentDate, taskId)
     if (updatedTasks) {
-      const taskArray = Array.isArray(tasks) ? tasks : tasks.value
-      taskArray.length = 0
-      taskArray.push(...updatedTasks)
+      // 使用响应式更新方式
+      if (Array.isArray(tasks)) {
+        tasks.length = 0
+        tasks.push(...updatedTasks)
+      } else {
+        tasks.value = updatedTasks
+      }
     }
   } catch (error) {
     console.error('删除任务失败:', error)
@@ -65,9 +73,13 @@ export const handleReorderTasks = async (
   try {
     const updatedTasks = await taskApi.reorderTasks(currentDate, reorderedTasks)
     if (updatedTasks) {
-      const taskArray = Array.isArray(tasks) ? tasks : tasks.value
-      taskArray.length = 0
-      taskArray.push(...updatedTasks)
+      // 使用响应式更新方式
+      if (Array.isArray(tasks)) {
+        tasks.length = 0
+        tasks.push(...updatedTasks)
+      } else {
+        tasks.value = updatedTasks
+      }
     }
   } catch (error) {
     console.error('重排序任务失败:', error)
@@ -95,9 +107,15 @@ export const handleUpdateSubtask = async (
       subtask
     )
     if (updatedTasks) {
-      const taskArray = Array.isArray(tasks) ? tasks : tasks.value
-      taskArray.length = 0
-      taskArray.push(...updatedTasks)
+      // 使用响应式更新方式
+      if (Array.isArray(tasks)) {
+        // 如果是普通数组，无法直接赋值，需要清空后添加
+        tasks.length = 0
+        tasks.push(...updatedTasks)
+      } else {
+        // 如果是 Ref，直接赋值新数组
+        tasks.value = updatedTasks
+      }
     }
   } catch (error) {
     console.error('更新子任务失败:', error)
@@ -130,8 +148,15 @@ export const handleDeleteSubtask = async (
   try {
     const updatedTasks = await taskApi.updateTask(currentDate, updatedTask)
     if (updatedTasks) {
-      taskArray.length = 0
-      taskArray.push(...updatedTasks)
+      // 使用响应式更新方式
+      if (Array.isArray(tasks)) {
+        // 如果是普通数组，无法直接赋值，需要清空后添加
+        tasks.length = 0
+        tasks.push(...updatedTasks)
+      } else {
+        // 如果是 Ref，直接赋值新数组
+        tasks.value = updatedTasks
+      }
     }
   } catch (error) {
     console.error('删除子任务失败:', error)

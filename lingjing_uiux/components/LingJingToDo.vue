@@ -140,8 +140,8 @@ const handleTaskAdded = async (newTask: Task) => {
     if (!todoData[date]) {
       todoData[date] = []
     }
-    todoData[date].length = 0
-    todoData[date].push(...updatedTasks)
+    // 直接赋值新数组，触发响应式更新
+    todoData[date] = updatedTasks
 
     // 标记数据已修改
     isDirty.value = true
@@ -172,10 +172,10 @@ const handleTaskUpdated = async (updatedTask: Task) => {
 
     const updatedTasks = await taskApi.updateTask(taskDate, updatedTask)
 
-    // 更新 todoData
+    // 更新 todoData - 使用响应式更新方式
     if (updatedTasks && todoData[taskDate]) {
-      todoData[taskDate].length = 0
-      todoData[taskDate].push(...updatedTasks)
+      // 直接赋值新数组，触发响应式更新
+      todoData[taskDate] = updatedTasks
     }
 
     // 标记数据已修改
@@ -207,10 +207,10 @@ const handleTaskDeleted = async (taskId: string) => {
 
     const updatedTasks = await taskApi.deleteTask(taskDate, taskId)
 
-    // 更新 todoData
+    // 更新 todoData - 使用响应式更新方式
     if (updatedTasks && todoData[taskDate]) {
-      todoData[taskDate].length = 0
-      todoData[taskDate].push(...updatedTasks)
+      // 直接赋值新数组，触发响应式更新
+      todoData[taskDate] = updatedTasks
     }
 
     // 标记数据已修改
