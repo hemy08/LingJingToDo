@@ -15,8 +15,8 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import type { Task, TaskStatus } from '../../types'
-import { taskApi } from '../../connections/task_apis'
+import type { Task, TaskStatus } from '../../../types.ts'
+import { taskApi } from '../../../connections/task_apis.ts'
 
 const props = defineProps<{
   statuses: TaskStatus[]

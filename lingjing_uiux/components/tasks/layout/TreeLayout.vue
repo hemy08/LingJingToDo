@@ -1,33 +1,24 @@
 <template>
-  <div ref="layoutRef" class="task-list list-layout" :style="listStyle">
+  <div ref="layoutRef" class="task-list tree-layout">
     <slot></slot>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, watch, computed, type Ref } from 'vue'
+import { ref, onMounted, watch, type Ref } from 'vue'
 import Sortable from 'sortablejs'
-import type { Task } from '../../types'
-import { handleReorderTasks } from './tasks_common'
+import type { Task } from '../../../types.ts'
+import { handleReorderTasks } from '../common/tasks_common.ts'
 
 const props = defineProps<{
   tasks: Task[]
   dragMode: 'insert' | 'swap'
-  columns?: number
   currentDate: string
   tasksRef: Task[] | Ref<Task[]>
 }>()
 
 const layoutRef = ref<HTMLElement | null>(null)
 let sortableInstance: Sortable | null = null
-
-// 计算列表样式
-const listStyle = computed(() => {
-  const cols = props.columns || 2
-  return {
-    '--list-columns': cols
-  }
-})
 
 const initSortable = () => {
   if (!layoutRef.value) return

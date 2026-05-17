@@ -5,10 +5,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, watch, onUpdated, nextTick, type Ref } from 'vue'
+import { ref, onMounted, watch, onUpdated, nextTick, onUnmounted, type Ref } from 'vue'
 import Sortable from 'sortablejs'
-import type { Task } from '../../types'
-import { handleReorderTasks } from './tasks_common'
+import type { Task } from '../../../types.ts'
+import { handleReorderTasks } from '../common/tasks_common.ts'
 
 const props = defineProps<{
   tasks: Task[]
@@ -31,8 +31,20 @@ const layoutMasonry = () => {
   
   const containerWidth = container.clientWidth
   const gap = 16
-  const columnCount = 2
+  const minColumnWidth = 400 // 最小列宽，确保任务卡片有足够宽度显示内容
+  
+  // 根据容器宽度自适应列数，但最多2列
+  const calculatedColumns = Math.max(1, Math.floor((containerWidth + gap) / (minColumnWidth + gap)))
+  const columnCount = Math.min(2, calculatedColumns) // 最多2列
   const columnWidth = (containerWidth - gap * (columnCount - 1)) / columnCount
+  
+  console.log('瀑布流布局:', {
+    containerWidth,
+    minColumnWidth,
+    calculatedColumns,
+    columnCount,
+    columnWidth
+  })
   
   // 初始化列高度数组
   const columnHeights = new Array(columnCount).fill(0)
@@ -101,12 +113,25 @@ onMounted(() => {
   nextTick(() => {
     layoutMasonry()
   })
+  
+  // 监听窗口大小变化
+  window.addEventListener('resize', handleResize)
 })
 
 onUpdated(() => {
   nextTick(() => {
     layoutMasonry()
   })
+})
+
+// 窗口大小变化处理
+const handleResize = () => {
+  layoutMasonry()
+}
+
+// 组件卸载时移除监听
+onUnmounted(() => {
+  window.removeEventListener('resize', handleResize)
 })
 
 watch(() => props.dragMode, () => {

@@ -18,14 +18,8 @@
       </span>
       <span v-else class="expand-icon-placeholder"></span>
       
-      <!-- 任务图标 -->
-      <span class="task-icon">{{ getTaskIcon() }}</span>
-      
       <!-- 任务标题 -->
       <span class="task-title">{{ task.title }}</span>
-      
-      <!-- 状态标签 -->
-      <span class="task-status">{{ getStatusEmoji() }}</span>
     </div>
     
     <!-- 子任务列表 -->
@@ -43,8 +37,8 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-import { useTaskHighlightStore } from '../../stores/taskHighlight'
-import type { Task } from '../../types'
+import { useTaskHighlightStore } from '../../../stores/taskHighlight.ts'
+import type { Task } from '../../../types.ts'
 
 interface Props {
   task: Task
@@ -76,28 +70,6 @@ const isHighlighted = computed(() =>
 const isActive = computed(() => 
   taskHighlight.highlightedTaskId === props.task.id
 )
-
-// 获取任务图标
-function getTaskIcon(): string {
-  if (hasSubtasks.value) {
-    return '📁'
-  }
-  return '📄'
-}
-
-// 获取状态图标
-function getStatusEmoji(): string {
-  switch (props.task.status_id) {
-    case 'completed':
-      return '✅'
-    case 'in_progress':
-      return '🔄'
-    case 'pending':
-      return '⏳'
-    default:
-      return '📋'
-  }
-}
 
 // 切换展开/折叠
 function toggleExpand() {
@@ -161,22 +133,12 @@ function handleClick() {
   width: 16px;
 }
 
-.task-icon {
-  font-size: 16px;
-  flex-shrink: 0;
-}
-
 .task-title {
   flex: 1;
   font-size: 14px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-}
-
-.task-status {
-  font-size: 14px;
-  flex-shrink: 0;
 }
 
 .subtasks {

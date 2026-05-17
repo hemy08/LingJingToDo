@@ -141,8 +141,8 @@
 
 <script setup lang="ts">
 import { ref, computed, nextTick, type Ref } from 'vue'
-import type { Task, TaskStatus, TaskType, TaskPriority } from '../../types'
-import { useTaskHighlightStore } from '../../stores/taskHighlight'
+import type { Task, TaskStatus, TaskType, TaskPriority } from '../../../types.ts'
+import { useTaskHighlightStore } from '../../../stores/taskHighlight.ts'
 
 const props = defineProps<{
   task: Task

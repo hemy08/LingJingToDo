@@ -111,7 +111,7 @@
 
 <script setup lang="ts">
 import { type Ref } from 'vue'
-import type { Task, TaskStatus, TaskType, TaskPriority } from '../../types'
+import type { Task, TaskStatus, TaskType, TaskPriority } from '../../../types.ts'
 
 const props = defineProps<{
   subtasks: Task[]

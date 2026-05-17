@@ -235,15 +235,15 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import type { Task, TaskStatus, TaskType, TaskPriority } from '../../types'
-import TaskAddArea from './TaskAddArea.vue'
-import SettingsPanel from './SettingsPanel.vue'
-import TaskCard from './TaskCard.vue'
-import SubtaskCard from './SubtaskCard.vue'
-import SubtaskTable from './SubtaskTable.vue'
-import MasonryLayout from './MasonryLayout.vue'
-import ListLayout from './ListLayout.vue'
-import TreeLayout from './TreeLayout.vue'
-import SubtaskModal from './SubtaskModal.vue'
+import TaskAddArea from './common/TaskAddArea.vue'
+import SettingsPanel from './common/SettingsPanel.vue'
+import TaskCard from './common/TaskCard.vue'
+import SubtaskCard from './subtask/SubtaskCard.vue'
+import SubtaskTable from './subtask/SubtaskTable.vue'
+import MasonryLayout from './layout/MasonryLayout.vue'
+import ListLayout from './layout/ListLayout.vue'
+import TreeLayout from './layout/TreeLayout.vue'
+import SubtaskModal from './subtask/SubtaskModal.vue'
 const props = defineProps<{
   selectedTaskId?: string | null
   tasks: Task[]

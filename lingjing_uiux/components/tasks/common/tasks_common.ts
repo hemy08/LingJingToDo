@@ -1,6 +1,6 @@
 import { type Ref } from 'vue'
-import type { Task } from '../../types'
-import { taskApi } from '../../connections/task_apis'
+import type { Task } from '../../../types.ts'
+import { taskApi } from '../../../connections/task_apis.ts'
 
 /**
  * 更新任务

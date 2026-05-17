@@ -2,7 +2,7 @@
 import { ref } from 'vue'
 import { getCurrentWindow  } from '@tauri-apps/api/window';
 import LingJingToDo from './components/LingJingToDo.vue'
-import HistoryFiles from './components/HistoryFiles.vue'
+import HistoryFiles from './components/history/HistoryFiles.vue'
 
 // 窗口控制 - 使用 Tauri v2 API
 const minimizeWindow = async () => {
@@ -37,6 +37,60 @@ const importExcel = async () => {
       filters: [{
         name: 'Excel',
         extensions: ['xlsx', 'xls']
+      }]
+    })
+
+    if (selected && typeof selected === 'string') {
+      // 添加到历史记录
+      historyFilesRef.value?.addHistoryFile(selected)
+      
+      selectedFile.value = selected
+      showMainApp.value = true
+      // 进入主界面后自动最大化窗口
+      await maximize()
+    }
+  } catch (error) {
+    console.error('导入文件失败:', error)
+  }
+}
+
+// 导入 JSON 文件
+const importJson = async () => {
+  try {
+    // 使用 Tauri 的文件对话框 API
+    const { open } = await import('@tauri-apps/plugin-dialog')
+    const selected = await open({
+      multiple: false,
+      filters: [{
+        name: 'JSON',
+        extensions: ['json']
+      }]
+    })
+
+    if (selected && typeof selected === 'string') {
+      // 添加到历史记录
+      historyFilesRef.value?.addHistoryFile(selected)
+      
+      selectedFile.value = selected
+      showMainApp.value = true
+      // 进入主界面后自动最大化窗口
+      await maximize()
+    }
+  } catch (error) {
+    console.error('导入文件失败:', error)
+  }
+}
+
+// 导入 XML 文件
+const importXml = async () => {
+  try {
+    // 使用 Tauri 的文件对话框 API
+    const { open } = await import('@tauri-apps/plugin-dialog')
+    const selected = await open({
+      multiple: false,
+      filters: [{
+        name: 'XML',
+        extensions: ['xml']
       }]
     })
 
@@ -122,6 +176,26 @@ const createNewProject = async () => {
             <line x1="12" y1="3" x2="12" y2="15"/>
           </svg>
           <span>导入 Excel 文件</span>
+        </button>
+        <button class="action-btn primary" @click="importJson">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/>
+            <line x1="16" y1="13" x2="8" y2="13"/>
+            <line x1="16" y1="17" x2="8" y2="17"/>
+            <polyline points="10 9 9 9 8 9"/>
+          </svg>
+          <span>导入 JSON 文件</span>
+        </button>
+        <button class="action-btn primary" @click="importXml">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/>
+            <line x1="16" y1="13" x2="8" y2="13"/>
+            <line x1="16" y1="17" x2="8" y2="17"/>
+            <polyline points="10 9 9 9 8 9"/>
+          </svg>
+          <span>导入 XML 文件</span>
         </button>
         <button class="action-btn secondary" @click="createNewProject">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">

@@ -101,7 +101,7 @@
 
 <script setup lang="ts">
 import { ref, nextTick, type Ref } from 'vue'
-import type { Task, TaskStatus, TaskType, TaskPriority } from '../../types'
+import type { Task, TaskStatus, TaskType, TaskPriority } from '../../../types.ts'
 
 const props = defineProps<{
   subtask: Task

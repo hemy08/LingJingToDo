@@ -15,8 +15,8 @@ import TypeModal from './config/TypeModal.vue'
 import PriorityModal from './config/PriorityModal.vue'
 // 新增组件
 import CustomTitleBar from './common/CustomTitleBar.vue'
-import TaskStatistics from './tasks/TaskStatistics.vue'
-import TaskTree from './tasks/TaskTree.vue'
+import TaskStatistics from './tasks/common/TaskStatistics.vue'
+import TaskTree from './tasks/tasktree/TaskTree.vue'
 import BottomStatusBar from './common/BottomStatusBar.vue'
 
 const { dialogState, handleButtonClick, handleOverlayClick, showConfirmWithClose } = useDialog()
@@ -39,12 +39,18 @@ const startSplitterDrag = (event: MouseEvent) => {
     const deltaPercent = (deltaX / windowWidth) * 100
     const newWidth = startWidth + deltaPercent
     sidebarWidthPercent.value = Math.max(10, Math.min(40, newWidth))
+    
+    // 触发窗口 resize 事件，让瀑布流布局实时更新
+    window.dispatchEvent(new Event('resize'))
   }
 
   const handleMouseUp = () => {
     isSplitterActive.value = false
     document.removeEventListener('mousemove', handleMouseMove)
     document.removeEventListener('mouseup', handleMouseUp)
+    
+    // 最后再触发一次确保布局正确
+    window.dispatchEvent(new Event('resize'))
   }
 
   document.addEventListener('mousemove', handleMouseMove)
@@ -439,7 +445,10 @@ onMounted(async () => {
 ·
         <!-- 任务树 -->
         <TaskTree :tasks="tasksFromDate" />
-      </div>      <div class="splitter" :class="{ active: isSplitterActive }" @mousedown="startSplitterDrag"></div>
+      </div>
+
+      <div class="splitter" :class="{ active: isSplitterActive }" @mousedown="startSplitterDrag"></div>
+
       <div class="main-content">
         <div class="toolbar">
           <div class="toolbar-left">
