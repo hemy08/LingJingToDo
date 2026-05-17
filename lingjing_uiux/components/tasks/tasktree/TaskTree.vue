@@ -64,6 +64,26 @@ function handleTaskClick(task: Task) {
 .task-tree-container {
   flex: 1;
   overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* 自定义滚动条 */
+.task-tree-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.task-tree-container::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 4px;
+}
+
+.task-tree-container::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+}
+
+.task-tree-container::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.3);
 }
 
 .empty-tree {

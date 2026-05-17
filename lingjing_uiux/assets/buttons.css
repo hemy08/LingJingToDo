@@ -67,16 +67,25 @@
 /* 欢迎界面按钮 */
 .action-btn {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 12px;
-  padding: 16px 32px;
+  justify-content: center;
+  gap: 8px;
+  width: 120px;
+  height: 120px;
+  padding: 16px;
   border: none;
   border-radius: 12px;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.3s ease;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.action-btn svg {
+  width: 32px;
+  height: 32px;
 }
 
 .action-btn.primary {

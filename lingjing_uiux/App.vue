@@ -126,7 +126,7 @@ const createNewProject = async () => {
 </script>
 <template>
   <!-- 主应用界面 -->
-  <LingJingToDo v-if="showMainApp" @back="showMainApp = false" />
+  <LingJingToDo v-if="showMainApp" :initial-file-path="selectedFile" @back="showMainApp = false" />
 
   <!-- 欢迎界面 -->
   <div v-else class="welcome-container" @contextmenu.prevent>

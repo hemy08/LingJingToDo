@@ -19,12 +19,17 @@ import TaskStatistics from './tasks/common/TaskStatistics.vue'
 import TaskTree from './tasks/tasktree/TaskTree.vue'
 import BottomStatusBar from './common/BottomStatusBar.vue'
 
+// 接收 props
+const props = defineProps<{
+  initialFilePath?: string | null
+}>()
+
 const { dialogState, handleButtonClick, handleOverlayClick, showConfirmWithClose } = useDialog()
 import { exit } from '@tauri-apps/plugin-process';
 
 // Splitter 拖动相关
 const isSplitterActive = ref(false)
-const sidebarWidthPercent = ref(10) // 默认侧边栏宽度百分比
+const sidebarWidthPercent = ref(15) // 默认侧边栏宽度百分比
 
 const startSplitterDrag = (event: MouseEvent) => {
   event.preventDefault()
@@ -415,15 +420,55 @@ onMounted(async () => {
   config.priorities = await LingJing_GetPriorities()
   currentDate.value = getTodayStr()
   ensureDate(currentDate.value)
-  if (todoData[currentDate.value].length === 0) {
-    todoData[currentDate.value].push({
-      id: 10001, title: "示例主任务", status_id: "st_doing", type_id: "ty_work", priority_id: "p3",
-      due_date: "2026-05-10", description: "", useSubtasks: true, subtasks: [], checklist: [], createdAt: Date.now()
-    })
+  
+  // 如果有初始文件路径，自动加载
+  if (props.initialFilePath) {
+    try {
+      const filePath = props.initialFilePath
+      const fileType = filePath.endsWith('.json') ? 'json' :
+                       filePath.endsWith('.xlsx') || filePath.endsWith('.xls') ? 'excel' : 'xml'
+      
+      const result = await invoke('open_file', { filePath: filePath, fileType: fileType })
+      // 清空现有数据
+      Object.keys(todoData).forEach(key => delete todoData[key])
+      // 加载新数据
+      const data = result as Record<string, any[]>
+      Object.assign(todoData, data)
+      
+      // 同步到后端
+      await taskApi.importTasks(todoData)
+      
+      currentFilePath.value = filePath
+      currentFileType.value = fileType
+      isDirty.value = false
+      showStatus('打开成功', `文件 ${filePath} 已成功加载`, 'success')
+    } catch (error) {
+      showStatus('打开失败', `无法加载文件: ${error}`, 'error')
+      // 加载失败时创建示例任务
+      if (todoData[currentDate.value].length === 0) {
+        todoData[currentDate.value].push({
+          id: 10001, title: "示例主任务", status_id: "st_doing", type_id: "ty_work", priority_id: "p3",
+          due_date: "2026-05-10", description: "", useSubtasks: true, subtasks: [], checklist: [], createdAt: Date.now()
+        })
+      }
+    }
+  } else {
+    // 没有初始文件时创建示例任务
+    if (todoData[currentDate.value].length === 0) {
+      todoData[currentDate.value].push({
+        id: 10001, title: "示例主任务", status_id: "st_doing", type_id: "ty_work", priority_id: "p3",
+        due_date: "2026-05-10", description: "", useSubtasks: true, subtasks: [], checklist: [], createdAt: Date.now()
+      })
+    }
   }
 
   // 获取任务统计
   await fetchTaskStatistics()
+  
+  // 延时触发布局更新，确保瀑布流正确渲染
+  setTimeout(() => {
+    window.dispatchEvent(new Event('resize'))
+  }, 100)
 })
 
 

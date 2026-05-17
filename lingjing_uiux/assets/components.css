@@ -67,9 +67,9 @@
 /* 任务列表 - 瀑布流布局 */
 .task-list {
   column-count: 2;
-  column-gap: 16px;
   width: 100%;
   flex: 1;
+  position: relative;
   overflow-y: auto;
   overflow-x: hidden;
 }

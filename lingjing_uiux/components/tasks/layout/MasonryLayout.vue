@@ -145,10 +145,3 @@ watch(() => props.tasks, () => {
   })
 }, { deep: true })
 </script>
-
-<style scoped>
-.task-list {
-  width: 100%;
-  position: relative;
-}
-</style>
