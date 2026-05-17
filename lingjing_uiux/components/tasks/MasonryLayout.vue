@@ -5,7 +5,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, watch, type Ref } from 'vue'
+import { ref, onMounted, watch, onUpdated, nextTick, type Ref } from 'vue'
 import Sortable from 'sortablejs'
 import type { Task } from '../../types'
 import { handleReorderTasks } from './tasks_common'
@@ -19,6 +19,48 @@ const props = defineProps<{
 
 const layoutRef = ref<HTMLElement | null>(null)
 let sortableInstance: Sortable | null = null
+
+// 瀑布流布局计算
+const layoutMasonry = () => {
+  if (!layoutRef.value) return
+  
+  const container = layoutRef.value
+  const items = Array.from(container.children) as HTMLElement[]
+  
+  if (items.length === 0) return
+  
+  const containerWidth = container.clientWidth
+  const gap = 16
+  const columnCount = 2
+  const columnWidth = (containerWidth - gap * (columnCount - 1)) / columnCount
+  
+  // 初始化列高度数组
+  const columnHeights = new Array(columnCount).fill(0)
+  
+  // 为每个元素计算位置
+  items.forEach((item, index) => {
+    // 找到最短的列
+    const minHeight = Math.min(...columnHeights)
+    const columnIndex = columnHeights.indexOf(minHeight)
+    
+    // 设置元素位置
+    const left = columnIndex * (columnWidth + gap)
+    const top = columnHeights[columnIndex]
+    
+    item.style.position = 'absolute'
+    item.style.width = `${columnWidth}px`
+    item.style.left = `${left}px`
+    item.style.top = `${top}px`
+    
+    // 更新列高度
+    columnHeights[columnIndex] += item.offsetHeight + gap
+  })
+  
+  // 设置容器高度
+  const maxHeight = Math.max(...columnHeights)
+  container.style.height = `${maxHeight}px`
+  container.style.position = 'relative'
+}
 
 const initSortable = () => {
   if (!layoutRef.value) return
@@ -56,9 +98,32 @@ const initSortable = () => {
 
 onMounted(() => {
   initSortable()
+  nextTick(() => {
+    layoutMasonry()
+  })
+})
+
+onUpdated(() => {
+  nextTick(() => {
+    layoutMasonry()
+  })
 })
 
 watch(() => props.dragMode, () => {
   initSortable()
 })
+
+// 监听窗口大小变化
+watch(() => props.tasks, () => {
+  nextTick(() => {
+    layoutMasonry()
+  })
+}, { deep: true })
 </script>
+
+<style scoped>
+.task-list {
+  width: 100%;
+  position: relative;
+}
+</style>

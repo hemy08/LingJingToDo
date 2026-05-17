@@ -26,11 +26,6 @@ defineProps<{
   isDirty: boolean
 }>()
 
-// 获取文件名（从完整路径中提取）
-const getFileName = (filePath: string) => {
-  const parts = filePath.split(/[/\\]/)
-  return parts[parts.length - 1] || filePath
-}
 </script>
 
 <style scoped>

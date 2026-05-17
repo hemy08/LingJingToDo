@@ -8,6 +8,8 @@
         v-for="task in tasks"
         :key="task.id"
         class="tree-node"
+        :class="{ 'is-active': isHighlighted(task.id) }"
+        @click="handleTaskClick(task)"
       >
         📌 {{ task.title }}
         <!-- 子任务 -->
@@ -16,8 +18,10 @@
             v-for="subtask in task.subtasks"
             :key="subtask.id"
             class="tree-node subtask-node"
+            :class="{ 'is-active': isHighlighted(subtask.id) }"
+            @click.stop="handleTaskClick(subtask)"
           >
-            └─ {{ subtask.title }}
+            📎 {{ subtask.title }}
           </div>
         </div>
       </div>
@@ -28,12 +32,25 @@
 
 <script setup lang="ts">
 import type { Task } from '../../types.ts'
+import { useTaskHighlightStore } from '../../stores/taskHighlight'
 
 defineProps<{
   tasks: Task[]
 }>()
-</script>
 
+const taskHighlight = useTaskHighlightStore()
+
+// 检查是否高亮
+function isHighlighted(taskId: string): boolean {
+  return taskHighlight.isHighlighted(taskId)
+}
+
+// 处理任务点击
+function handleTaskClick(task: Task) {
+  // 高亮并滚动到任务
+  taskHighlight.highlightAndScroll(task.id, 3000)
+}
+</script>
 <style scoped>
 .task-tree {
   flex: 1;
@@ -77,6 +94,14 @@ defineProps<{
   background: var(--hover-bg);
 }
 
+/* 高亮激活状态 */
+.tree-node.is-active {
+  background: rgba(33, 150, 243, 0.15);
+  font-weight: 600;
+  color: #1976d2;
+  animation: highlight-node 2s ease-in-out;
+}
+
 .subtask-nodes {
   margin-left: 16px;
   margin-top: 4px;
@@ -92,5 +117,15 @@ defineProps<{
   color: var(--text-secondary);
   padding: 20px;
   font-size: 13px;
+}
+
+/* 高亮动画 */
+@keyframes highlight-node {
+  0%, 100% {
+    background: rgba(33, 150, 243, 0.15);
+  }
+  50% {
+    background: rgba(33, 150, 243, 0.25);
+  }
 }
 </style>

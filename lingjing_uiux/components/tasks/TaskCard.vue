@@ -1,7 +1,11 @@
 <template>
   <div 
+    :data-task-id="task.id"
     class="task-card"
-    :class="{ 'selected': selectedTaskId === task.id }"
+    :class="{ 
+      'selected': selectedTaskId === task.id,
+      'is-highlighted': isHighlighted
+    }"
     @click="$emit('select', task.id)"
   >
     <div class="task-card-header">
@@ -138,6 +142,8 @@
 <script setup lang="ts">
 import { ref, computed, nextTick, type Ref } from 'vue'
 import type { Task, TaskStatus, TaskType, TaskPriority } from '../../types'
+import { useTaskHighlightStore } from '../../stores/taskHighlight'
+
 const props = defineProps<{
   task: Task
   statuses: TaskStatus[]
@@ -157,6 +163,14 @@ const emit = defineEmits<{
   delete: [taskId: string]
 }>()
 
+
+// 任务高亮状态
+const taskHighlight = useTaskHighlightStore()
+
+// 检查是否高亮
+const isHighlighted = computed(() => 
+  taskHighlight.isHighlighted(props.task.id)
+)
 
 // 检查是否可以关闭任务
 const canCloseTask = computed(() => {
@@ -216,3 +230,28 @@ const formatDate = (dateStr: string) => {
 }
 
 </script>
+
+<style scoped>
+/* 高亮样式 */
+.task-card.is-highlighted {
+  animation: highlight-pulse 2s ease-in-out;
+  box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.6),
+              0 4px 16px rgba(33, 150, 243, 0.4);
+  z-index: 10;
+}
+
+/* 高亮脉冲动画 */
+@keyframes highlight-pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(33, 150, 243, 0.8);
+  }
+  50% {
+    box-shadow: 0 0 0 8px rgba(33, 150, 243, 0.2),
+                0 4px 16px rgba(33, 150, 243, 0.5);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(33, 150, 243, 0),
+                0 4px 16px rgba(33, 150, 243, 0.4);
+  }
+}
+</style>

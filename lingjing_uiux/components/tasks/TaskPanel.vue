@@ -37,8 +37,10 @@
       </div>
     </div>
 
-    <!-- 任务列表 -->
-    <MasonryLayout
+    <!-- 任务列表容器（可滚动） -->
+    <div class="task-list-container">
+      <!-- 任务列表 -->
+      <MasonryLayout
       v-if="layoutMode === 'masonry' && tasks.length > 0"
       :tasks="tasks"
       :drag-mode="dragMode"
@@ -92,120 +94,122 @@
       </TaskCard>
     </MasonryLayout>
 
-    <ListLayout
-      v-if="layoutMode === 'list' && tasks.length > 0"
-      :tasks="tasks"
-      :drag-mode="dragMode"
-      :columns="listColumns"
-      :current-date="currentDate || ''"
-      :tasks-ref="tasks"
-    >
-      <TaskCard
-        v-for="task in tasks"
-        :key="task.id"
-        :task="task"
-        :statuses="statuses"
-        :types="types"
-        :priorities="priorities"
-        :subtask-display-mode="getSubtaskDisplayMode(task.id)"
-        :selected-task-id="selectedTaskId"
-        :current-date="currentDate || ''"
+      <ListLayout
+        v-if="layoutMode === 'list' && tasks.length > 0"
         :tasks="tasks"
-        @add-subtask="openSubtaskModal"
-        @toggle-subtask-mode="toggleSubtaskDisplayMode"
-        @select="$emit('select-task', String($event))"
-        @update="handleTaskUpdate"
-        @delete="handleTaskDelete"
+        :drag-mode="dragMode"
+        :columns="listColumns"
+        :current-date="currentDate || ''"
+        :tasks-ref="tasks"
       >
-        <template #subtasks="{ subtasks, displayMode }">
-          <SubtaskTable
-            v-if="displayMode === 'table'"
-            :subtasks="subtasks"
-            :statuses="statuses"
-            :types="types"
-            :priorities="priorities"
-            :parent-id="task.id"
-            :current-date="currentDate || ''"
-            :tasks="tasks"
-          />
-          <div v-else class="subtasks-list">
-            <SubtaskCard
-              v-for="subtask in subtasks"
-              :key="subtask.id"
-              :subtask="subtask"
+        <TaskCard
+          v-for="task in tasks"
+          :key="task.id"
+          :task="task"
+          :statuses="statuses"
+          :types="types"
+          :priorities="priorities"
+          :subtask-display-mode="getSubtaskDisplayMode(task.id)"
+          :selected-task-id="selectedTaskId"
+          :current-date="currentDate || ''"
+          :tasks="tasks"
+          @add-subtask="openSubtaskModal"
+          @toggle-subtask-mode="toggleSubtaskDisplayMode"
+          @select="$emit('select-task', String($event))"
+          @update="handleTaskUpdate"
+          @delete="handleTaskDelete"
+        >
+          <template #subtasks="{ subtasks, displayMode }">
+            <SubtaskTable
+              v-if="displayMode === 'table'"
+              :subtasks="subtasks"
               :statuses="statuses"
               :types="types"
               :priorities="priorities"
               :parent-id="task.id"
               :current-date="currentDate || ''"
               :tasks="tasks"
-              @update="handleSubtaskCardUpdate(task.id, $event)"
-              @delete="handleSubtaskCardDelete(task.id, $event)"
             />
-          </div>
-        </template>
-      </TaskCard>
-    </ListLayout>
+            <div v-else class="subtasks-list">
+              <SubtaskCard
+                v-for="subtask in subtasks"
+                :key="subtask.id"
+                :subtask="subtask"
+                :statuses="statuses"
+                :types="types"
+                :priorities="priorities"
+                :parent-id="task.id"
+                :current-date="currentDate || ''"
+                :tasks="tasks"
+                @update="handleSubtaskCardUpdate(task.id, $event)"
+                @delete="handleSubtaskCardDelete(task.id, $event)"
+              />
+            </div>
+          </template>
+        </TaskCard>
+      </ListLayout>
 
-    <TreeLayout
-      v-if="layoutMode === 'tree' && tasks.length > 0"
-      :tasks="tasks"
-      :drag-mode="dragMode"
-      :current-date="currentDate || ''"
-      :tasks-ref="tasks"
-    >
-      <TaskCard
-        v-for="task in tasks"
-        :key="task.id"
-        :task="task"
-        :statuses="statuses"
-        :types="types"
-        :priorities="priorities"
-        :subtask-display-mode="getSubtaskDisplayMode(task.id)"
-        :selected-task-id="selectedTaskId"
-        :current-date="currentDate || ''"
+      <TreeLayout
+        v-if="layoutMode === 'tree' && tasks.length > 0"
         :tasks="tasks"
-        @add-subtask="openSubtaskModal"
-        @toggle-subtask-mode="toggleSubtaskDisplayMode"
-        @select="$emit('select-task', String($event))"
-        @update="handleTaskUpdate"
-        @delete="handleTaskDelete"
+        :drag-mode="dragMode"
+        :current-date="currentDate || ''"
+        :tasks-ref="tasks"
       >
-        <template #subtasks="{ subtasks, displayMode }">
-          <SubtaskTable
-            v-if="displayMode === 'table'"
-            :subtasks="subtasks"
-            :statuses="statuses"
-            :types="types"
-            :priorities="priorities"
-            :parent-id="task.id"
-            :current-date="currentDate || ''"
-            :tasks="tasks"
-          />
-          <div v-else class="subtasks-list">
-            <SubtaskCard
-              v-for="subtask in subtasks"
-              :key="subtask.id"
-              :subtask="subtask"
+        <TaskCard
+          v-for="task in tasks"
+          :key="task.id"
+          :task="task"
+          :statuses="statuses"
+          :types="types"
+          :priorities="priorities"
+          :subtask-display-mode="getSubtaskDisplayMode(task.id)"
+          :selected-task-id="selectedTaskId"
+          :current-date="currentDate || ''"
+          :tasks="tasks"
+          @add-subtask="openSubtaskModal"
+          @toggle-subtask-mode="toggleSubtaskDisplayMode"
+          @select="$emit('select-task', String($event))"
+          @update="handleTaskUpdate"
+          @delete="handleTaskDelete"
+        >
+          <template #subtasks="{ subtasks, displayMode }">
+            <SubtaskTable
+              v-if="displayMode === 'table'"
+              :subtasks="subtasks"
               :statuses="statuses"
               :types="types"
               :priorities="priorities"
               :parent-id="task.id"
               :current-date="currentDate || ''"
               :tasks="tasks"
-              @update="handleSubtaskCardUpdate(task.id, $event)"
-              @delete="handleSubtaskCardDelete(task.id, $event)"
             />
-          </div>
-        </template>
-      </TaskCard>
-    </TreeLayout>
+            <div v-else class="subtasks-list">
+              <SubtaskCard
+                v-for="subtask in subtasks"
+                :key="subtask.id"
+                :subtask="subtask"
+                :statuses="statuses"
+                :types="types"
+                :priorities="priorities"
+                :parent-id="task.id"
+                :current-date="currentDate || ''"
+                :tasks="tasks"
+                @update="handleSubtaskCardUpdate(task.id, $event)"
+                @delete="handleSubtaskCardDelete(task.id, $event)"
+              />
+            </div>
+          </template>
+        </TaskCard>
+      </TreeLayout>
 
-    <!-- 空状态 -->
-    <div v-if="tasks.length === 0" class="empty-state">
-      <i class="fas fa-clipboard-list"></i>
-      <p>暂无任务</p>
-      <p class="empty-hint">在上方输入框添加新任务</p>
+      <!-- 空状态 -->
+      <div v-if="tasks.length === 0" class="empty-state">
+        <i class="fas fa-clipboard-list"></i>
+        <p>暂无任务</p>
+        <p class="empty-hint">在上方输入框添加新任务</p>
+      </div>
+      </div> <!-- 结束 task-list-container -->
     </div>
 
     <!-- 子任务模态窗口 -->
@@ -220,7 +224,6 @@
       @close="closeSubtaskModal"
       @update="handleSubtaskUpdate"
     />
-  </div>
 </template>
 
 <script setup lang="ts">
@@ -287,13 +290,13 @@ const listColumns = ref(props.config?.listColumns || 2)
 
 // 切换子任务显示模式
 const toggleSubtaskDisplayMode = (taskId: string) => {
-  const currentMode = subtaskDisplayMode.value[taskId] || 'card'
-  subtaskDisplayMode.value[taskId] = currentMode === 'card' ? 'table' : 'card'
+  const currentMode = subtaskDisplayMode.value[taskId] || 'table'
+  subtaskDisplayMode.value[taskId] = currentMode === 'table' ? 'card' : 'table'
 }
 
 // 获取子任务显示模式
 const getSubtaskDisplayMode = (taskId: string): 'card' | 'table' => {
-  return subtaskDisplayMode.value[taskId] || 'card'
+  return subtaskDisplayMode.value[taskId] || 'table'
 }
 
 // 打开子任务模态窗口
@@ -359,3 +362,47 @@ const handleTaskDelete = (taskId: string) => {
 }
 
 </script>
+
+<style scoped>
+/* 任务列表容器 - 可滚动 */
+.task-list-container {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  min-height: 0; /* 重要：允许flex子项收缩 */
+}
+
+/* 自定义滚动条 */
+.task-list-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.task-list-container::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 4px;
+}
+
+.task-list-container::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+}
+
+.task-list-container::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+/* 暗色主题滚动条 */
+@media (prefers-color-scheme: dark) {
+  .task-list-container::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  .task-list-container::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+  }
+
+  .task-list-container::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.3);
+  }
+}
+</style>
