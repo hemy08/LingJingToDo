@@ -34,26 +34,26 @@
                 type="text"
                 class="inline-input"
                 :value="subtask.title"
-                @input="handleTitleInput(subtask, ($event.target as HTMLInputElement).value)"
+                @blur="handleTitleInput(subtask, ($event.target as HTMLInputElement).value)"
               />
             </div>
           </td>
           <td>
-            <span class="date-text" v-if="subtask.created_at">{{ formatDate(subtask.created_at) }}</span>
+            <span class="date-text" v-if="subtask.created_date">{{ formatDate(subtask.created_date) }}</span>
           </td>
           <td>
             <input
               type="date"
               class="inline-date"
               :value="subtask.due_date"
-              @change="$emit('update', { ...subtask, due_date: ($event.target as HTMLInputElement).value })"
+              @change="onUpdateSubtask({ ...subtask, due_date: ($event.target as HTMLInputElement).value })"
             />
           </td>
           <td>
             <select
               class="inline-select"
               :value="subtask.status_id"
-              @change="$emit('update', { ...subtask, status_id: ($event.target as HTMLSelectElement).value })"
+              @change="onUpdateSubtask({ ...subtask, status_id: ($event.target as HTMLSelectElement).value })"
             >
               <option v-for="status in statuses" :key="status.id" :value="status.id">
                 {{ status.emoji }} {{ status.name }}
@@ -64,7 +64,7 @@
             <select
               class="inline-select"
               :value="subtask.type_id"
-              @change="$emit('update', { ...subtask, type_id: ($event.target as HTMLSelectElement).value })"
+              @change="onUpdateSubtask({ ...subtask, type_id: ($event.target as HTMLSelectElement).value })"
             >
               <option v-for="type in types" :key="type.id" :value="type.id">
                 {{ type.emoji }} {{ type.name }}
@@ -72,10 +72,10 @@
             </select>
           </td>
           <td>
-            <select 
+            <select
               class="inline-select"
               :value="subtask.priority_id"
-              @change="$emit('update', { ...subtask, priority_id: ($event.target as HTMLSelectElement).value })"
+              @change="onUpdateSubtask({ ...subtask, priority_id: ($event.target as HTMLSelectElement).value })"
             >
               <option v-for="priority in priorities" :key="priority.id" :value="priority.id">
                 {{ priority.emoji }} {{ priority.name }}
@@ -84,19 +84,19 @@
           </td>
           <td>
             <div class="cell-content" :title="subtask.remark || ''">
-              <input 
+              <input
                 type="text"
                 class="inline-input"
                 placeholder="添加备注..."
                 :value="subtask.remark || ''"
-                @input="handleRemarkInput(subtask, ($event.target as HTMLInputElement).value)"
+                @blur="handleRemarkInput(subtask, ($event.target as HTMLInputElement).value)"
               />
             </div>
           </td>
           <td>
-            <button 
+            <button
               class="subtask-delete-btn"
-              @click="$emit('delete', subtask.id)"
+              @click="onDeleteSubtask(subtask.id)"
               @mousedown.stop
               @click.stop
             >
@@ -110,29 +110,48 @@
 </template>
 
 <script setup lang="ts">
-
+import { type Ref } from 'vue'
 import type { Task, TaskStatus, TaskType, TaskPriority } from '../../types'
+import { handleUpdateSubtask, handleDeleteSubtask } from './tasks_common'
 
-defineProps<{
+const props = defineProps<{
   subtasks: Task[]
   statuses: TaskStatus[]
   types: TaskType[]
   priorities: TaskPriority[]
+  parentId: string
+  currentDate: string
+  tasks: Task[] | Ref<Task[]>
 }>()
 
-const emit = defineEmits<{
-  (e: 'update', task: Task): void
-  (e: 'delete', taskId: string): void
-}>()
+// 处理子任务更新
+const onUpdateSubtask = (updatedSubtask: Task) => {
+  handleUpdateSubtask(
+    props.currentDate,
+    props.parentId,
+    updatedSubtask,
+    props.tasks
+  )
+}
+
+// 处理子任务删除
+const onDeleteSubtask = (subtaskId: string) => {
+  handleDeleteSubtask(
+    props.currentDate,
+    props.parentId,
+    subtaskId,
+    props.tasks
+  )
+}
 
 // 处理标题输入
 const handleTitleInput = (subtask: Task, value: string) => {
-  emit('update', { ...subtask, title: value })
+  onUpdateSubtask({ ...subtask, title: value })
 }
 
 // 处理备注输入
 const handleRemarkInput = (subtask: Task, value: string) => {
-  emit('update', { ...subtask, remark: value })
+  onUpdateSubtask({ ...subtask, remark: value })
 }
 
 // 格式化日期

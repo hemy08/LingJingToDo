@@ -5,18 +5,17 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, watch, computed } from 'vue'
+import { ref, onMounted, watch, computed, type Ref } from 'vue'
 import Sortable from 'sortablejs'
 import type { Task } from '../../types'
+import { handleReorderTasks } from './tasks_common'
 
 const props = defineProps<{
   tasks: Task[]
   dragMode: 'insert' | 'swap'
   columns?: number
-}>()
-
-const emit = defineEmits<{
-  reorder: [tasks: Task[]]
+  currentDate: string
+  tasksRef: Task[] | Ref<Task[]>
 }>()
 
 const layoutRef = ref<HTMLElement | null>(null)
@@ -54,7 +53,12 @@ const initSortable = () => {
       const [movedTask] = reorderedTasks.splice(evt.oldIndex!, 1)
       reorderedTasks.splice(evt.newIndex!, 0, movedTask)
 
-      emit('reorder', reorderedTasks)
+      // 直接调用公共函数处理重排序
+      handleReorderTasks(
+        props.currentDate,
+        reorderedTasks,
+        props.tasksRef
+      )
     }
   })
 }

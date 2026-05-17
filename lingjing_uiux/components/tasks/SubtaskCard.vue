@@ -17,9 +17,9 @@
           ref="editInput"
           @click.stop
         />
-      <button 
+      <button
         class="subtask-delete-btn"
-        @click="$emit('delete', subtask.id)"
+        @click="onDeleteSubtask"
         @mousedown.stop
         @click.stop
       >
@@ -29,9 +29,9 @@
     <div class="subtask-card-body">
       <div class="task-meta-row">
         <!-- 创建日期 -->
-        <div class="meta-item" v-if="subtask.created_at">
+        <div class="meta-item" v-if="subtask.created_date">
           <label class="meta-label">🕐</label>
-          <span class="meta-text" :title="subtask.created_at">{{ formatDate(subtask.created_at) }}</span>
+          <span class="meta-text" :title="subtask.created_date">{{ formatDate(subtask.created_date) }}</span>
         </div>
         <!-- 截止日期 -->
         <div class="meta-item">
@@ -40,7 +40,7 @@
             type="date"
             class="meta-select"
             :value="subtask.due_date"
-            @change="$emit('update', { ...subtask, due_date: ($event.target as HTMLInputElement).value })"
+            @change="onUpdateSubtask({ ...subtask, due_date: ($event.target as HTMLInputElement).value })"
           />
         </div>
         <!-- 类型 -->
@@ -49,7 +49,7 @@
           <select
             class="meta-select"
             :value="subtask.type_id"
-            @change="$emit('update', { ...subtask, type_id: ($event.target as HTMLSelectElement).value })"
+            @change="onUpdateSubtask({ ...subtask, type_id: ($event.target as HTMLSelectElement).value })"
           >
             <option v-for="type in types" :key="type.id" :value="type.id">{{ type.emoji }} {{ type.name }}
             </option>
@@ -61,7 +61,7 @@
           <select
             class="meta-select"
             :value="subtask.status_id"
-            @change="$emit('update', { ...subtask, status_id: ($event.target as HTMLSelectElement).value })"
+            @change="onUpdateSubtask({ ...subtask, status_id: ($event.target as HTMLSelectElement).value })"
           >
             <option v-for="status in statuses" :key="status.id" :value="status.id">{{ status.emoji }} {{ status.name }}
             </option>
@@ -73,7 +73,7 @@
           <select
             class="meta-select"
             :value="subtask.priority_id"
-            @change="$emit('update', { ...subtask, priority_id: ($event.target as HTMLSelectElement).value })"
+            @change="onUpdateSubtask({ ...subtask, priority_id: ($event.target as HTMLSelectElement).value })"
           >
             <option v-for="priority in priorities" :key="priority.id" :value="priority.id">{{ priority.emoji }} {{ priority.name }}
             </option>
@@ -90,7 +90,7 @@
         <textarea
           class="detail-textarea"
           :value="subtask.remark || ''"
-          @change="$emit('update', { ...subtask, remark: ($event.target as HTMLTextAreaElement).value })"
+          @blur="onUpdateSubtask({ ...subtask, remark: ($event.target as HTMLTextAreaElement).value })"
           placeholder="添加子任务详细描述..."
           rows="2"
         ></textarea>
@@ -100,21 +100,23 @@
 </template>
 
 <script setup lang="ts">
-import { ref, nextTick } from 'vue'
+import { ref, nextTick, type Ref } from 'vue'
+import type { Task, TaskStatus, TaskType, TaskPriority } from '../../types'
 
 const props = defineProps<{
   subtask: Task
   statuses: TaskStatus[]
   types: TaskType[]
   priorities: TaskPriority[]
+  parentId: string
+  currentDate: string
+  tasks: Task[] | Ref<Task[]>
 }>()
 
 const emit = defineEmits<{
-  update: [task: Task]
-  delete: [taskId: string]
+  update: [subtask: Task]
+  delete: [subtaskId: string]
 }>()
-
-import type { Task, TaskStatus, TaskType, TaskPriority } from '../../types'
 
 
 // 编辑状态
@@ -146,6 +148,16 @@ const saveEdit = () => {
 const cancelEdit = () => {
   isEditing.value = false
   editTitle.value = props.subtask.title
+}
+
+// 处理子任务更新
+const onUpdateSubtask = (updatedSubtask: Task) => {
+  emit('update', updatedSubtask)
+}
+
+// 处理子任务删除
+const onDeleteSubtask = () => {
+  emit('delete', props.subtask.id)
 }
 
 // 格式化日期

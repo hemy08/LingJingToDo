@@ -1,5 +1,5 @@
 <template>
-  <div v-if="visible" class="modal" @click="$emit('close')">
+  <div v-if="visible" class="modal" @click="handleClose">
     <div class="modal-content" @click.stop>
       <h3><i class="fas fa-plus-circle"></i> 添加子任务</h3>
       <div class="form-group">
@@ -35,7 +35,7 @@
         <input v-model="formData.due_date" type="date" class="form-input" />
       </div>
       <div class="modal-buttons">
-        <button class="btn-sm" @click="$emit('close')">
+        <button class="btn-sm" @click="handleClose">
           <i class="fas fa-times"></i>
           取消
         </button>
@@ -49,20 +49,21 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue'
-import type { TaskStatus, TaskType, TaskPriority, Task } from '../../types'
-
+import { ref, watch, type Ref } from 'vue'
+import type { Task, TaskStatus, TaskType, TaskPriority } from '../../types'
 const props = defineProps<{
   visible: boolean
   parentTask: Task | null
   statuses: TaskStatus[]
   types: TaskType[]
   priorities: TaskPriority[]
+  currentDate: string
+  tasks: Task[] | Ref<Task[]>
 }>()
 
 const emit = defineEmits<{
   close: []
-  submit: [subtask: Task]
+  update: [task: Task]
 }>()
 
 // 表单数据
@@ -87,9 +88,14 @@ watch(() => props.visible, (newVal) => {
   }
 })
 
+// 关闭模态窗口
+const handleClose = () => {
+  emit('close')
+}
+
 // 提交表单
 const handleSubmit = () => {
-  if (!formData.value.title.trim()) return
+  if (!formData.value.title.trim() || !props.parentTask) return
 
   const newSubtask: Task = {
     id: `TASK${Date.now()}`,
@@ -98,12 +104,20 @@ const handleSubmit = () => {
     type_id: formData.value.type_id,
     priority_id: formData.value.priority_id,
     due_date: formData.value.due_date,
-    created_at: new Date().toISOString(),
     created_date: new Date().toISOString(),
     subtasks: []
   }
 
-  console.log("newSubtask", newSubtask)
-  emit('submit', newSubtask)
+  // 更新父任务，添加新子任务
+  const updatedTask = {
+    ...props.parentTask,
+    subtasks: [...(props.parentTask.subtasks || []), newSubtask]
+  }
+
+  // 发出事件，让父组件处理更新
+  emit('update', updatedTask)
+
+  // 关闭模态窗口
+  handleClose()
 }
 </script>

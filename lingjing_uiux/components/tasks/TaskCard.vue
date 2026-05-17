@@ -41,9 +41,9 @@
           <i class="fas fa-plus"></i>
           添加子任务
         </button>
-        <button 
+        <button
           class="components-action-btn delete-btn"
-          @click="$emit('delete', task.id)"
+          @click="onDeleteTask"
           @mousedown.stop
           @click.stop
         >
@@ -55,27 +55,27 @@
     <div class="task-card-body">
       <div class="task-meta-row">
         <!-- 创建日期 -->
-        <div class="meta-item" v-if="task.created_at">
+        <div class="meta-item" v-if="task.created_date">
           <label class="meta-label">🕐</label>
-          <span class="meta-text" :title="task.created_at">{{ formatDate(task.created_at) }}</span>
+          <span class="meta-text" :title="task.created_date">{{ formatDate(task.created_date) }}</span>
         </div>
         <!-- 截止日期 -->
         <div class="meta-item">
           <label class="meta-label">📅</label>
-          <input 
+          <input
             type="date"
             class="meta-select"
             :value="task.due_date"
-            @change="$emit('update', { ...task, due_date: ($event.target as HTMLInputElement).value })"
+            @change="onUpdateTask({ ...task, due_date: ($event.target as HTMLInputElement).value })"
           />
         </div>
         <!-- 类型 -->
         <div class="meta-item">
           <label class="meta-label">🏷️</label>
-          <select 
+          <select
             class="meta-select"
             :value="task.type_id"
-            @change="$emit('update', { ...task, type_id: ($event.target as HTMLSelectElement).value })"
+            @change="onUpdateTask({ ...task, type_id: ($event.target as HTMLSelectElement).value })"
           >
             <option v-for="type in types" :key="type.id" :value="type.id">{{ type.emoji }} {{ type.name }}
             </option>
@@ -84,10 +84,10 @@
         <!-- 状态 -->
         <div class="meta-item">
           <label class="meta-label">📌</label>
-          <select 
+          <select
             class="meta-select"
             :value="task.status_id"
-            @change="$emit('update', { ...task, status_id: ($event.target as HTMLSelectElement).value })"
+            @change="onUpdateTask({ ...task, status_id: ($event.target as HTMLSelectElement).value })"
             :disabled="task.status_id === 'st_closed' && !canCloseTask"
           >
             <option v-for="status in statuses" :key="status.id" :value="status.id">{{ status.emoji }} {{ status.name }}
@@ -97,10 +97,10 @@
         <!-- 优先级 -->
         <div class="meta-item">
           <label class="meta-label">📁</label>
-          <select 
+          <select
             class="meta-select"
             :value="task.priority_id"
-            @change="$emit('update', { ...task, priority_id: ($event.target as HTMLSelectElement).value })"
+            @change="onUpdateTask({ ...task, priority_id: ($event.target as HTMLSelectElement).value })"
           >
             <option v-for="priority in priorities" :key="priority.id" :value="priority.id">{{ priority.emoji }} {{ priority.name }}
             </option>
@@ -117,7 +117,7 @@
         <textarea
           class="detail-textarea"
           :value="task.remark || ''"
-          @change="$emit('update', { ...task, remark: ($event.target as HTMLTextAreaElement).value })"
+          @change="onUpdateTask({ ...task, remark: ($event.target as HTMLTextAreaElement).value })"
           placeholder="添加任务详细描述..."
           rows="3"
         ></textarea>
@@ -136,8 +136,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, nextTick, computed } from 'vue'
-
+import { ref, computed, nextTick, type Ref } from 'vue'
+import type { Task, TaskStatus, TaskType, TaskPriority } from '../../types'
 const props = defineProps<{
   task: Task
   statuses: TaskStatus[]
@@ -145,17 +145,17 @@ const props = defineProps<{
   priorities: TaskPriority[]
   subtaskDisplayMode: 'card' | 'table'
   selectedTaskId?: string | null
+  currentDate: string
+  tasks: Task[] | Ref<Task[]>
 }>()
 
 const emit = defineEmits<{
-  update: [task: Task]
-  delete: [taskId: string]
   'add-subtask': [task: Task]
   'toggle-subtask-mode': [taskId: string]
   select: [taskId: string | null]
+  update: [task: Task]
+  delete: [taskId: string]
 }>()
-
-import type { Task, TaskStatus, TaskType, TaskPriority } from '../../types'
 
 
 // 检查是否可以关闭任务
@@ -184,7 +184,7 @@ const startEdit = async () => {
 // 保存编辑
 const saveEdit = () => {
   if (editTitle.value.trim()) {
-    emit('update', { ...props.task, title: editTitle.value.trim() })
+    onUpdateTask({ ...props.task, title: editTitle.value.trim() })
   }
   isEditing.value = false
 }
@@ -192,6 +192,16 @@ const saveEdit = () => {
 // 取消编辑
 const cancelEdit = () => {
   isEditing.value = false
+}
+
+// 处理任务更新
+const onUpdateTask = (updatedTask: Task) => {
+  emit('update', updatedTask)
+}
+
+// 处理任务删除
+const onDeleteTask = () => {
+  emit('delete', props.task.id)
 }
 
 // 格式化日期

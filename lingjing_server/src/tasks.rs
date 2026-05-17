@@ -18,7 +18,6 @@ pub struct Task {
     pub subtasks: Option<Vec<Task>>,
     pub remark: Option<String>,
     pub created_date: Option<String>,
-    pub created_at: Option<String>,
     pub closed_date: Option<String>,
 }
 
@@ -137,8 +136,8 @@ impl TaskData {
         info!("添加任务到日期 {}，任务ID: {}, 标题: {}", date, task.id, task.title);
         
         // 如果没有创建时间，自动设置
-        if task.created_at.is_none() {
-            task.created_at = Some(chrono::Local::now().to_rfc3339());
+        if task.created_date.is_none() {
+            task.created_date = Some(chrono::Local::now().to_rfc3339());
         }
         
         let tasks = self.tasks.entry(date.to_string()).or_insert_with(Vec::new);

@@ -6,7 +6,7 @@
       :current-date="currentDate"
       :is-dirty="isDirty"
       @update:is-dirty="emit('update:isDirty', $event)"
-      @task-added="handleTaskAdded"
+      @task-added="emit('task-added', $event)"
     />
 
     <!-- 设置区域 -->
@@ -42,7 +42,8 @@
       v-if="layoutMode === 'masonry' && tasks.length > 0"
       :tasks="tasks"
       :drag-mode="dragMode"
-      @reorder="handleReorderTasks($event)"
+      :current-date="currentDate || ''"
+      :tasks-ref="tasks"
     >
       <TaskCard
         v-for="task in tasks"
@@ -53,11 +54,13 @@
         :priorities="priorities"
         :subtask-display-mode="getSubtaskDisplayMode(task.id)"
         :selected-task-id="selectedTaskId"
-        @update="handleUpdateTask($event)"
-        @delete="handleDeleteTask($event)"
+        :current-date="currentDate || ''"
+        :tasks="tasks"
         @add-subtask="openSubtaskModal"
         @toggle-subtask-mode="toggleSubtaskDisplayMode"
         @select="$emit('select-task', String($event))"
+        @update="handleTaskUpdate"
+        @delete="handleTaskDelete"
       >
         <template #subtasks="{ subtasks, displayMode }">
           <SubtaskTable
@@ -66,8 +69,9 @@
             :statuses="statuses"
             :types="types"
             :priorities="priorities"
-            @update="handleUpdateSubtask(task.id, $event)"
-            @delete="handleDeleteSubtask(task.id, $event)"
+            :parent-id="task.id"
+            :current-date="currentDate || ''"
+            :tasks="tasks"
           />
           <div v-else class="subtasks-list">
             <SubtaskCard
@@ -77,8 +81,11 @@
               :statuses="statuses"
               :types="types"
               :priorities="priorities"
-              @update="handleUpdateSubtask(task.id, $event)"
-              @delete="handleDeleteSubtask(task.id, $event)"
+              :parent-id="task.id"
+              :current-date="currentDate || ''"
+              :tasks="tasks"
+              @update="handleSubtaskCardUpdate(task.id, $event)"
+              @delete="handleSubtaskCardDelete(task.id, $event)"
             />
           </div>
         </template>
@@ -90,7 +97,8 @@
       :tasks="tasks"
       :drag-mode="dragMode"
       :columns="listColumns"
-      @reorder="handleReorderTasks($event)"
+      :current-date="currentDate || ''"
+      :tasks-ref="tasks"
     >
       <TaskCard
         v-for="task in tasks"
@@ -101,11 +109,13 @@
         :priorities="priorities"
         :subtask-display-mode="getSubtaskDisplayMode(task.id)"
         :selected-task-id="selectedTaskId"
-        @update="handleUpdateTask($event)"
-        @delete="handleDeleteTask($event)"
+        :current-date="currentDate || ''"
+        :tasks="tasks"
         @add-subtask="openSubtaskModal"
         @toggle-subtask-mode="toggleSubtaskDisplayMode"
         @select="$emit('select-task', String($event))"
+        @update="handleTaskUpdate"
+        @delete="handleTaskDelete"
       >
         <template #subtasks="{ subtasks, displayMode }">
           <SubtaskTable
@@ -114,8 +124,9 @@
             :statuses="statuses"
             :types="types"
             :priorities="priorities"
-            @update="handleUpdateSubtask(task.id, $event)"
-            @delete="handleDeleteSubtask(task.id, $event)"
+            :parent-id="task.id"
+            :current-date="currentDate || ''"
+            :tasks="tasks"
           />
           <div v-else class="subtasks-list">
             <SubtaskCard
@@ -125,8 +136,11 @@
               :statuses="statuses"
               :types="types"
               :priorities="priorities"
-              @update="handleUpdateSubtask(task.id, $event)"
-              @delete="handleDeleteSubtask(task.id, $event)"
+              :parent-id="task.id"
+              :current-date="currentDate || ''"
+              :tasks="tasks"
+              @update="handleSubtaskCardUpdate(task.id, $event)"
+              @delete="handleSubtaskCardDelete(task.id, $event)"
             />
           </div>
         </template>
@@ -137,7 +151,8 @@
       v-if="layoutMode === 'tree' && tasks.length > 0"
       :tasks="tasks"
       :drag-mode="dragMode"
-      @reorder="handleReorderTasks($event)"
+      :current-date="currentDate || ''"
+      :tasks-ref="tasks"
     >
       <TaskCard
         v-for="task in tasks"
@@ -148,11 +163,13 @@
         :priorities="priorities"
         :subtask-display-mode="getSubtaskDisplayMode(task.id)"
         :selected-task-id="selectedTaskId"
-        @update="handleUpdateTask($event)"
-        @delete="handleDeleteTask($event)"
+        :current-date="currentDate || ''"
+        :tasks="tasks"
         @add-subtask="openSubtaskModal"
         @toggle-subtask-mode="toggleSubtaskDisplayMode"
         @select="$emit('select-task', String($event))"
+        @update="handleTaskUpdate"
+        @delete="handleTaskDelete"
       >
         <template #subtasks="{ subtasks, displayMode }">
           <SubtaskTable
@@ -161,8 +178,9 @@
             :statuses="statuses"
             :types="types"
             :priorities="priorities"
-            @update="handleUpdateSubtask(task.id, $event)"
-            @delete="handleDeleteSubtask(task.id, $event)"
+            :parent-id="task.id"
+            :current-date="currentDate || ''"
+            :tasks="tasks"
           />
           <div v-else class="subtasks-list">
             <SubtaskCard
@@ -172,8 +190,11 @@
               :statuses="statuses"
               :types="types"
               :priorities="priorities"
-              @update="handleUpdateSubtask(task.id, $event)"
-              @delete="handleDeleteSubtask(task.id, $event)"
+              :parent-id="task.id"
+              :current-date="currentDate || ''"
+              :tasks="tasks"
+              @update="handleSubtaskCardUpdate(task.id, $event)"
+              @delete="handleSubtaskCardDelete(task.id, $event)"
             />
           </div>
         </template>
@@ -194,8 +215,10 @@
       :statuses="statuses"
       :types="types"
       :priorities="priorities"
+      :current-date="currentDate || ''"
+      :tasks="tasks"
       @close="closeSubtaskModal"
-      @submit="addSubtask"
+      @update="handleSubtaskUpdate"
     />
   </div>
 </template>
@@ -203,7 +226,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import type { Task, TaskStatus, TaskType, TaskPriority } from '../../types'
-import { taskApi } from '../../connections/task_apis'
 import TaskAddArea from './TaskAddArea.vue'
 import SettingsPanel from './SettingsPanel.vue'
 import TaskCard from './TaskCard.vue'
@@ -213,7 +235,6 @@ import MasonryLayout from './MasonryLayout.vue'
 import ListLayout from './ListLayout.vue'
 import TreeLayout from './TreeLayout.vue'
 import SubtaskModal from './SubtaskModal.vue'
-
 const props = defineProps<{
   selectedTaskId?: string | null
   tasks: Task[]
@@ -234,6 +255,9 @@ const emit = defineEmits<{
   'update:isDirty': [value: boolean]
   'select-task': [taskId: string | null]
   'show-status': [message: string, detail?: string, type?: 'success' | 'error' | 'warning' | 'info']
+  'task-added': [task: Task]
+  'task-updated': [task: Task]
+  'task-deleted': [taskId: string]
 }>()
 
 // 本地状态
@@ -247,17 +271,6 @@ const currentParentTask = ref<Task | null>(null)
 
 
 // 处理任务添加
-const handleTaskAdded = async (newTask: Task) => {
-  try {
-    const updatedTasks = await taskApi.addTask(props.currentDate || '', newTask)
-    // 更新本地任务列表
-    props.tasks.length = 0
-    props.tasks.push(...updatedTasks)
-  } catch (error) {
-    console.error('添加任务失败:', error)
-  }
-}
-
 // 处理配置更新
 const handleConfigUpdate = (newConfig: any) => {
   // 更新本地配置状态
@@ -295,91 +308,54 @@ const closeSubtaskModal = () => {
   currentParentTask.value = null
 }
 
-// 添加子任务
-const addSubtask = (newSubtask: Task) => {
-  if (!currentParentTask.value) return
+// 处理任务更新
+const handleTaskUpdate = (updatedTask: Task) => {
+  emit('task-updated', updatedTask)
+}
 
-
-  const updatedTask = {
-    ...currentParentTask.value,
-    subtasks: [...(currentParentTask.value.subtasks || []), newSubtask]
-  }
-
-  handleUpdateTask(updatedTask)
+// 处理子任务更新
+const handleSubtaskUpdate = (updatedTask: Task) => {
+  emit('task-updated', updatedTask)
   closeSubtaskModal()
 }
 
-const handleUpdateSubtaskApi = async (parentId: string, subtask: Task) => {
-  try {
-    const updatedTasks = await taskApi.updateSubtask(
-        props.currentDate || '',
-        parentId,
-        subtask
-    )
-    if (updatedTasks) {
-      props.tasks.length = 0
-      props.tasks.push(...updatedTasks)
-    }
-  } catch (error) {
-    console.error('更新子任务失败:', error)
-  }
-}
-
-const handleUpdateSubtask = async (parentId: string, subtask: Task) => {
-  const parentTask = props.tasks.find(t => String(t.id) === String(parentId))
+// 处理子任务卡片更新
+const handleSubtaskCardUpdate = (parentId: string, updatedSubtask: Task) => {
+  // 找到父任务并更新子任务
+  const parentTask = props.tasks.find(t => t.id === parentId)
   if (!parentTask) return
 
-  await handleUpdateSubtaskApi(parentId, subtask)
-}
-
-const handleDeleteSubtask = (parentId: string, subtaskId: string) => {
-  const parentTask = props.tasks.find(t => String(t.id) === String(parentId))
-  if (!parentTask) return
+  const updatedSubtasks = (parentTask.subtasks || []).map(s =>
+    s.id === updatedSubtask.id ? updatedSubtask : s
+  )
 
   const updatedTask = {
     ...parentTask,
-    subtasks: parentTask.subtasks?.filter(s => s.id !== subtaskId) || []
+    subtasks: updatedSubtasks
   }
 
-  handleUpdateTask(updatedTask)
+  emit('task-updated', updatedTask)
 }
 
-// 更新任务
-const handleUpdateTask = async (updatedTask: Task) => {
-  try {
-    const updatedTasks = await taskApi.updateTask(props.currentDate || '', updatedTask)
-    if (updatedTasks) {
-      props.tasks.length = 0
-      props.tasks.push(...updatedTasks)
-    }
-  } catch (error) {
-    console.error('更新任务失败:', error)
+// 处理子任务卡片删除
+const handleSubtaskCardDelete = (parentId: string, subtaskId: string) => {
+  // 找到父任务并删除子任务
+  const parentTask = props.tasks.find(t => t.id === parentId)
+  if (!parentTask) return
+
+  const updatedSubtasks = (parentTask.subtasks || []).filter(s => s.id !== subtaskId)
+
+  const updatedTask = {
+    ...parentTask,
+    subtasks: updatedSubtasks
   }
+
+  emit('task-updated', updatedTask)
 }
 
-// 删除任务
-const handleDeleteTask = async (taskId: string) => {
-  try {
-    const updatedTasks = await taskApi.deleteTask(props.currentDate || '', taskId)
-    if (updatedTasks) {
-      props.tasks.length = 0
-      props.tasks.push(...updatedTasks)
-    }
-  } catch (error) {
-    console.error('删除任务失败:', error)
-  }
+// 处理任务删除
+const handleTaskDelete = (taskId: string) => {
+  emit('task-deleted', taskId)
 }
 
-// 重排序任务
-const handleReorderTasks = async (reorderedTasks: Task[]) => {
-  try {
-    const updatedTasks = await taskApi.reorderTasks(props.currentDate || '', reorderedTasks)
-    if (updatedTasks) {
-      props.tasks.length = 0
-      props.tasks.push(...updatedTasks)
-    }
-  } catch (error) {
-    console.error('重排序任务失败:', error)
-  }
-}
 </script>

@@ -42,20 +42,21 @@ const markDirty = () => {
 const handleAddTask = async () => {
   if (!newTaskTitle.value.trim()) return
   if (!props.currentDate) return
-  
+
   try {
     // 从后端生成任务 ID
     const taskId = await taskApi.generateMainTaskId()
-    
+
     const newTask: Task = {
       id: taskId,
       title: newTaskTitle.value.trim(),
       status_id: props.statuses[0].id,
       type_id: "",
       priority_id: "",
-      due_date: undefined
+      due_date: undefined,
+      created_date: new Date().toISOString()
     }
-    
+
     emit('task-added', newTask)
     markDirty()
     newTaskTitle.value = ''
