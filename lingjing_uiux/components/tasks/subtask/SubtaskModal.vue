@@ -4,7 +4,12 @@
       <h3><i class="fas fa-plus-circle"></i> 添加子任务</h3>
       <div class="form-group">
         <label class="form-label">标题:</label>
-        <input v-model="formData.title" class="form-input" placeholder="输入子任务标题，回车键添加..." @keyup.enter="handleSubmit" />
+        <input
+          v-model="formData.title"
+          class="form-input"
+          placeholder="输入子任务标题，回车键添加..."
+          @keyup.enter="handleSubmit"
+        />
       </div>
       <div class="form-group">
         <label class="form-label">📌 状态:</label>
@@ -50,6 +55,7 @@
 
 <script setup lang="ts">
 import { ref, watch, type Ref } from 'vue'
+
 import type { Task, TaskStatus, TaskType, TaskPriority } from '../../../types.ts'
 const props = defineProps<{
   visible: boolean
@@ -72,21 +78,24 @@ const formData = ref({
   status_id: '',
   type_id: '',
   priority_id: '',
-  due_date: ''
+  due_date: '',
 })
 
 // 监听visible变化,重置表单
-watch(() => props.visible, (newVal) => {
-  if (newVal) {
-    formData.value = {
-      title: '',
-      status_id: props.statuses[0]?.id || '',
-      type_id: props.types[0]?.id || '',
-      priority_id: props.priorities[0]?.id || '',
-      due_date: ''
+watch(
+  () => props.visible,
+  newVal => {
+    if (newVal) {
+      formData.value = {
+        title: '',
+        status_id: props.statuses[0]?.id || '',
+        type_id: props.types[0]?.id || '',
+        priority_id: props.priorities[0]?.id || '',
+        due_date: '',
+      }
     }
   }
-})
+)
 
 // 关闭模态窗口
 const handleClose = () => {
@@ -105,13 +114,13 @@ const handleSubmit = () => {
     priority_id: formData.value.priority_id,
     due_date: formData.value.due_date,
     created_date: new Date().toISOString(),
-    subtasks: []
+    subtasks: [],
   }
 
   // 更新父任务，添加新子任务
   const updatedTask = {
     ...props.parentTask,
-    subtasks: [...(props.parentTask.subtasks || []), newSubtask]
+    subtasks: [...(props.parentTask.subtasks || []), newSubtask],
   }
 
   // 发出事件，让父组件处理更新

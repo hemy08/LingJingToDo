@@ -1,6 +1,7 @@
 import { type Ref } from 'vue'
-import type { Task } from '../../../types.ts'
+
 import { taskApi } from '../../../connections/task_apis.ts'
+import type { Task } from '../../../types.ts'
 
 /**
  * 更新任务
@@ -101,11 +102,7 @@ export const handleUpdateSubtask = async (
   tasks: Task[] | Ref<Task[]>
 ): Promise<void> => {
   try {
-    const updatedTasks = await taskApi.updateSubtask(
-      currentDate,
-      parentId,
-      subtask
-    )
+    const updatedTasks = await taskApi.updateSubtask(currentDate, parentId, subtask)
     if (updatedTasks) {
       // 使用响应式更新方式
       if (Array.isArray(tasks)) {
@@ -142,7 +139,7 @@ export const handleDeleteSubtask = async (
 
   const updatedTask = {
     ...parentTask,
-    subtasks: parentTask.subtasks?.filter(s => s.id !== subtaskId) || []
+    subtasks: parentTask.subtasks?.filter(s => s.id !== subtaskId) || [],
   }
 
   try {
@@ -162,4 +159,3 @@ export const handleDeleteSubtask = async (
     console.error('删除子任务失败:', error)
   }
 }
-

@@ -1,4 +1,5 @@
 import { invoke } from '@tauri-apps/api/core'
+
 import type { Task } from '../types'
 
 export const taskApi = {
@@ -71,7 +72,7 @@ export const taskApi = {
       date,
       typeId,
       statusId,
-      priorityId
+      priorityId,
     })
   },
 
@@ -84,5 +85,10 @@ export const taskApi = {
     overdue_count: number
   }> {
     return await invoke('get_task_statistics')
-  }
+  },
+
+  // 获取所有未完成任务
+  async getAllUnfinishedTasks(): Promise<Task[]> {
+    return await invoke<Task[]>('get_all_unfinished_tasks')
+  },
 }

@@ -7,8 +7,8 @@
       </div>
       <div class="dialog-content">{{ message }}</div>
       <div class="dialog-buttons">
-        <button 
-          v-for="button in buttons" 
+        <button
+          v-for="button in buttons"
           :key="button.text"
           :class="['btn-sm', button.type || '']"
           @click="handleButtonClick(button)"
@@ -21,7 +21,6 @@
 </template>
 
 <script setup lang="ts">
-
 interface DialogButton {
   text: string
   type?: 'btn-primary' | 'btn-danger' | ''
@@ -45,7 +44,7 @@ interface Emits {
 const props = withDefaults(defineProps<Props>(), {
   icon: 'fas fa-info-circle',
   buttons: () => [{ text: '确定', type: 'btn-primary', action: 'confirm' }],
-  closeOnOverlay: true
+  closeOnOverlay: true,
 })
 
 const emit = defineEmits<Emits>()
@@ -61,5 +60,3 @@ const handleButtonClick = (button: DialogButton) => {
   emit('update:visible', false)
 }
 </script>
-
-

@@ -1,32 +1,185 @@
 use thiserror::Error;
 use std::io;
+use serde::{Deserialize, Serialize};
 
-/// 应用程序错误类型
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+#[serde(rename_all = "PascalCase")]
+pub enum ErrorCategory {
+    NetworkError,
+    DataError,
+    PermissionError,
+    SystemError,
+    BusinessError,
+    ConfigError,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+#[serde(rename_all = "PascalCase")]
+pub enum ErrorLevel {
+    Fatal,
+    Critical,
+    Warning,
+    Info,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+pub enum ErrorCode {
+    E1001,
+    E1002,
+    E1003,
+    E1004,
+    E2001,
+    E2002,
+    E2003,
+    E2004,
+    E3001,
+    E3002,
+    E3003,
+    E4001,
+    E4002,
+    E4003,
+    E4004,
+    E5001,
+    E5002,
+    E5003,
+    E6001,
+    E6002,
+    E6003,
+}
+
+impl ErrorCode {
+    pub fn as_str(&self) -> &'static str {
+        match self {
+            ErrorCode::E1001 => "E1001",
+            ErrorCode::E1002 => "E1002",
+            ErrorCode::E1003 => "E1003",
+            ErrorCode::E1004 => "E1004",
+            ErrorCode::E2001 => "E2001",
+            ErrorCode::E2002 => "E2002",
+            ErrorCode::E2003 => "E2003",
+            ErrorCode::E2004 => "E2004",
+            ErrorCode::E3001 => "E3001",
+            ErrorCode::E3002 => "E3002",
+            ErrorCode::E3003 => "E3003",
+            ErrorCode::E4001 => "E4001",
+            ErrorCode::E4002 => "E4002",
+            ErrorCode::E4003 => "E4003",
+            ErrorCode::E4004 => "E4004",
+            ErrorCode::E5001 => "E5001",
+            ErrorCode::E5002 => "E5002",
+            ErrorCode::E5003 => "E5003",
+            ErrorCode::E6001 => "E6001",
+            ErrorCode::E6002 => "E6002",
+            ErrorCode::E6003 => "E6003",
+        }
+    }
+    
+    pub fn category(&self) -> ErrorCategory {
+        match self {
+            ErrorCode::E1001 | ErrorCode::E1002 | ErrorCode::E1003 | ErrorCode::E1004 => {
+                ErrorCategory::NetworkError
+            }
+            ErrorCode::E2001 | ErrorCode::E2002 | ErrorCode::E2003 | ErrorCode::E2004 => {
+                ErrorCategory::DataError
+            }
+            ErrorCode::E3001 | ErrorCode::E3002 | ErrorCode::E3003 => {
+                ErrorCategory::PermissionError
+            }
+            ErrorCode::E4001 | ErrorCode::E4002 | ErrorCode::E4003 | ErrorCode::E4004 => {
+                ErrorCategory::SystemError
+            }
+            ErrorCode::E5001 | ErrorCode::E5002 | ErrorCode::E5003 => {
+                ErrorCategory::BusinessError
+            }
+            ErrorCode::E6001 | ErrorCode::E6002 | ErrorCode::E6003 => {
+                ErrorCategory::ConfigError
+            }
+        }
+    }
+    
+    pub fn message(&self) -> &'static str {
+        match self {
+            ErrorCode::E1001 => "无法连接到服务器,请检查网络连接",
+            ErrorCode::E1002 => "请求超时,请稍后重试",
+            ErrorCode::E1003 => "无法解析服务器响应",
+            ErrorCode::E1004 => "网络连接已断开",
+            ErrorCode::E2001 => "数据格式不符合要求",
+            ErrorCode::E2002 => "必需数据字段缺失",
+            ErrorCode::E2003 => "数据解析错误",
+            ErrorCode::E2004 => "数据已损坏,无法读取",
+            ErrorCode::E3001 => "您没有执行此操作的权限",
+            ErrorCode::E3002 => "请先登录",
+            ErrorCode::E3003 => "无法访问文件,请检查权限",
+            ErrorCode::E4001 => "应用运行时发生错误",
+            ErrorCode::E4002 => "内存不足,请重启应用",
+            ErrorCode::E4003 => "磁盘空间不足",
+            ErrorCode::E4004 => "页面渲染失败",
+            ErrorCode::E5001 => "任务状态转换不合法",
+            ErrorCode::E5002 => "操作冲突,请刷新后重试",
+            ErrorCode::E5003 => "该操作已在进行中",
+            ErrorCode::E6001 => "配置文件不存在或已损坏",
+            ErrorCode::E6002 => "配置项格式错误",
+            ErrorCode::E6003 => "无法保存配置",
+        }
+    }
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ErrorContext {
+    pub url: Option<String>,
+    pub route: Option<String>,
+    pub user_agent: Option<String>,
+    pub app_version: Option<String>,
+    pub platform: Option<String>,
+    pub component: Option<String>,
+    pub operation: Option<String>,
+    pub method: Option<String>,
+    pub api_endpoint: Option<String>,
+    pub custom: Option<serde_json::Value>,
+}
+
+impl Default for ErrorContext {
+    fn default() -> Self {
+        ErrorContext {
+            url: None,
+            route: None,
+            user_agent: None,
+            app_version: None,
+            platform: None,
+            component: None,
+            operation: None,
+            method: None,
+            api_endpoint: None,
+            custom: None,
+        }
+    }
+}
+
 #[derive(Error, Debug)]
 pub enum AppError {
-    /// 任务相关错误
     #[error("Task error: {0}")]
     Task(#[from] TaskError),
     
-    /// 配置相关错误
     #[error("Config error: {0}")]
     Config(#[from] ConfigError),
     
-    /// 文件操作错误
     #[error("File error: {0}")]
     File(#[from] FileError),
     
-    /// IO 错误
     #[error("IO error: {0}")]
     Io(#[from] io::Error),
     
-    /// JSON 解析错误
     #[error("JSON error: {0}")]
     Json(#[from] serde_json::Error),
     
-    /// 通用错误
     #[error("{0}")]
     Generic(String),
+    
+    #[error("Network error: {0}")]
+    Network(String),
+    
+    #[error("Recovery error: {0}")]
+    Recovery(String),
 }
 
 /// 任务相关错误
@@ -121,47 +274,99 @@ pub enum FileError {
     SizeExceeded(u64),
 }
 
-/// 错误响应结构（用于 Tauri 命令返回）
-#[derive(Debug, serde::Serialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ErrorResponse {
-    pub error_type: String,
+    pub error_id: String,
+    pub error_code: String,
+    pub error_type: ErrorCategory,
+    pub error_level: ErrorLevel,
     pub message: String,
+    pub stack: Option<String>,
+    pub context: ErrorContext,
     pub details: Option<String>,
+    pub recovery_hint: Option<String>,
+}
+
+impl AppError {
+    pub fn category(&self) -> ErrorCategory {
+        match self {
+            AppError::Task(_) => ErrorCategory::BusinessError,
+            AppError::Config(_) => ErrorCategory::ConfigError,
+            AppError::File(_) => ErrorCategory::DataError,
+            AppError::Io(_) => ErrorCategory::SystemError,
+            AppError::Json(_) => ErrorCategory::DataError,
+            AppError::Generic(_) => ErrorCategory::SystemError,
+            AppError::Network(_) => ErrorCategory::NetworkError,
+            AppError::Recovery(_) => ErrorCategory::SystemError,
+        }
+    }
+    
+    pub fn level(&self) -> ErrorLevel {
+        match self {
+            AppError::Task(TaskError::NotFound(_)) => ErrorLevel::Warning,
+            AppError::Task(TaskError::InvalidId(_)) => ErrorLevel::Warning,
+            AppError::Task(TaskError::InvalidData(_)) => ErrorLevel::Warning,
+            AppError::Task(TaskError::AlreadyExists(_)) => ErrorLevel::Warning,
+            AppError::Task(TaskError::SubtaskError(_)) => ErrorLevel::Warning,
+            AppError::Task(TaskError::OperationFailed(_)) => ErrorLevel::Critical,
+            AppError::Config(ConfigError::NotFound(_)) => ErrorLevel::Warning,
+            AppError::Config(ConfigError::Invalid(_)) => ErrorLevel::Warning,
+            AppError::Config(ConfigError::SaveFailed(_)) => ErrorLevel::Critical,
+            AppError::Config(ConfigError::LoadFailed(_)) => ErrorLevel::Critical,
+            AppError::Config(ConfigError::StatusError(_)) => ErrorLevel::Warning,
+            AppError::Config(ConfigError::TypeError(_)) => ErrorLevel::Warning,
+            AppError::Config(ConfigError::PriorityError(_)) => ErrorLevel::Warning,
+            AppError::File(FileError::NotFound(_)) => ErrorLevel::Warning,
+            AppError::File(FileError::ReadFailed(_)) => ErrorLevel::Critical,
+            AppError::File(FileError::WriteFailed(_)) => ErrorLevel::Critical,
+            AppError::File(FileError::UnsupportedFormat(_)) => ErrorLevel::Warning,
+            AppError::File(FileError::ParseFailed(_)) => ErrorLevel::Warning,
+            AppError::File(FileError::InvalidPath(_)) => ErrorLevel::Warning,
+            AppError::File(FileError::SizeExceeded(_)) => ErrorLevel::Warning,
+            AppError::Io(_) => ErrorLevel::Critical,
+            AppError::Json(_) => ErrorLevel::Warning,
+            AppError::Generic(_) => ErrorLevel::Warning,
+            AppError::Network(_) => ErrorLevel::Critical,
+            AppError::Recovery(_) => ErrorLevel::Critical,
+        }
+    }
+    
+    pub fn error_code(&self) -> ErrorCode {
+        match self {
+            AppError::Network(_) => ErrorCode::E1001,
+            AppError::Json(_) => ErrorCode::E2003,
+            AppError::Task(TaskError::InvalidData(_)) => ErrorCode::E2001,
+            AppError::Task(TaskError::NotFound(_)) => ErrorCode::E2002,
+            AppError::File(FileError::ParseFailed(_)) => ErrorCode::E2003,
+            AppError::File(FileError::ReadFailed(_)) => ErrorCode::E2004,
+            AppError::Config(ConfigError::LoadFailed(_)) => ErrorCode::E6001,
+            AppError::Config(ConfigError::Invalid(_)) => ErrorCode::E6002,
+            AppError::Config(ConfigError::SaveFailed(_)) => ErrorCode::E6003,
+            AppError::Task(TaskError::OperationFailed(_)) => ErrorCode::E5001,
+            AppError::Task(TaskError::AlreadyExists(_)) => ErrorCode::E5003,
+            AppError::Io(_) => ErrorCode::E4001,
+            _ => ErrorCode::E4001,
+        }
+    }
 }
 
 impl From<AppError> for ErrorResponse {
     fn from(error: AppError) -> Self {
-        match error {
-            AppError::Task(e) => ErrorResponse {
-                error_type: "TaskError".to_string(),
-                message: e.to_string(),
-                details: None,
-            },
-            AppError::Config(e) => ErrorResponse {
-                error_type: "ConfigError".to_string(),
-                message: e.to_string(),
-                details: None,
-            },
-            AppError::File(e) => ErrorResponse {
-                error_type: "FileError".to_string(),
-                message: e.to_string(),
-                details: None,
-            },
-            AppError::Io(e) => ErrorResponse {
-                error_type: "IoError".to_string(),
-                message: e.to_string(),
-                details: None,
-            },
-            AppError::Json(e) => ErrorResponse {
-                error_type: "JsonError".to_string(),
-                message: e.to_string(),
-                details: None,
-            },
-            AppError::Generic(msg) => ErrorResponse {
-                error_type: "GenericError".to_string(),
-                message: msg,
-                details: None,
-            },
+        use uuid::Uuid;
+        
+        let error_code = error.error_code();
+        let error_id = Uuid::new_v4().to_string();
+        
+        ErrorResponse {
+            error_id,
+            error_code: error_code.as_str().to_string(),
+            error_type: error.category(),
+            error_level: error.level(),
+            message: error.to_string(),
+            stack: None,
+            context: ErrorContext::default(),
+            details: None,
+            recovery_hint: None,
         }
     }
 }
@@ -203,7 +408,21 @@ mod tests {
     fn test_error_response() {
         let error = AppError::Task(TaskError::NotFound("task-123".to_string()));
         let response = ErrorResponse::from(error);
-        assert_eq!(response.error_type, "TaskError");
-        assert_eq!(response.message, "Task not found: task-123");
+        assert_eq!(response.error_type, ErrorCategory::BusinessError);
+        assert_eq!(response.error_level, ErrorLevel::Warning);
+    }
+    
+    #[test]
+    fn test_error_code_category() {
+        assert_eq!(ErrorCode::E1001.category(), ErrorCategory::NetworkError);
+        assert_eq!(ErrorCode::E2001.category(), ErrorCategory::DataError);
+        assert_eq!(ErrorCode::E6001.category(), ErrorCategory::ConfigError);
+    }
+    
+    #[test]
+    fn test_app_error_classification() {
+        let error = AppError::Network("Connection failed".to_string());
+        assert_eq!(error.category(), ErrorCategory::NetworkError);
+        assert_eq!(error.level(), ErrorLevel::Critical);
     }
 }

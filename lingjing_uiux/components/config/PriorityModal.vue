@@ -1,43 +1,44 @@
 <template>
   <div v-if="visible" class="priority-modal" @click.self="handleClose">
-    <div 
-      class="priority-modal-content" 
-      :style="{ width: modalWidth + 'px', height: modalHeight + 'px' }"
+    <div
       ref="modalRef"
+      class="priority-modal-content"
+      :style="{ width: modalWidth + 'px', height: modalHeight + 'px' }"
     >
       <!-- 拖动调整大小的手柄 -->
       <div class="resize-handle resize-right" @mousedown="startResize('right', $event)"></div>
       <div class="resize-handle resize-bottom" @mousedown="startResize('bottom', $event)"></div>
       <div class="resize-handle resize-corner" @mousedown="startResize('corner', $event)"></div>
-      
+
       <h3><i class="fas fa-flag"></i> 自定义优先级</h3>
       <div class="config-list">
         <div v-for="(priority, index) in localPriorities" :key="priority.id" class="config-card">
           <div class="card-left">
-            <select v-model="priority.emoji" class="emoji-select" @change="markAsModified(priority.id)">
-              <option v-for="emoji in availableEmojis" :key="emoji" :value="emoji">{{ emoji }}</option>
+            <select
+              v-model="priority.emoji"
+              class="emoji-select"
+              @change="markAsModified(priority.id)"
+            >
+              <option v-for="emoji in availableEmojis" :key="emoji" :value="emoji">
+                {{ emoji }}
+              </option>
             </select>
-            <input 
-              v-model="priority.name" 
-              class="config-input" 
+            <input
+              v-model="priority.name"
+              class="config-input"
               placeholder="优先级名称"
               @change="markAsModified(priority.id)"
             />
           </div>
           <div class="card-actions">
-            <button 
-              v-if="index > 0" 
-              class="btn-sm" 
-              @click="moveUp(index)"
-              title="上移"
-            >
+            <button v-if="index > 0" class="btn-sm" title="上移" @click="moveUp(index)">
               <span>⬆️</span>
             </button>
-            <button 
-              v-if="index < localPriorities.length - 1" 
-              class="btn-sm" 
-              @click="moveDown(index)"
+            <button
+              v-if="index < localPriorities.length - 1"
+              class="btn-sm"
               title="下移"
+              @click="moveDown(index)"
             >
               <span>⬇️</span>
             </button>
@@ -51,19 +52,17 @@
         <select v-model="newPriorityEmoji" class="emoji-select">
           <option v-for="emoji in availableEmojis" :key="emoji" :value="emoji">{{ emoji }}</option>
         </select>
-        <input 
-          v-model="newPriorityName" 
-          type="text" 
-          placeholder="新优先级名称" 
+        <input
+          v-model="newPriorityName"
+          type="text"
+          placeholder="新优先级名称"
           @keypress.enter="addPriority"
-        >
+        />
         <button class="btn-sm btn-primary" @click="addPriority">添加</button>
       </div>
       <div class="modal-buttons">
         <button class="btn-sm" @click="handleClose"><span>🚫</span> 关闭</button>
-        <button class="btn-sm btn-primary" @click="handleSave">
-          <span>💾</span> 保存全部
-        </button>
+        <button class="btn-sm btn-primary" @click="handleSave"><span>💾</span> 保存全部</button>
       </div>
     </div>
   </div>
@@ -73,10 +72,12 @@
 
 <script setup lang="ts">
 import { ref, watch, onUnmounted } from 'vue'
-import { priorityApi } from '../../connections/config_apis'
+
 import { useDialog } from '../../composables/useDialog'
-import { createConfigHandlers } from './config_common'
+import { priorityApi } from '../../connections/config_apis'
 import type { TaskPriority } from '../../types'
+
+import { createConfigHandlers } from './config_common'
 
 interface Props {
   visible: boolean
@@ -92,8 +93,30 @@ const props = defineProps<Props>()
 const emit = defineEmits<Emits>()
 
 // 可用的emoji列表
-const availableEmojis = ['✅', '❎', '⚠️', 'ℹ️', '⏳', '⏸️', '▶️', '🟢', '🔴', '🟡', '🔵', '⚫️', '💀', '🛡️', '🔔',
-    '📋', '📌', '📝', '⏹️', '📅','🔒','⏰','🚀'
+const availableEmojis = [
+  '✅',
+  '❎',
+  '⚠️',
+  'ℹ️',
+  '⏳',
+  '⏸️',
+  '▶️',
+  '🟢',
+  '🔴',
+  '🟡',
+  '🔵',
+  '⚫️',
+  '💀',
+  '🛡️',
+  '🔔',
+  '📋',
+  '📌',
+  '📝',
+  '⏹️',
+  '📅',
+  '🔒',
+  '⏰',
+  '🚀',
 ]
 
 // 本地优先级列表
@@ -115,25 +138,29 @@ const {
   handleAdd: configHandleAdd,
   handleMoveUp: handleMoveUp,
   handleMoveDown: handleMoveDown,
-  handleStartResize: handleStartResize } = createConfigHandlers<TaskPriority>()
+  handleStartResize: handleStartResize,
+} = createConfigHandlers<TaskPriority>()
 const { showAlert } = useDialog()
 
 // 是否有修改
 const hasModifications = () => modifiedIds.value.size > 0
 
 // 监听 visible 变化，从后端获取最新数据
-watch(() => props.visible, async (newVisible) => {
-  if (newVisible) {
-    try {
-      const result = await priorityApi.getAll()
-      localPriorities.value = result
-      modifiedIds.value.clear()
-    } catch (error) {
-      console.error('获取优先级列表失败:', error)
-      showAlert('错误', '获取优先级列表失败')
+watch(
+  () => props.visible,
+  async newVisible => {
+    if (newVisible) {
+      try {
+        const result = await priorityApi.getAll()
+        localPriorities.value = result
+        modifiedIds.value.clear()
+      } catch (error) {
+        console.error('获取优先级列表失败:', error)
+        showAlert('错误', '获取优先级列表失败')
+      }
     }
   }
-})
+)
 
 // 标记为已修改
 const markAsModified = (id: string) => {
@@ -162,8 +189,8 @@ const addPriority = () => {
     (id, name, emoji) => ({
       id,
       name,
-      color: "#a0aec0",
-      emoji
+      color: '#a0aec0',
+      emoji,
     })
   )
   newPriorityEmoji.value = '📋'
@@ -176,7 +203,7 @@ const deletePriority = async (id: string) => {
     localPriorities,
     priorityApi.delete.bind(priorityApi),
     modifiedIds,
-    (result) => emit('updated', result),
+    result => emit('updated', result),
     '优先级'
   )
 }
@@ -187,7 +214,7 @@ const handleSave = async () => {
     localPriorities,
     priorityApi.update.bind(priorityApi),
     modifiedIds,
-    (result) => emit('updated', result),
+    result => emit('updated', result),
     () => emit('update:visible', false),
     '优先级',
     true
@@ -201,7 +228,7 @@ const handleClose = async () => {
     localPriorities,
     priorityApi.update.bind(priorityApi),
     modifiedIds,
-    (result) => emit('updated', result),
+    result => emit('updated', result),
     () => emit('update:visible', false),
     '优先级'
   )
@@ -217,4 +244,3 @@ onUnmounted(() => {
   // 清理代码
 })
 </script>
-

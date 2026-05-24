@@ -1,4 +1,5 @@
 import { ref } from 'vue'
+
 import Dialog from '../common/Dialog.vue'
 
 export interface DialogButton {
@@ -25,7 +26,7 @@ const dialogState = ref<{
   title: '',
   message: '',
   buttons: [],
-  icon: 'fas fa-info-circle'
+  icon: 'fas fa-info-circle',
 })
 
 const dialogCallbacks = ref<Map<string, (() => void) | undefined>>(new Map())
@@ -42,11 +43,13 @@ export function useDialog() {
       title,
       message,
       buttons: buttons || [{ text: '确定', type: 'btn-primary', action: 'confirm' }],
-      icon: title.includes('错误') ? 'fas fa-exclamation-circle' : 
-           title.includes('确认') || title.includes('提示') ? 'fas fa-question-circle' : 
-           'fas fa-info-circle'
+      icon: title.includes('错误')
+        ? 'fas fa-exclamation-circle'
+        : title.includes('确认') || title.includes('提示')
+          ? 'fas fa-question-circle'
+          : 'fas fa-info-circle',
     }
-    
+
     dialogCallbacks.value.clear()
     if (callbacks?.confirm) {
       dialogCallbacks.value.set('confirm', callbacks.confirm)
@@ -60,16 +63,23 @@ export function useDialog() {
   }
 
   const showAlert = (title: string, message: string, callback?: () => void) => {
-    showDialog(title, message, [{ text: '确定', type: 'btn-primary', action: 'confirm' }], { confirm: callback })
+    showDialog(title, message, [{ text: '确定', type: 'btn-primary', action: 'confirm' }], {
+      confirm: callback,
+    })
   }
 
-  const showConfirm = (title: string, message: string, onConfirm?: () => void, onCancel?: () => void) => {
+  const showConfirm = (
+    title: string,
+    message: string,
+    onConfirm?: () => void,
+    onCancel?: () => void
+  ) => {
     showDialog(
       title,
       message,
       [
         { text: '取消', action: 'cancel' },
-        { text: '确定', type: 'btn-primary', action: 'confirm' }
+        { text: '确定', type: 'btn-primary', action: 'confirm' },
       ],
       { confirm: onConfirm, cancel: onCancel }
     )
@@ -93,14 +103,14 @@ export function useDialog() {
     closeText: string = '不保存',
     callbacks?: { onConfirm?: () => void; onCancel?: () => void; onClose?: () => void }
   ): Promise<'confirm' | 'cancel' | 'close'> => {
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       showDialog(
         title,
         message,
         [
           { text: cancelText, action: 'cancel' },
           { text: closeText, action: 'close' },
-          { text: confirmText, type: 'btn-primary', action: 'confirm' }
+          { text: confirmText, type: 'btn-primary', action: 'confirm' },
         ],
         {
           confirm: () => {
@@ -114,7 +124,7 @@ export function useDialog() {
           close: () => {
             callbacks?.onClose?.()
             resolve('close')
-          }
+          },
         }
       )
     })
@@ -140,6 +150,6 @@ export function useDialog() {
     showConfirmWithClose,
     handleButtonClick,
     handleOverlayClick,
-    Dialog
+    Dialog,
   }
 }

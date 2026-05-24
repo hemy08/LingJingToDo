@@ -1,0 +1,262 @@
+.task-statistics {
+  padding: 12px;
+  background: var(--card-bg);
+  border-radius: 8px;
+  margin-bottom: 12px;
+}
+
+.task-statistics .stat-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 0;
+  font-size: 13px;
+}
+
+.task-statistics .stat-item i {
+  width: 16px;
+  color: var(--accent-color, var(--accent-blue));
+}
+
+.stat-label {
+  flex: 1;
+  color: var(--text-secondary);
+}
+
+.stat-value {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.stat-danger {
+  color: var(--danger-color, var(--danger));
+}
+
+.stat-danger i {
+  color: var(--danger-color, var(--danger));
+}
+
+/* TaskTree */
+.task-tree {
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  background: var(--card-bg);
+  border-radius: 8px;
+  padding: 12px;
+}
+
+.task-tree-title {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.task-tree-title i {
+  color: var(--accent-color, var(--accent-blue));
+}
+
+.task-tree-container {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.task-tree-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.task-tree-container::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 4px;
+}
+
+.task-tree-container::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+}
+
+.task-tree-container::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.empty-tree {
+  text-align: center;
+  color: var(--text-secondary);
+  padding: 20px;
+  font-size: 13px;
+}
+
+/* TaskTreeItem */
+.task-tree-item {
+  margin-left: 0;
+}
+
+.tree-item-content {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+.tree-item-content:hover {
+  background: var(--tag-bg);
+}
+
+.is-active {
+  background: var(--accent-light, #e3f2fd);
+  font-weight: 600;
+  color: var(--accent-color, #1976d2);
+}
+
+.is-highlighted {
+  background: #fff3e0;
+  animation: highlight-node 2s ease-in-out;
+}
+
+@keyframes highlight-node {
+  0%, 100% {
+    background: #fff3e0;
+  }
+  50% {
+    background: #ffe0b2;
+  }
+}
+
+.expand-icon {
+  font-size: 10px;
+  width: 16px;
+  text-align: center;
+  cursor: pointer;
+  color: var(--text-secondary);
+}
+
+.expand-icon:hover {
+  color: var(--text-primary);
+}
+
+.expand-icon-placeholder {
+  width: 16px;
+}
+
+.task-tree-item .task-title {
+  flex: 1;
+  font-size: 14px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.task-tree-item .subtasks {
+  margin-top: 4px;
+}
+
+@media (prefers-color-scheme: dark) {
+  .tree-item-content:hover {
+    background: #252525;
+  }
+  
+  .is-active {
+    background: #1a3a52;
+    color: #64b5f6;
+  }
+  
+  .is-highlighted {
+    background: #3d2f1f;
+  }
+}
+
+/* StatusBar */
+.status-bar {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  min-width: 400px;
+  max-width: 800px;
+  padding: 12px 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  z-index: 9999;
+}
+
+.status-bar.success {
+  background: #10b981;
+  color: white;
+}
+
+.status-bar.error {
+  background: #ef4444;
+  color: white;
+}
+
+.status-bar.warning {
+  background: #f59e0b;
+  color: white;
+}
+
+.status-bar.info {
+  background: #3b82f6;
+  color: white;
+}
+
+.status-content {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+}
+
+.status-content i {
+  font-size: 18px;
+}
+
+.status-message {
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.status-detail {
+  font-size: 12px;
+  opacity: 0.9;
+  margin-left: 8px;
+}
+
+.status-close {
+  background: transparent;
+  border: none;
+  color: white;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  transition: background 0.2s;
+}
+
+.status-close:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.slide-up-enter-active,
+.slide-up-leave-active {
+  transition: all 0.3s ease;
+}
+
+.slide-up-enter-from,
+.slide-up-leave-to {
+  transform: translateX(-50%) translateY(100%);
+  opacity: 0;
+}
+

@@ -37,51 +37,46 @@
       </div>
     </div>
 
+    <!-- 过滤面板 -->
+    <FilterPanel
+      v-if="showFilterPanel"
+      :statuses="statuses"
+      :priorities="priorities"
+      :types="types"
+      @filter-change="handleFilterChange"
+    />
+
     <!-- 任务列表容器（可滚动） -->
     <div class="task-list-container">
       <!-- 任务列表 -->
       <MasonryLayout
-      v-if="layoutMode === 'masonry' && tasks.length > 0"
-      :tasks="tasks"
-      :drag-mode="dragMode"
-      :current-date="currentDate || ''"
-      :tasks-ref="tasks"
-    >
-      <TaskCard
-        v-for="task in tasks"
-        :key="task.id"
-        :task="task"
-        :statuses="statuses"
-        :types="types"
-        :priorities="priorities"
-        :subtask-display-mode="getSubtaskDisplayMode(task.id)"
-        :selected-task-id="selectedTaskId"
-        :current-date="currentDate || ''"
+        v-if="layoutMode === 'masonry' && tasks.length > 0"
         :tasks="tasks"
-        @add-subtask="openSubtaskModal"
-        @toggle-subtask-mode="toggleSubtaskDisplayMode"
-        @select="$emit('select-task', String($event))"
-        @update="handleTaskUpdate"
-        @delete="handleTaskDelete"
+        :drag-mode="dragMode"
+        :current-date="currentDate || ''"
+        :tasks-ref="tasks"
       >
-        <template #subtasks="{ subtasks, displayMode }">
-          <SubtaskTable
-            v-if="displayMode === 'table'"
-            :subtasks="subtasks"
-            :statuses="statuses"
-            :types="types"
-            :priorities="priorities"
-            :parent-id="task.id"
-            :current-date="currentDate || ''"
-            :tasks="tasks"
-            @update="handleSubtaskCardUpdate(task.id, $event)"
-            @delete="handleSubtaskCardDelete(task.id, $event)"
-          />
-          <div v-else class="subtasks-list">
-            <SubtaskCard
-              v-for="subtask in subtasks"
-              :key="subtask.id"
-              :subtask="subtask"
+        <TaskCard
+          v-for="task in tasks"
+          :key="task.id"
+          :task="task"
+          :statuses="statuses"
+          :types="types"
+          :priorities="priorities"
+          :subtask-display-mode="getSubtaskDisplayMode(task.id)"
+          :selected-task-id="selectedTaskId"
+          :current-date="currentDate || ''"
+          :tasks="tasks"
+          @add-subtask="openSubtaskModal"
+          @toggle-subtask-mode="toggleSubtaskDisplayMode"
+          @select="$emit('select-task', String($event))"
+          @update="handleTaskUpdate"
+          @delete="handleTaskDelete"
+        >
+          <template #subtasks="{ subtasks, displayMode }">
+            <SubtaskTable
+              v-if="displayMode === 'table'"
+              :subtasks="subtasks"
               :statuses="statuses"
               :types="types"
               :priorities="priorities"
@@ -91,10 +86,24 @@
               @update="handleSubtaskCardUpdate(task.id, $event)"
               @delete="handleSubtaskCardDelete(task.id, $event)"
             />
-          </div>
-        </template>
-      </TaskCard>
-    </MasonryLayout>
+            <div v-else class="subtasks-list">
+              <SubtaskCard
+                v-for="subtask in subtasks"
+                :key="subtask.id"
+                :subtask="subtask"
+                :statuses="statuses"
+                :types="types"
+                :priorities="priorities"
+                :parent-id="task.id"
+                :current-date="currentDate || ''"
+                :tasks="tasks"
+                @update="handleSubtaskCardUpdate(task.id, $event)"
+                @delete="handleSubtaskCardDelete(task.id, $event)"
+              />
+            </div>
+          </template>
+        </TaskCard>
+      </MasonryLayout>
 
       <ListLayout
         v-if="layoutMode === 'list' && tasks.length > 0"
@@ -215,35 +224,39 @@
         <p>暂无任务</p>
         <p class="empty-hint">在上方输入框添加新任务</p>
       </div>
-      </div> <!-- 结束 task-list-container -->
     </div>
+    <!-- 结束 task-list-container -->
+  </div>
 
-    <!-- 子任务模态窗口 -->
-    <SubtaskModal
-      :visible="showSubtaskModal"
-      :parent-task="currentParentTask"
-      :statuses="statuses"
-      :types="types"
-      :priorities="priorities"
-      :current-date="currentDate || ''"
-      :tasks="tasks"
-      @close="closeSubtaskModal"
-      @update="handleSubtaskUpdate"
-    />
+  <!-- 子任务模态窗口 -->
+  <SubtaskModal
+    :visible="showSubtaskModal"
+    :parent-task="currentParentTask"
+    :statuses="statuses"
+    :types="types"
+    :priorities="priorities"
+    :current-date="currentDate || ''"
+    :tasks="tasks"
+    @close="closeSubtaskModal"
+    @update="handleSubtaskUpdate"
+  />
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue'
+
 import type { Task, TaskStatus, TaskType, TaskPriority } from '../../types'
-import TaskAddArea from './common/TaskAddArea.vue'
+
 import SettingsPanel from './common/SettingsPanel.vue'
+import TaskAddArea from './common/TaskAddArea.vue'
 import TaskCard from './common/TaskCard.vue'
-import SubtaskCard from './subtask/SubtaskCard.vue'
-import SubtaskTable from './subtask/SubtaskTable.vue'
-import MasonryLayout from './layout/MasonryLayout.vue'
 import ListLayout from './layout/ListLayout.vue'
+import MasonryLayout from './layout/MasonryLayout.vue'
 import TreeLayout from './layout/TreeLayout.vue'
+import SubtaskCard from './subtask/SubtaskCard.vue'
 import SubtaskModal from './subtask/SubtaskModal.vue'
+import SubtaskTable from './subtask/SubtaskTable.vue'
+import FilterPanel from '../common/FilterPanel.vue'
 const props = defineProps<{
   selectedTaskId?: string | null
   tasks: Task[]
@@ -252,6 +265,7 @@ const props = defineProps<{
   priorities: TaskPriority[]
   currentDate: string | null
   isDirty: boolean
+  showFilterPanel?: boolean
   config?: {
     fontSize?: string
     dragMode?: 'insert' | 'swap'
@@ -278,7 +292,6 @@ const subtaskDisplayMode = ref<Record<string, 'card' | 'table'>>({})
 const showSubtaskModal = ref(false)
 const currentParentTask = ref<Task | null>(null)
 
-
 // 处理任务添加
 // 处理配置更新
 const handleConfigUpdate = (newConfig: any) => {
@@ -293,6 +306,9 @@ const dragMode = ref<'insert' | 'swap'>(props.config?.dragMode || 'insert')
 const layoutMode = ref<'masonry' | 'list' | 'tree'>(props.config?.layoutMode || 'masonry')
 const listColumns = ref(props.config?.listColumns || 2)
 
+const handleFilterChange = () => {
+  // 过滤状态变化，由FilterPanel内部处理
+}
 
 // 切换子任务显示模式
 const toggleSubtaskDisplayMode = (taskId: string) => {
@@ -340,7 +356,7 @@ const handleSubtaskCardUpdate = (parentId: string, updatedSubtask: Task) => {
 
   const updatedTask = {
     ...parentTask,
-    subtasks: updatedSubtasks
+    subtasks: updatedSubtasks,
   }
 
   emit('task-updated', updatedTask)
@@ -356,7 +372,7 @@ const handleSubtaskCardDelete = (parentId: string, subtaskId: string) => {
 
   const updatedTask = {
     ...parentTask,
-    subtasks: updatedSubtasks
+    subtasks: updatedSubtasks,
   }
 
   emit('task-updated', updatedTask)
@@ -366,49 +382,4 @@ const handleSubtaskCardDelete = (parentId: string, subtaskId: string) => {
 const handleTaskDelete = (taskId: string) => {
   emit('task-deleted', taskId)
 }
-
 </script>
-
-<style scoped>
-/* 任务列表容器 - 可滚动 */
-.task-list-container {
-  flex: 1;
-  overflow-y: auto;
-  overflow-x: hidden;
-  min-height: 0; /* 重要：允许flex子项收缩 */
-}
-
-/* 自定义滚动条 */
-.task-list-container::-webkit-scrollbar {
-  width: 8px;
-}
-
-.task-list-container::-webkit-scrollbar-track {
-  background: rgba(0, 0, 0, 0.05);
-  border-radius: 4px;
-}
-
-.task-list-container::-webkit-scrollbar-thumb {
-  background: rgba(0, 0, 0, 0.2);
-  border-radius: 4px;
-}
-
-.task-list-container::-webkit-scrollbar-thumb:hover {
-  background: rgba(0, 0, 0, 0.3);
-}
-
-/* 暗色主题滚动条 */
-@media (prefers-color-scheme: dark) {
-  .task-list-container::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.05);
-  }
-
-  .task-list-container::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.2);
-  }
-
-  .task-list-container::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 255, 255, 0.3);
-  }
-}
-</style>

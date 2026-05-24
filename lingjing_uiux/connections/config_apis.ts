@@ -1,4 +1,5 @@
 import { invoke } from '@tauri-apps/api/core'
+
 import type { TaskStatus, TaskType, TaskPriority } from '../types'
 
 /**
@@ -24,7 +25,7 @@ export const statusApi = {
    */
   async delete(id: string): Promise<TaskStatus[]> {
     return await invoke<TaskStatus[]>('delete_status', { id })
-  }
+  },
 }
 
 /**
@@ -50,7 +51,7 @@ export const typeApi = {
    */
   async delete(id: string): Promise<TaskType[]> {
     return await invoke<TaskType[]>('delete_type', { id })
-  }
+  },
 }
 
 /**
@@ -76,5 +77,5 @@ export const priorityApi = {
    */
   async delete(id: string): Promise<TaskPriority[]> {
     return await invoke<TaskPriority[]>('delete_priority', { id })
-  }
+  },
 }

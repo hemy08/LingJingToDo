@@ -23,7 +23,7 @@
         <option value="tree">树形</option>
       </select>
     </div>
-    <div class="setting-item" v-if="layoutMode === 'list'">
+    <div v-if="layoutMode === 'list'" class="setting-item">
       <label>📊 列表列数:</label>
       <select v-model="listColumns">
         <option :value="1">1列</option>
@@ -48,12 +48,14 @@ const props = defineProps<{
 }>()
 
 const emit = defineEmits<{
-  'update:config': [config: {
-    fontSize: string
-    dragMode: 'insert' | 'swap'
-    layoutMode: 'masonry' | 'list' | 'tree'
-    listColumns: number
-  }]
+  'update:config': [
+    config: {
+      fontSize: string
+      dragMode: 'insert' | 'swap'
+      layoutMode: 'masonry' | 'list' | 'tree'
+      listColumns: number
+    },
+  ]
 }>()
 
 const fontSize = ref(props.config?.fontSize || 'medium')
@@ -67,7 +69,7 @@ watch([fontSize, dragMode, layoutMode, listColumns], () => {
     fontSize: fontSize.value,
     dragMode: dragMode.value,
     layoutMode: layoutMode.value,
-    listColumns: listColumns.value
+    listColumns: listColumns.value,
   })
 })
 </script>

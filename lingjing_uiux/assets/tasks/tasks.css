@@ -1,0 +1,223 @@
+/* ========================================
+   App.vue 组件样式
+   ======================================== */
+
+.app {
+  display: flex;
+  height: 100vh;
+  background: var(--bg-page);
+}
+
+.sidebar {
+  background: var(--card-bg);
+  border-right: 1px solid var(--border-light);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  min-width: 10%;
+  max-width: 40%;
+  flex-shrink: 0;
+}
+
+
+.unsaved-indicator {
+  color: var(--warning);
+  font-size: 0.85rem;
+}
+
+.task-tree {
+  padding: 12px;
+  border-top: 1px solid var(--border-light);
+}
+
+.task-tree-title {
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+
+.task-tree-container {
+  font-size: 0.75rem;
+}
+
+.tree-node {
+  padding: 4px 8px;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background 0.2s;
+}
+
+.tree-node:hover {
+  background: var(--tree-hover);
+}
+
+.empty-tree {
+  text-align: center;
+  padding: 8px;
+  color: var(--text-secondary);
+  font-size: 0.7rem;
+}
+
+/* 模态框样式 */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+
+.theme-modal {
+  width: 1100px;
+  min-width: 850px;
+  max-width: 1400px;
+  resize: both;
+  overflow: hidden;
+  position: relative;
+}
+
+.theme-close-btn {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 50%;
+  background: var(--tag-bg);
+  color: var(--text-secondary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  z-index: 10;
+}
+
+.theme-close-btn:hover {
+  background: var(--danger);
+  color: white;
+  transform: scale(1.1);
+}
+
+.theme-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 20px;
+  margin-bottom: 20px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  max-height: 60vh;
+}
+
+.theme-card {
+  border: 2px solid var(--border-light);
+  border-radius: 12px;
+  padding: 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: var(--card-bg);
+  width: 200px;
+  min-width: 200px;
+  max-width: 200px;
+}
+.theme-card:hover {
+  border-color: var(--accent-blue);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.theme-card.active {
+  border-color: var(--accent-blue);
+  box-shadow: 0 4px 12px rgba(0, 119, 200, 0.2);
+}
+
+.theme-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+  color: var(--text-primary);
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.theme-preview {
+  border-radius: 8px;
+  padding: 12px;
+  min-height: 100px;
+}
+
+.preview-card {
+  border-radius: 6px;
+  padding: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.preview-title {
+  font-weight: 600;
+  margin-bottom: 8px;
+  font-size: 0.9rem;
+}
+
+.preview-meta {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.preview-tag {
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.card-emoji {
+  font-size: 1.3rem;
+  line-height: 1;
+}
+
+.card-text {
+  color: var(--text-primary);
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+.card-delete-btn {
+  padding: 4px;
+  border: none;
+  border-radius: 6px;
+  background: #fee;
+  color: #dc2626;
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: 500;
+  border: 1px solid #fecaca;
+}
+
+.card-delete-btn:hover {
+  background: #dc2626;
+  color: white;
+  border-color: #dc2626;
+}
+
+.add-config input {
+  flex: 1;
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1px solid var(--border-light);
+  background: var(--card-bg);
+  color: var(--text-primary);
+  font-size: 0.9rem;
+}

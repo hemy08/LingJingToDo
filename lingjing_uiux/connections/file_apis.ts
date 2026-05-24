@@ -1,4 +1,5 @@
 import { invoke } from '@tauri-apps/api/core'
+
 import type { RecentFile } from '../types'
 // FileType 暂时未使用，但保留以备后用
 // import { FileType } from '../types'
@@ -44,9 +45,9 @@ export const fileApi = {
   ): Promise<RecentFile[]> {
     // 如果未指定文件类型，从路径推断
     const type = fileType || this.inferFileType(filePath)
-    return await invoke<RecentFile[]>('add_recent_file', { 
-      filePath, 
-      fileType: type 
+    return await invoke<RecentFile[]>('add_recent_file', {
+      filePath,
+      fileType: type,
     })
   },
 
@@ -80,5 +81,5 @@ export const fileApi = {
    */
   async removeRecentFile(filePath: string): Promise<RecentFile[]> {
     return await invoke<RecentFile[]>('remove_recent_file', { filePath })
-  }
+  },
 }
