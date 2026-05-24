@@ -291,5 +291,6 @@ const createNewProject = async () => {
 
 /* 主题 */
 @import './assets/main.css';
-@import './assets/themes/themes.css';
+@import './assets/themes/welcome-styles.css';
+@import './assets/themes/app-themes.css';
 </style>
