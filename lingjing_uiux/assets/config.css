@@ -1,35 +1,35 @@
 /* ========== 配置样式 ========== */
 
 .config-group {
-    margin-bottom: 16px;
+  margin-bottom: 16px;
 }
 
 .config-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 8px 0;
-    border-bottom: 1px solid var(--border-light);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border-light);
 }
 
 .config-item label {
-    font-size: 0.85rem;
-    color: var(--text-primary);
-    font-weight: 500;
+  font-size: 0.85rem;
+  color: var(--text-primary);
+  font-weight: 500;
 }
 
 .config-item input,
 .config-item select {
-    padding: 6px 12px;
-    border: 1px solid var(--border-light);
-    border-radius: 4px;
-    background: var(--card-bg);
-    color: var(--text-primary);
-    font-size: 0.85rem;
+  padding: 6px 12px;
+  border: 1px solid var(--border-light);
+  border-radius: 4px;
+  background: var(--card-bg);
+  color: var(--text-primary);
+  font-size: 0.85rem;
 }
 
 .config-item input {
-    width: 200px;
+  width: 200px;
 }
 
 .config-list {

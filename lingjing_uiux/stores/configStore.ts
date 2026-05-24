@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
+
 import { statusApi, typeApi, priorityApi } from '../connections/config_apis'
 import type { TaskStatus, TaskType, TaskPriority } from '../types'
 
@@ -75,11 +76,7 @@ export const useConfigStore = defineStore('config', () => {
   }
 
   async function loadAllConfig() {
-    await Promise.all([
-      loadStatuses(),
-      loadTypes(),
-      loadPriorities()
-    ])
+    await Promise.all([loadStatuses(), loadTypes(), loadPriorities()])
   }
 
   async function updateStatuses(newStatuses: TaskStatus[]) {
@@ -183,7 +180,7 @@ export const useConfigStore = defineStore('config', () => {
     priorities,
     loading,
     error,
-    
+
     // Getters
     statusMap,
     typeMap,
@@ -191,7 +188,7 @@ export const useConfigStore = defineStore('config', () => {
     defaultStatus,
     defaultType,
     defaultPriority,
-    
+
     // Actions
     loadStatuses,
     loadTypes,
@@ -206,6 +203,6 @@ export const useConfigStore = defineStore('config', () => {
     getStatusById,
     getTypeById,
     getPriorityById,
-    clearError
+    clearError,
   }
 })

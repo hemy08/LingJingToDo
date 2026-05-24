@@ -1,43 +1,40 @@
 <template>
   <div v-if="visible" class="type-modal" @click.self="handleClose">
-    <div 
-      class="type-modal-content" 
-      :style="{ width: modalWidth + 'px', height: modalHeight + 'px' }"
+    <div
       ref="modalRef"
+      class="type-modal-content"
+      :style="{ width: modalWidth + 'px', height: modalHeight + 'px' }"
     >
       <!-- 拖动调整大小的手柄 -->
       <div class="resize-handle resize-right" @mousedown="startResize('right', $event)"></div>
       <div class="resize-handle resize-bottom" @mousedown="startResize('bottom', $event)"></div>
       <div class="resize-handle resize-corner" @mousedown="startResize('corner', $event)"></div>
-      
+
       <h3><i class="fas fa-layer-group"></i> 自定义类型</h3>
       <div class="config-list">
         <div v-for="(type, index) in localTypes" :key="type.id" class="config-card">
           <div class="card-left">
             <select v-model="type.emoji" class="emoji-select" @change="markAsModified(type.id)">
-              <option v-for="emoji in availableEmojis" :key="emoji" :value="emoji">{{ emoji }}</option>
+              <option v-for="emoji in availableEmojis" :key="emoji" :value="emoji">
+                {{ emoji }}
+              </option>
             </select>
-            <input 
-              v-model="type.name" 
-              class="config-input" 
+            <input
+              v-model="type.name"
+              class="config-input"
               placeholder="类型名称"
               @change="markAsModified(type.id)"
             />
           </div>
           <div class="card-actions">
-            <button 
-              v-if="index > 0" 
-              class="btn-sm" 
-              @click="moveUp(index)"
-              title="上移"
-            >
+            <button v-if="index > 0" class="btn-sm" title="上移" @click="moveUp(index)">
               <span>⬆️</span>
             </button>
-            <button 
-              v-if="index < localTypes.length - 1" 
-              class="btn-sm" 
-              @click="moveDown(index)"
+            <button
+              v-if="index < localTypes.length - 1"
+              class="btn-sm"
               title="下移"
+              @click="moveDown(index)"
             >
               <span>⬇️</span>
             </button>
@@ -51,19 +48,17 @@
         <select v-model="newTypeEmoji" class="emoji-select">
           <option v-for="emoji in availableEmojis" :key="emoji" :value="emoji">{{ emoji }}</option>
         </select>
-        <input 
-          v-model="newTypeName" 
-          type="text" 
-          placeholder="新类型名称" 
+        <input
+          v-model="newTypeName"
+          type="text"
+          placeholder="新类型名称"
           @keypress.enter="addType"
-        >
+        />
         <button class="btn-sm btn-primary" @click="addType">添加</button>
       </div>
       <div class="modal-buttons">
         <button class="btn-sm" @click="handleClose"><span>🚫</span> 关闭</button>
-        <button class="btn-sm btn-primary" @click="handleSave">
-          <span>💾</span> 保存全部
-        </button>
+        <button class="btn-sm btn-primary" @click="handleSave"><span>💾</span> 保存全部</button>
       </div>
     </div>
   </div>
@@ -73,10 +68,12 @@
 
 <script setup lang="ts">
 import { ref, watch, onUnmounted } from 'vue'
-import { typeApi } from '../../connections/config_apis'
+
 import { useDialog } from '../../composables/useDialog'
-import { createConfigHandlers } from './config_common'
+import { typeApi } from '../../connections/config_apis'
 import type { TaskType } from '../../types'
+
+import { createConfigHandlers } from './config_common'
 
 interface Props {
   visible: boolean
@@ -92,8 +89,30 @@ const props = defineProps<Props>()
 const emit = defineEmits<Emits>()
 
 // 可用的emoji列表
-const availableEmojis = ['✅', '❎', '⚠️', 'ℹ️', '⏳', '⏸️', '▶️', '🟢', '🔴', '🟡', '🔵', '⚫️', '💀', '🛡️', '🔔',
-    '📋', '📌', '📝', '⏹️', '📅','🔒','⏰','🚀'
+const availableEmojis = [
+  '✅',
+  '❎',
+  '⚠️',
+  'ℹ️',
+  '⏳',
+  '⏸️',
+  '▶️',
+  '🟢',
+  '🔴',
+  '🟡',
+  '🔵',
+  '⚫️',
+  '💀',
+  '🛡️',
+  '🔔',
+  '📋',
+  '📌',
+  '📝',
+  '⏹️',
+  '📅',
+  '🔒',
+  '⏰',
+  '🚀',
 ]
 
 // 本地类型列表
@@ -115,25 +134,29 @@ const {
   handleAdd: configHandleAdd,
   handleMoveUp: handleMoveUp,
   handleMoveDown: handleMoveDown,
-  handleStartResize: handleStartResize } = createConfigHandlers<TaskType>()
+  handleStartResize: handleStartResize,
+} = createConfigHandlers<TaskType>()
 const { showAlert } = useDialog()
 
 // 是否有修改
 const hasModifications = () => modifiedIds.value.size > 0
 
 // 监听 visible 变化，从后端获取最新数据
-watch(() => props.visible, async (newVisible) => {
-  if (newVisible) {
-    try {
-      const result = await typeApi.getAll()
-      localTypes.value = result
-      modifiedIds.value.clear()
-    } catch (error) {
-      console.error('获取类型列表失败:', error)
-      showAlert('错误', '获取类型列表失败')
+watch(
+  () => props.visible,
+  async newVisible => {
+    if (newVisible) {
+      try {
+        const result = await typeApi.getAll()
+        localTypes.value = result
+        modifiedIds.value.clear()
+      } catch (error) {
+        console.error('获取类型列表失败:', error)
+        showAlert('错误', '获取类型列表失败')
+      }
     }
   }
-})
+)
 
 // 标记为已修改
 const markAsModified = (id: string) => {
@@ -162,8 +185,8 @@ const addType = () => {
     (id, name, emoji) => ({
       id,
       name,
-      color: "#a0aec0",
-      emoji
+      color: '#a0aec0',
+      emoji,
     })
   )
   newTypeEmoji.value = '📋'
@@ -176,7 +199,7 @@ const deleteType = async (id: string) => {
     localTypes,
     typeApi.delete.bind(typeApi),
     modifiedIds,
-    (result) => emit('updated', result),
+    result => emit('updated', result),
     '类型'
   )
 }
@@ -187,7 +210,7 @@ const handleSave = async () => {
     localTypes,
     typeApi.update.bind(typeApi),
     modifiedIds,
-    (result) => emit('updated', result),
+    result => emit('updated', result),
     () => emit('update:visible', false),
     '类型',
     true
@@ -201,7 +224,7 @@ const handleClose = async () => {
     localTypes,
     typeApi.update.bind(typeApi),
     modifiedIds,
-    (result) => emit('updated', result),
+    result => emit('updated', result),
     () => emit('update:visible', false),
     '类型'
   )
@@ -217,4 +240,3 @@ onUnmounted(() => {
   // 清理代码
 })
 </script>
-

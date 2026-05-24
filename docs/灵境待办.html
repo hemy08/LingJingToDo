@@ -1,286 +1,2417 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="zh-CN">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <title>灵境待办 v1.7 - 优雅日期选择</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
     <script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js"></script>
     <style>
-        :root {
-            --bg-page: #f5f7fa;
-            --card-bg: #ffffff;
-            --border-light: #e9ecef;
-            --text-primary: #1e2a3e;
-            --text-secondary: #5a6e7c;
-            --accent-blue: #0077c8;
-            --accent-blue-light: #e6f0fa;
-            --tag-bg: #f0f2f5;
-            --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.04);
-            --shadow-md: 0 8px 20px rgba(0, 0, 0, 0.06);
-            --danger: #e74c3c;
-            --success: #2c7a4d;
-            --warning: #f39c12;
-            --transition: all 0.2s ease;
-            --tree-hover: #eef2fa;
-            --due-warning: #ffe6e5;
-            --checklist-bg: #fafcff;
-            --splitter-width: 6px;
-        }
-        body.dark { --bg-page: #121826; --card-bg: #1e293b; --border-light: #2d3a4e; --text-primary: #e9edf2; --text-secondary: #94a3b8; --accent-blue: #3b82f6; --accent-blue-light: #1e293b; --tag-bg: #334155; --tree-hover: #2d3a4e; --due-warning: #4a2626; --checklist-bg: #1e2a3a; }
-        body.eye { --bg-page: #e8f5e9; --card-bg: #fef9e6; --border-light: #c8e6c9; --text-primary: #2c3e2f; --text-secondary: #5d6e5e; --accent-blue: #2e7d32; --accent-blue-light: #dcfce7; --tag-bg: #e8f0e8; --tree-hover: #dcfce7; --due-warning: #ffe0e0; --checklist-bg: #fef9e6; }
-        body.orange { --bg-page: #fff3e0; --card-bg: #ffffffd9; --border-light: #ffe0b3; --text-primary: #4e2e1e; --text-secondary: #b66a1a; --accent-blue: #e67e22; --accent-blue-light: #ffebcc; --tag-bg: #ffe6cc; --tree-hover: #ffe6cc; --due-warning: #ffcccc; --checklist-bg: #fff5e6; }
-        body.purple { --bg-page: #f3e8ff; --card-bg: #ffffff; --border-light: #d9c8f0; --text-primary: #2e1e4e; --text-secondary: #7e5aa6; --accent-blue: #8e44ad; --accent-blue-light: #f0e4ff; --tag-bg: #ede2f5; --tree-hover: #ede2f5; --due-warning: #f0d9ff; --checklist-bg: #faf5ff; }
-        body.red { --bg-page: #ffe8e8; --card-bg: #fff5f5; --border-light: #ffc9c9; --text-primary: #5e2e2e; --text-secondary: #c0392b; --accent-blue: #e74c3c; --accent-blue-light: #ffe0e0; --tag-bg: #ffe0e0; --tree-hover: #ffe0e0; --due-warning: #ffcccc; --checklist-bg: #fff0f0; }
-        body.skyblue { --bg-page: #e0f2fe; --card-bg: #ffffff; --border-light: #bae6fd; --text-primary: #0c4a6e; --text-secondary: #0284c7; --accent-blue: #0284c7; --accent-blue-light: #e0f2fe; --tag-bg: #f0f9ff; --tree-hover: #f0f9ff; --due-warning: #ffe0e0; --checklist-bg: #ffffff; }
-        body.navy { --bg-page: #0f172a; --card-bg: #1e293b; --border-light: #334155; --text-primary: #e2e8f0; --text-secondary: #94a3b8; --accent-blue: #3b82f6; --accent-blue-light: #1e293b; --tag-bg: #1e293b; --tree-hover: #334155; --due-warning: #4a2626; --checklist-bg: #1e293b; }
-        body.deep-purple { --bg-page: #1e1b4b; --card-bg: #2e2a5e; --border-light: #4338ca; --text-primary: #e0e7ff; --text-secondary: #c7d2fe; --accent-blue: #8b5cf6; --accent-blue-light: #312e81; --tag-bg: #312e81; --tree-hover: #4338ca; --due-warning: #4a2626; --checklist-bg: #2e2a5e; }
+      :root {
+        --bg-page: #f5f7fa;
+        --card-bg: #ffffff;
+        --border-light: #e9ecef;
+        --text-primary: #1e2a3e;
+        --text-secondary: #5a6e7c;
+        --accent-blue: #0077c8;
+        --accent-blue-light: #e6f0fa;
+        --tag-bg: #f0f2f5;
+        --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.04);
+        --shadow-md: 0 8px 20px rgba(0, 0, 0, 0.06);
+        --danger: #e74c3c;
+        --success: #2c7a4d;
+        --warning: #f39c12;
+        --transition: all 0.2s ease;
+        --tree-hover: #eef2fa;
+        --due-warning: #ffe6e5;
+        --checklist-bg: #fafcff;
+        --splitter-width: 6px;
+      }
+      body.dark {
+        --bg-page: #121826;
+        --card-bg: #1e293b;
+        --border-light: #2d3a4e;
+        --text-primary: #e9edf2;
+        --text-secondary: #94a3b8;
+        --accent-blue: #3b82f6;
+        --accent-blue-light: #1e293b;
+        --tag-bg: #334155;
+        --tree-hover: #2d3a4e;
+        --due-warning: #4a2626;
+        --checklist-bg: #1e2a3a;
+      }
+      body.eye {
+        --bg-page: #e8f5e9;
+        --card-bg: #fef9e6;
+        --border-light: #c8e6c9;
+        --text-primary: #2c3e2f;
+        --text-secondary: #5d6e5e;
+        --accent-blue: #2e7d32;
+        --accent-blue-light: #dcfce7;
+        --tag-bg: #e8f0e8;
+        --tree-hover: #dcfce7;
+        --due-warning: #ffe0e0;
+        --checklist-bg: #fef9e6;
+      }
+      body.orange {
+        --bg-page: #fff3e0;
+        --card-bg: #ffffffd9;
+        --border-light: #ffe0b3;
+        --text-primary: #4e2e1e;
+        --text-secondary: #b66a1a;
+        --accent-blue: #e67e22;
+        --accent-blue-light: #ffebcc;
+        --tag-bg: #ffe6cc;
+        --tree-hover: #ffe6cc;
+        --due-warning: #ffcccc;
+        --checklist-bg: #fff5e6;
+      }
+      body.purple {
+        --bg-page: #f3e8ff;
+        --card-bg: #ffffff;
+        --border-light: #d9c8f0;
+        --text-primary: #2e1e4e;
+        --text-secondary: #7e5aa6;
+        --accent-blue: #8e44ad;
+        --accent-blue-light: #f0e4ff;
+        --tag-bg: #ede2f5;
+        --tree-hover: #ede2f5;
+        --due-warning: #f0d9ff;
+        --checklist-bg: #faf5ff;
+      }
+      body.red {
+        --bg-page: #ffe8e8;
+        --card-bg: #fff5f5;
+        --border-light: #ffc9c9;
+        --text-primary: #5e2e2e;
+        --text-secondary: #c0392b;
+        --accent-blue: #e74c3c;
+        --accent-blue-light: #ffe0e0;
+        --tag-bg: #ffe0e0;
+        --tree-hover: #ffe0e0;
+        --due-warning: #ffcccc;
+        --checklist-bg: #fff0f0;
+      }
+      body.skyblue {
+        --bg-page: #e0f2fe;
+        --card-bg: #ffffff;
+        --border-light: #bae6fd;
+        --text-primary: #0c4a6e;
+        --text-secondary: #0284c7;
+        --accent-blue: #0284c7;
+        --accent-blue-light: #e0f2fe;
+        --tag-bg: #f0f9ff;
+        --tree-hover: #f0f9ff;
+        --due-warning: #ffe0e0;
+        --checklist-bg: #ffffff;
+      }
+      body.navy {
+        --bg-page: #0f172a;
+        --card-bg: #1e293b;
+        --border-light: #334155;
+        --text-primary: #e2e8f0;
+        --text-secondary: #94a3b8;
+        --accent-blue: #3b82f6;
+        --accent-blue-light: #1e293b;
+        --tag-bg: #1e293b;
+        --tree-hover: #334155;
+        --due-warning: #4a2626;
+        --checklist-bg: #1e293b;
+      }
+      body.deep-purple {
+        --bg-page: #1e1b4b;
+        --card-bg: #2e2a5e;
+        --border-light: #4338ca;
+        --text-primary: #e0e7ff;
+        --text-secondary: #c7d2fe;
+        --accent-blue: #8b5cf6;
+        --accent-blue-light: #312e81;
+        --tag-bg: #312e81;
+        --tree-hover: #4338ca;
+        --due-warning: #4a2626;
+        --checklist-bg: #2e2a5e;
+      }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            background: var(--bg-page);
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            color: var(--text-primary);
-            transition: background 0.3s, color 0.2s;
-            min-height: 100vh;
-            font-size: 14px;
-        }
-        body.font-small { font-size: 12px; }
-        body.font-medium { font-size: 14px; }
-        body.font-large { font-size: 16px; }
-        body.font-xlarge { font-size: 18px; }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        background: var(--bg-page);
+        font-family:
+          'Inter',
+          -apple-system,
+          BlinkMacSystemFont,
+          'Segoe UI',
+          Roboto,
+          sans-serif;
+        color: var(--text-primary);
+        transition:
+          background 0.3s,
+          color 0.2s;
+        min-height: 100vh;
+        font-size: 14px;
+      }
+      body.font-small {
+        font-size: 12px;
+      }
+      body.font-medium {
+        font-size: 14px;
+      }
+      body.font-large {
+        font-size: 16px;
+      }
+      body.font-xlarge {
+        font-size: 18px;
+      }
 
-        .fas { color: #ff1744; }
-        .far { color: #ff1744; }
+      .fas {
+        color: #ff1744;
+      }
+      .far {
+        color: #ff1744;
+      }
 
+      .app {
+        display: flex;
+        width: 100%;
+        min-height: 100vh;
+      }
+      .sidebar {
+        width: 25%;
+        background: var(--card-bg);
+        padding: 20px 16px;
+        box-shadow: var(--shadow-sm);
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        transition: width 0.05s linear;
+      }
+      .splitter {
+        width: var(--splitter-width);
+        background: var(--border-light);
+        cursor: col-resize;
+        transition: background 0.2s;
+        position: relative;
+        flex-shrink: 0;
+      }
+      .splitter:hover,
+      .splitter.active {
+        background: var(--accent-blue);
+      }
+      .main-content {
+        flex: 1;
+        padding: 20px 24px 40px;
+        overflow-y: auto;
+        min-width: 0;
+      }
+      @media (max-width: 1000px) {
         .app {
-            display: flex;
-            width: 100%;
-            min-height: 100vh;
+          flex-direction: column;
         }
         .sidebar {
-            width: 25%;
-            background: var(--card-bg);
-            padding: 20px 16px;
-            box-shadow: var(--shadow-sm);
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            transition: width 0.05s linear;
+          width: 100% !important;
+          border-right: none;
+          border-bottom: 1px solid var(--border-light);
         }
         .splitter {
-            width: var(--splitter-width);
-            background: var(--border-light);
-            cursor: col-resize;
-            transition: background 0.2s;
-            position: relative;
-            flex-shrink: 0;
+          display: none;
         }
-        .splitter:hover, .splitter.active { background: var(--accent-blue); }
         .main-content {
-            flex: 1;
-            padding: 20px 24px 40px;
-            overflow-y: auto;
-            min-width: 0;
+          width: 100%;
         }
-        @media (max-width: 1000px) {
-            .app { flex-direction: column; }
-            .sidebar { width: 100% !important; border-right: none; border-bottom: 1px solid var(--border-light); }
-            .splitter { display: none; }
-            .main-content { width: 100%; }
+      }
+
+      /* 原有样式保持完整 */
+      .calendar-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 16px;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+      .calendar-title {
+        font-weight: 600;
+        font-size: 1rem;
+      }
+      .calendar-nav {
+        display: flex;
+        gap: 8px;
+      }
+      .cal-btn {
+        background: var(--tag-bg);
+        border: none;
+        border-radius: 30px;
+        padding: 4px 10px;
+        cursor: pointer;
+        font-size: 0.7rem;
+      }
+      .cal-weekdays {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        text-align: center;
+        font-size: 0.65rem;
+        font-weight: 500;
+        margin-bottom: 8px;
+        color: var(--text-secondary);
+      }
+      .cal-days {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 4px;
+      }
+      .cal-day {
+        aspect-ratio: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.7rem;
+        border-radius: 40px;
+        cursor: pointer;
+        transition: var(--transition);
+      }
+      .cal-day:hover {
+        background: var(--accent-blue-light);
+      }
+      .cal-day.selected {
+        background: var(--accent-blue);
+        color: white;
+      }
+      .cal-day.other-month {
+        color: var(--text-secondary);
+        opacity: 0.5;
+      }
+
+      .task-tree {
+        background: var(--bg-page);
+        border-radius: 20px;
+        padding: 12px;
+      }
+      .task-tree-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        margin-bottom: 12px;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+      .task-tree-title {
+        font-weight: 600;
+        font-size: 0.8rem;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        color: var(--accent-blue);
+      }
+      .tree-stats {
+        display: flex;
+        gap: 12px;
+        font-size: 0.7rem;
+      }
+      .tree-stats span {
+        background: var(--card-bg);
+        padding: 2px 8px;
+        border-radius: 30px;
+      }
+      .tree-node {
+        cursor: pointer;
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-size: 0.75rem;
+        transition: background 0.1s;
+        margin: 2px 0;
+      }
+      .tree-node:hover {
+        background: var(--tree-hover);
+      }
+      .tree-node.main-node {
+        font-weight: 500;
+        margin-left: 0;
+      }
+      .tree-node.sub-node {
+        margin-left: 20px;
+        color: var(--text-secondary);
+      }
+
+      .right-config-bar {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+        background: var(--card-bg);
+        border-radius: 28px;
+        padding: 12px 20px;
+        margin-bottom: 20px;
+        box-shadow: var(--shadow-sm);
+      }
+      .config-group {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 16px;
+        align-items: center;
+      }
+      .config-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.7rem;
+      }
+      .config-item label {
+        font-weight: 500;
+      }
+      .config-item input,
+      .config-item select {
+        background: var(--tag-bg);
+        border: 1px solid var(--border-light);
+        border-radius: 40px;
+        padding: 4px 8px;
+        color: var(--text-primary);
+      }
+      .config-item input {
+        width: 60px;
+        text-align: center;
+      }
+      .btn-group {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+      }
+      .btn-sm {
+        background: var(--tag-bg);
+        border: none;
+        border-radius: 40px;
+        padding: 4px 20px;
+        cursor: pointer;
+        font-size: 0.65rem;
+      }
+      .btn-primary {
+        background: var(--accent-blue);
+        color: white;
+      }
+
+      @keyframes highlightFlash {
+        0% {
+          box-shadow: 0 0 0 0 rgba(var(--accent-blue-rgb), 0.7);
+          border-color: var(--accent-blue);
+          background: var(--accent-blue-light);
         }
-
-        /* 原有样式保持完整 */
-        .calendar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 8px; }
-        .calendar-title { font-weight: 600; font-size: 1rem; }
-        .calendar-nav { display: flex; gap: 8px; }
-        .cal-btn { background: var(--tag-bg); border: none; border-radius: 30px; padding: 4px 10px; cursor: pointer; font-size: 0.7rem; }
-        .cal-weekdays { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; font-size: 0.65rem; font-weight: 500; margin-bottom: 8px; color: var(--text-secondary); }
-        .cal-days { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
-        .cal-day { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; border-radius: 40px; cursor: pointer; transition: var(--transition); }
-        .cal-day:hover { background: var(--accent-blue-light); }
-        .cal-day.selected { background: var(--accent-blue); color: white; }
-        .cal-day.other-month { color: var(--text-secondary); opacity: 0.5; }
-
-        .task-tree { background: var(--bg-page); border-radius: 20px; padding: 12px; }
-        .task-tree-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 12px; flex-wrap: wrap; gap: 8px; }
-        .task-tree-title { font-weight: 600; font-size: 0.8rem; display: flex; align-items: center; gap: 6px; color: var(--accent-blue); }
-        .tree-stats { display: flex; gap: 12px; font-size: 0.7rem; }
-        .tree-stats span { background: var(--card-bg); padding: 2px 8px; border-radius: 30px; }
-        .tree-node { cursor: pointer; padding: 4px 8px; border-radius: 12px; font-size: 0.75rem; transition: background 0.1s; margin: 2px 0; }
-        .tree-node:hover { background: var(--tree-hover); }
-        .tree-node.main-node { font-weight: 500; margin-left: 0; }
-        .tree-node.sub-node { margin-left: 20px; color: var(--text-secondary); }
-
-        .right-config-bar { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 16px; background: var(--card-bg); border-radius: 28px; padding: 12px 20px; margin-bottom: 20px; box-shadow: var(--shadow-sm); }
-        .config-group { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; }
-        .config-item { display: flex; align-items: center; gap: 8px; font-size: 0.7rem; }
-        .config-item label { font-weight: 500; }
-        .config-item input, .config-item select { background: var(--tag-bg); border: 1px solid var(--border-light); border-radius: 40px; padding: 4px 8px; color: var(--text-primary); }
-        .config-item input { width: 60px; text-align: center; }
-        .btn-group { display: flex; flex-wrap: wrap; gap: 6px; }
-        .btn-sm { background: var(--tag-bg); border: none; border-radius: 40px; padding: 4px 20px; cursor: pointer; font-size: 0.65rem; }
-        .btn-primary { background: var(--accent-blue); color: white; }
-
-        @keyframes highlightFlash {
-            0% { box-shadow: 0 0 0 0 rgba(var(--accent-blue-rgb), 0.7); border-color: var(--accent-blue); background: var(--accent-blue-light); }
-            50% { box-shadow: 0 0 0 6px rgba(var(--accent-blue-rgb), 0); border-color: var(--accent-blue); background: var(--accent-blue-light); }
-            100% { box-shadow: 0 0 0 0 rgba(var(--accent-blue-rgb), 0); border-color: var(--border-light); background: var(--card-bg); }
+        50% {
+          box-shadow: 0 0 0 6px rgba(var(--accent-blue-rgb), 0);
+          border-color: var(--accent-blue);
+          background: var(--accent-blue-light);
         }
-        .task-highlight { animation: highlightFlash 0.8s ease-in-out; border-color: var(--accent-blue) !important; background: var(--accent-blue-light) !important; }
-        .main-task-card.due-warning, .subtask-card.due-warning { background: var(--due-warning) !important; border-left: 4px solid var(--danger); }
-        #mainTasksContainer { display: grid; gap: 20px; }
-        .main-task-card { background: var(--card-bg); border-radius: 24px; border: 1px solid var(--border-light); overflow: hidden; display: flex; flex-direction: column; transition: all 0.1s; scroll-margin: 80px; }
-        .main-card-header { display: flex; align-items: center; gap: 8px; padding: 12px 12px 6px; flex-wrap: wrap; }
-        .drag-handle-main { cursor: grab; color: var(--text-secondary); }
-        .main-title { font-weight: 600; font-size: 1.1em; flex: 1; word-break: break-word; display: flex; align-items: center; gap: 8px; }
-        .main-title-text { cursor: pointer; border-bottom: 1px dashed transparent; transition: border-color 0.1s; }
-        .main-title-text:hover { border-bottom-color: var(--accent-blue); }
-        .edit-title-icon { opacity: 0; font-size: 0.8em; transition: opacity 0.1s; color: var(--text-secondary); }
-        .main-title:hover .edit-title-icon { opacity: 1; }
-        .main-actions { display: flex; gap: 6px; margin-left: auto; align-items: center; }
-        .switch { position: relative; display: inline-block; width: 40px; height: 22px; }
-        .switch input { opacity: 0; width: 0; height: 0; }
-        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--tag-bg); transition: 0.3s; border-radius: 34px; }
-        .slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 3px; bottom: 3px; background-color: white; transition: 0.3s; border-radius: 50%; }
-        input:checked + .slider { background-color: var(--accent-blue); }
-        input:checked + .slider:before { transform: translateX(18px); }
-        .meta-row { display: flex; align-items: center; gap: 12px; padding: 6px 12px; font-size: 0.8em; color: var(--text-secondary); flex-wrap: wrap; border-top: 1px solid var(--border-light); border-bottom: 1px solid var(--border-light); background: var(--checklist-bg); }
-        .meta-item { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; background: var(--tag-bg); padding: 2px 8px; border-radius: 40px; }
-        .action-buttons { display: inline-flex; gap: 8px; margin-left: auto; }
-        .icon-text-btn { background: var(--accent-blue-light); border: none; border-radius: 40px; padding: 3px 8px; font-size: 0.8em; cursor: pointer; color: var(--accent-blue); display: inline-flex; align-items: center; gap: 4px; }
-        .main-desc-area { padding: 8px 12px; font-size: 0.85em; color: var(--text-secondary); background: rgba(0,0,0,0.02); border-top: 1px solid var(--border-light); cursor: pointer; max-height: 100px; overflow-y: auto; white-space: pre-wrap; }
-        .subtask-grid { display: grid; gap: 10px; padding: 12px; background: var(--bg-page); }
-        .subtask-card { background: var(--card-bg); border-radius: 18px; border: 1px solid var(--border-light); overflow: hidden; transition: all 0.1s; scroll-margin: 80px; }
-        .subtask-header { display: flex; align-items: center; justify-content: space-between; padding: 8px 10px 4px; gap: 6px; flex-wrap: wrap; }
-        .subtask-title-area { display: flex; align-items: center; gap: 6px; flex: 1; }
-        .drag-sub-handle { cursor: grab; color: var(--text-secondary); font-size: 0.8em; }
-        .subtask-title { font-weight: 500; font-size: 0.9em; word-break: break-word; display: flex; align-items: center; gap: 6px; cursor: pointer; }
-        .subtask-title-text { border-bottom: 1px dashed transparent; }
-        .subtask-title-text:hover { border-bottom-color: var(--accent-blue); }
-        .subtask-right-actions { display: flex; gap: 4px; }
-        .checklist-area { padding: 6px 10px 8px; background: var(--checklist-bg); border-top: 1px solid var(--border-light); max-height: 150px; overflow-y: auto; }
-        .checklist-item { display: flex; align-items: center; gap: 8px; padding: 4px 0; font-size: 0.8em; }
-        .checklist-item input { margin: 0; cursor: pointer; width: 16px; height: 16px; }
-        .checklist-item span { flex: 1; word-break: break-word; }
-        .checklist-item .checked { text-decoration: line-through; color: var(--text-secondary); opacity: 0.7; }
-        .empty-checklist { font-size: 0.75em; color: var(--text-secondary); text-align: center; padding: 8px; }
-        .add-main-task { margin-top: 28px; display: flex; gap: 12px; }
-        .add-main-task input { flex: 1; padding: 6px 12px; border-radius: 60px; border: 1px solid var(--border-light); background: var(--card-bg); color: var(--text-primary); font-size: 0.9em; }
-        .add-main-task button { border-radius: 60px; }
-        footer { text-align: center; padding: 16px; font-size: 0.7em; color: var(--text-secondary); }
+        100% {
+          box-shadow: 0 0 0 0 rgba(var(--accent-blue-rgb), 0);
+          border-color: var(--border-light);
+          background: var(--card-bg);
+        }
+      }
+      .task-highlight {
+        animation: highlightFlash 0.8s ease-in-out;
+        border-color: var(--accent-blue) !important;
+        background: var(--accent-blue-light) !important;
+      }
+      .main-task-card.due-warning,
+      .subtask-card.due-warning {
+        background: var(--due-warning) !important;
+        border-left: 4px solid var(--danger);
+      }
+      #mainTasksContainer {
+        display: grid;
+        gap: 20px;
+      }
+      .main-task-card {
+        background: var(--card-bg);
+        border-radius: 24px;
+        border: 1px solid var(--border-light);
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        transition: all 0.1s;
+        scroll-margin: 80px;
+      }
+      .main-card-header {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 12px 12px 6px;
+        flex-wrap: wrap;
+      }
+      .drag-handle-main {
+        cursor: grab;
+        color: var(--text-secondary);
+      }
+      .main-title {
+        font-weight: 600;
+        font-size: 1.1em;
+        flex: 1;
+        word-break: break-word;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .main-title-text {
+        cursor: pointer;
+        border-bottom: 1px dashed transparent;
+        transition: border-color 0.1s;
+      }
+      .main-title-text:hover {
+        border-bottom-color: var(--accent-blue);
+      }
+      .edit-title-icon {
+        opacity: 0;
+        font-size: 0.8em;
+        transition: opacity 0.1s;
+        color: var(--text-secondary);
+      }
+      .main-title:hover .edit-title-icon {
+        opacity: 1;
+      }
+      .main-actions {
+        display: flex;
+        gap: 6px;
+        margin-left: auto;
+        align-items: center;
+      }
+      .switch {
+        position: relative;
+        display: inline-block;
+        width: 40px;
+        height: 22px;
+      }
+      .switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+      }
+      .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: var(--tag-bg);
+        transition: 0.3s;
+        border-radius: 34px;
+      }
+      .slider:before {
+        position: absolute;
+        content: '';
+        height: 16px;
+        width: 16px;
+        left: 3px;
+        bottom: 3px;
+        background-color: white;
+        transition: 0.3s;
+        border-radius: 50%;
+      }
+      input:checked + .slider {
+        background-color: var(--accent-blue);
+      }
+      input:checked + .slider:before {
+        transform: translateX(18px);
+      }
+      .meta-row {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 6px 12px;
+        font-size: 0.8em;
+        color: var(--text-secondary);
+        flex-wrap: wrap;
+        border-top: 1px solid var(--border-light);
+        border-bottom: 1px solid var(--border-light);
+        background: var(--checklist-bg);
+      }
+      .meta-item {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        cursor: pointer;
+        background: var(--tag-bg);
+        padding: 2px 8px;
+        border-radius: 40px;
+      }
+      .action-buttons {
+        display: inline-flex;
+        gap: 8px;
+        margin-left: auto;
+      }
+      .icon-text-btn {
+        background: var(--accent-blue-light);
+        border: none;
+        border-radius: 40px;
+        padding: 3px 8px;
+        font-size: 0.8em;
+        cursor: pointer;
+        color: var(--accent-blue);
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+      }
+      .main-desc-area {
+        padding: 8px 12px;
+        font-size: 0.85em;
+        color: var(--text-secondary);
+        background: rgba(0, 0, 0, 0.02);
+        border-top: 1px solid var(--border-light);
+        cursor: pointer;
+        max-height: 100px;
+        overflow-y: auto;
+        white-space: pre-wrap;
+      }
+      .subtask-grid {
+        display: grid;
+        gap: 10px;
+        padding: 12px;
+        background: var(--bg-page);
+      }
+      .subtask-card {
+        background: var(--card-bg);
+        border-radius: 18px;
+        border: 1px solid var(--border-light);
+        overflow: hidden;
+        transition: all 0.1s;
+        scroll-margin: 80px;
+      }
+      .subtask-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 8px 10px 4px;
+        gap: 6px;
+        flex-wrap: wrap;
+      }
+      .subtask-title-area {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        flex: 1;
+      }
+      .drag-sub-handle {
+        cursor: grab;
+        color: var(--text-secondary);
+        font-size: 0.8em;
+      }
+      .subtask-title {
+        font-weight: 500;
+        font-size: 0.9em;
+        word-break: break-word;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        cursor: pointer;
+      }
+      .subtask-title-text {
+        border-bottom: 1px dashed transparent;
+      }
+      .subtask-title-text:hover {
+        border-bottom-color: var(--accent-blue);
+      }
+      .subtask-right-actions {
+        display: flex;
+        gap: 4px;
+      }
+      .checklist-area {
+        padding: 6px 10px 8px;
+        background: var(--checklist-bg);
+        border-top: 1px solid var(--border-light);
+        max-height: 150px;
+        overflow-y: auto;
+      }
+      .checklist-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 4px 0;
+        font-size: 0.8em;
+      }
+      .checklist-item input {
+        margin: 0;
+        cursor: pointer;
+        width: 16px;
+        height: 16px;
+      }
+      .checklist-item span {
+        flex: 1;
+        word-break: break-word;
+      }
+      .checklist-item .checked {
+        text-decoration: line-through;
+        color: var(--text-secondary);
+        opacity: 0.7;
+      }
+      .empty-checklist {
+        font-size: 0.75em;
+        color: var(--text-secondary);
+        text-align: center;
+        padding: 8px;
+      }
+      .add-main-task {
+        margin-top: 28px;
+        display: flex;
+        gap: 12px;
+      }
+      .add-main-task input {
+        flex: 1;
+        padding: 6px 12px;
+        border-radius: 60px;
+        border: 1px solid var(--border-light);
+        background: var(--card-bg);
+        color: var(--text-primary);
+        font-size: 0.9em;
+      }
+      .add-main-task button {
+        border-radius: 60px;
+      }
+      footer {
+        text-align: center;
+        padding: 16px;
+        font-size: 0.7em;
+        color: var(--text-secondary);
+      }
 
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 1000; }
-        .modal-content { background: var(--card-bg); border-radius: 28px; width: 500px; max-width: 90%; padding: 20px; color: var(--text-primary); max-height: 80vh; overflow-y: auto; }
-        .modal-content h3 { margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
-        .modal-buttons { display: flex; gap: 8px; justify-content: flex-end; margin-top: 20px; }
-        .config-list { margin: 12px 0; max-height: 300px; overflow-y: auto; }
-        .config-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; border-bottom: 1px solid var(--border-light); }
-        .config-name { font-size: 0.85rem; }
-        .delete-config-btn { background: transparent; border: none; color: var(--danger); cursor: pointer; font-size: 1rem; padding: 4px; border-radius: 40px; transition: background 0.1s; }
-        .delete-config-btn:hover { background: var(--tag-bg); }
-        .add-config { display: flex; gap: 12px; margin-top: 12px; }
-        .add-config input { flex: 1; padding: 8px 12px; border-radius: 40px; border: 1px solid var(--border-light); background: var(--card-bg); color: var(--text-primary); }
-        .checklist-editor { max-height: 400px; overflow-y: auto; margin: 12px 0; }
-        .checklist-editor-item { display: flex; gap: 8px; margin-bottom: 8px; align-items: center; }
-        .checklist-editor-item input[type="checkbox"] { width: 18px; height: 18px; }
-        .checklist-editor-item input[type="text"] { flex: 1; padding: 6px 10px; border-radius: 40px; border: 1px solid var(--border-light); background: var(--card-bg); color: var(--text-primary); }
-        .checklist-editor-item button { background: transparent; border: none; color: var(--danger); cursor: pointer; }
-        .right-top-bar { display: flex; justify-content: flex-end; margin-bottom: 16px; flex-wrap: wrap; gap: 10px; }
-        .theme-selector { display: flex; flex-wrap: wrap; gap: 5px; background: var(--card-bg); padding: 4px 10px; border-radius: 60px; }
-        .theme-btn { background: transparent; border: none; border-radius: 40px; padding: 3px 8px; cursor: pointer; font-size: 0.7rem; color: var(--text-primary); }
-        .theme-btn.active { background: var(--accent-blue); color: white; }
-        .alert-bar { background: var(--card-bg); border-left: 4px solid var(--warning); border-radius: 16px; padding: 8px 12px; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; font-size: 0.75em; }
-        .unsave-badge { background: var(--danger); color: white; border-radius: 40px; padding: 2px 8px; font-size: 0.7rem; }
-        .resizing { user-select: none; cursor: col-resize; }
+      .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+      }
+      .modal-content {
+        background: var(--card-bg);
+        border-radius: 28px;
+        width: 500px;
+        max-width: 90%;
+        padding: 20px;
+        color: var(--text-primary);
+        max-height: 80vh;
+        overflow-y: auto;
+      }
+      .modal-content h3 {
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .modal-buttons {
+        display: flex;
+        gap: 8px;
+        justify-content: flex-end;
+        margin-top: 20px;
+      }
+      .config-list {
+        margin: 12px 0;
+        max-height: 300px;
+        overflow-y: auto;
+      }
+      .config-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 12px;
+        border-bottom: 1px solid var(--border-light);
+      }
+      .config-name {
+        font-size: 0.85rem;
+      }
+      .delete-config-btn {
+        background: transparent;
+        border: none;
+        color: var(--danger);
+        cursor: pointer;
+        font-size: 1rem;
+        padding: 4px;
+        border-radius: 40px;
+        transition: background 0.1s;
+      }
+      .delete-config-btn:hover {
+        background: var(--tag-bg);
+      }
+      .add-config {
+        display: flex;
+        gap: 12px;
+        margin-top: 12px;
+      }
+      .add-config input {
+        flex: 1;
+        padding: 8px 12px;
+        border-radius: 40px;
+        border: 1px solid var(--border-light);
+        background: var(--card-bg);
+        color: var(--text-primary);
+      }
+      .checklist-editor {
+        max-height: 400px;
+        overflow-y: auto;
+        margin: 12px 0;
+      }
+      .checklist-editor-item {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 8px;
+        align-items: center;
+      }
+      .checklist-editor-item input[type='checkbox'] {
+        width: 18px;
+        height: 18px;
+      }
+      .checklist-editor-item input[type='text'] {
+        flex: 1;
+        padding: 6px 10px;
+        border-radius: 40px;
+        border: 1px solid var(--border-light);
+        background: var(--card-bg);
+        color: var(--text-primary);
+      }
+      .checklist-editor-item button {
+        background: transparent;
+        border: none;
+        color: var(--danger);
+        cursor: pointer;
+      }
+      .right-top-bar {
+        display: flex;
+        justify-content: flex-end;
+        margin-bottom: 16px;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      .theme-selector {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5px;
+        background: var(--card-bg);
+        padding: 4px 10px;
+        border-radius: 60px;
+      }
+      .theme-btn {
+        background: transparent;
+        border: none;
+        border-radius: 40px;
+        padding: 3px 8px;
+        cursor: pointer;
+        font-size: 0.7rem;
+        color: var(--text-primary);
+      }
+      .theme-btn.active {
+        background: var(--accent-blue);
+        color: white;
+      }
+      .alert-bar {
+        background: var(--card-bg);
+        border-left: 4px solid var(--warning);
+        border-radius: 16px;
+        padding: 8px 12px;
+        margin-bottom: 16px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 0.75em;
+      }
+      .unsave-badge {
+        background: var(--danger);
+        color: white;
+        border-radius: 40px;
+        padding: 2px 8px;
+        font-size: 0.7rem;
+      }
+      .resizing {
+        user-select: none;
+        cursor: col-resize;
+      }
     </style>
-</head>
-<body>
-<div class="app">
-    <div class="sidebar" id="sidebar"><div class="calendar-header"><div class="calendar-title" id="calendarMonth">2026年5月</div><div class="calendar-nav"><button class="cal-btn" id="prevMonthBtn"><i class="fas fa-chevron-left"></i></button><button class="cal-btn" id="nextMonthBtn"><i class="fas fa-chevron-right"></i></button><button class="cal-btn" id="todayCalBtn">今天</button></div></div><div class="cal-weekdays"><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span><span>日</span></div><div class="cal-days" id="calendarDays"></div><div class="task-tree"><div class="task-tree-header"><div class="task-tree-title"><i class="fas fa-diagram-project"></i> 任务导航树</div><div class="tree-stats" id="treeStats"></div></div><div id="taskTreeContainer"></div></div></div>
-    <div class="splitter" id="splitter"></div>
-    <div class="main-content">
-        <div class="right-top-bar"><div class="theme-selector" id="themeSelector"><button data-theme="light" class="theme-btn">☀️ 浅色</button><button data-theme="dark" class="theme-btn">🌙 深色</button><button data-theme="eye" class="theme-btn">👁️ 护眼</button><button data-theme="orange" class="theme-btn">🍊 橙韵</button><button data-theme="purple" class="theme-btn">💜 紫韵</button><button data-theme="red" class="theme-btn">❤️ 红韵</button><button data-theme="skyblue" class="theme-btn">☁️ 天蓝</button><button data-theme="navy" class="theme-btn">⚓ 深蓝</button><button data-theme="deep-purple" class="theme-btn">🟣 深紫</button></div></div>
-        <div class="alert-bar"><div><i class="fas fa-database"></i> ⚠️ 数据仅保存在当前页面，关闭前请务必导出Excel备份</div><span id="unsavedIndicator" class="unsave-badge" style="display: none;">未保存</span></div>
-        <div class="right-config-bar"><div class="config-group"><div class="config-item"><label>📐 主任务列数</label><input type="number" id="mainGridCols" min="1" max="4" step="1" value="2"></div><div class="config-item"><label>📐 子任务列数</label><input type="number" id="subGridCols" min="1" max="4" step="1" value="2"></div><div class="config-item"><label>🔤 字体大小</label><select id="fontSizeSelect"><option value="small">小</option><option value="medium" selected>中</option><option value="large">大</option><option value="xlarge">超大</option></select></div></div><div class="btn-group"><button class="btn-sm" id="manageStatusBtn"><i class="fas fa-tags"></i> 状态</button><button class="btn-sm" id="manageTypeBtn"><i class="fas fa-layer-group"></i> 类型</button><button class="btn-sm" id="managePriorityBtn"><i class="fas fa-flag"></i> 优先级</button><button class="btn-sm btn-primary" id="exportExcelBtn"><i class="fas fa-file-excel"></i> 导出Excel</button><button class="btn-sm btn-primary" id="importExcelBtn"><i class="fas fa-upload"></i> 导入Excel</button></div></div>
-        <div id="mainTasksContainer"></div><div class="add-main-task"><input type="text" id="newMainTitle" placeholder="+ 添加主任务 ..." autocomplete="off"><button id="addMainBtn" class="btn-sm btn-primary">创建</button></div><footer><i class="fas fa-arrows-alt"></i> 拖拽手柄排序 | 双击标题/描述/清单编辑 | 红色卡片表示即将截止 | 点击📅截止时间打开日期选择器</footer>
+  </head>
+  <body>
+    <div class="app">
+      <div class="sidebar" id="sidebar">
+        <div class="calendar-header">
+          <div class="calendar-title" id="calendarMonth">2026年5月</div>
+          <div class="calendar-nav">
+            <button class="cal-btn" id="prevMonthBtn"><i class="fas fa-chevron-left"></i></button
+            ><button class="cal-btn" id="nextMonthBtn"><i class="fas fa-chevron-right"></i></button
+            ><button class="cal-btn" id="todayCalBtn">今天</button>
+          </div>
+        </div>
+        <div class="cal-weekdays">
+          <span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span
+          ><span>日</span>
+        </div>
+        <div class="cal-days" id="calendarDays"></div>
+        <div class="task-tree">
+          <div class="task-tree-header">
+            <div class="task-tree-title"><i class="fas fa-diagram-project"></i> 任务导航树</div>
+            <div class="tree-stats" id="treeStats"></div>
+          </div>
+          <div id="taskTreeContainer"></div>
+        </div>
+      </div>
+      <div class="splitter" id="splitter"></div>
+      <div class="main-content">
+        <div class="right-top-bar">
+          <div class="theme-selector" id="themeSelector">
+            <button data-theme="light" class="theme-btn">☀️ 浅色</button
+            ><button data-theme="dark" class="theme-btn">🌙 深色</button
+            ><button data-theme="eye" class="theme-btn">👁️ 护眼</button
+            ><button data-theme="orange" class="theme-btn">🍊 橙韵</button
+            ><button data-theme="purple" class="theme-btn">💜 紫韵</button
+            ><button data-theme="red" class="theme-btn">❤️ 红韵</button
+            ><button data-theme="skyblue" class="theme-btn">☁️ 天蓝</button
+            ><button data-theme="navy" class="theme-btn">⚓ 深蓝</button
+            ><button data-theme="deep-purple" class="theme-btn">🟣 深紫</button>
+          </div>
+        </div>
+        <div class="alert-bar">
+          <div>
+            <i class="fas fa-database"></i> ⚠️ 数据仅保存在当前页面，关闭前请务必导出Excel备份
+          </div>
+          <span id="unsavedIndicator" class="unsave-badge" style="display: none">未保存</span>
+        </div>
+        <div class="right-config-bar">
+          <div class="config-group">
+            <div class="config-item">
+              <label>📐 主任务列数</label
+              ><input type="number" id="mainGridCols" min="1" max="4" step="1" value="2" />
+            </div>
+            <div class="config-item">
+              <label>📐 子任务列数</label
+              ><input type="number" id="subGridCols" min="1" max="4" step="1" value="2" />
+            </div>
+            <div class="config-item">
+              <label>🔤 字体大小</label
+              ><select id="fontSizeSelect">
+                <option value="small">小</option>
+                <option value="medium" selected>中</option>
+                <option value="large">大</option>
+                <option value="xlarge">超大</option>
+              </select>
+            </div>
+          </div>
+          <div class="btn-group">
+            <button class="btn-sm" id="manageStatusBtn"><i class="fas fa-tags"></i> 状态</button
+            ><button class="btn-sm" id="manageTypeBtn">
+              <i class="fas fa-layer-group"></i> 类型</button
+            ><button class="btn-sm" id="managePriorityBtn">
+              <i class="fas fa-flag"></i> 优先级</button
+            ><button class="btn-sm btn-primary" id="exportExcelBtn">
+              <i class="fas fa-file-excel"></i> 导出Excel</button
+            ><button class="btn-sm btn-primary" id="importExcelBtn">
+              <i class="fas fa-upload"></i> 导入Excel
+            </button>
+          </div>
+        </div>
+        <div id="mainTasksContainer"></div>
+        <div class="add-main-task">
+          <input
+            type="text"
+            id="newMainTitle"
+            placeholder="+ 添加主任务 ..."
+            autocomplete="off"
+          /><button id="addMainBtn" class="btn-sm btn-primary">创建</button>
+        </div>
+        <footer>
+          <i class="fas fa-arrows-alt"></i> 拖拽手柄排序 | 双击标题/描述/清单编辑 |
+          红色卡片表示即将截止 | 点击📅截止时间打开日期选择器
+        </footer>
+      </div>
     </div>
-</div>
 
-<!-- 模态框 -->
-<div id="confirmModal" class="modal"><div class="modal-content"><h3><i class="fas fa-question-circle"></i>确认操作</h3><p id="confirmMessage" style="margin:16px 0;"></p><div class="modal-buttons"><button id="confirmOkBtn" class="btn-sm btn-primary">确认</button><button id="confirmCancelBtn" class="btn-sm">取消</button></div></div></div>
-<div id="titleModal" class="modal"><div class="modal-content"><h3><i class="fas fa-edit"></i>编辑标题</h3><input type="text" id="titleInput" style="width:100%; padding:8px 12px; border-radius:40px; border:1px solid var(--border-light); background:var(--card-bg); color:var(--text-primary);"><div class="modal-buttons"><button id="saveTitleBtn" class="btn-sm btn-primary">保存</button><button id="cancelTitleBtn" class="btn-sm">取消</button></div></div></div>
-<div id="dueDateModal" class="modal"><div class="modal-content"><h3><i class="far fa-calendar-alt"></i>设置截止时间</h3><input type="date" id="dueDatePicker" style="width:100%; padding:8px 12px; border-radius:40px; border:1px solid var(--border-light); background:var(--card-bg); color:var(--text-primary); margin:16px 0;"><div class="modal-buttons"><button id="saveDueDateBtn" class="btn-sm btn-primary">保存</button><button id="clearDueDateBtn" class="btn-sm">清除</button><button id="cancelDueDateBtn" class="btn-sm">取消</button></div></div></div>
-<div id="descModal" class="modal"><div class="modal-content"><h3><i class="fas fa-edit"></i>编辑内容</h3><textarea id="descText" rows="6" style="width:100%; margin:12px 0; padding:10px; border-radius:20px; background:var(--card-bg); color:var(--text-primary); border:1px solid var(--border-light);"></textarea><div class="modal-buttons"><button id="saveDescBtn" class="btn-sm btn-primary">保存</button><button id="closeDescBtn" class="btn-sm">取消</button></div></div></div>
-<div id="checklistModal" class="modal"><div class="modal-content"><h3><i class="fas fa-check-square"></i>编辑清单项</h3><div id="checklistEditor" class="checklist-editor"></div><div style="display:flex; gap:8px; margin:8px 0;"><button id="addChecklistItemBtn" class="btn-sm btn-primary"><i class="fas fa-plus"></i>添加项</button></div><div class="modal-buttons"><button id="saveChecklistBtn" class="btn-sm btn-primary">保存</button><button id="closeChecklistBtn" class="btn-sm">取消</button></div></div></div>
-<div id="addSubtaskModal" class="modal"><div class="modal-content"><h3><i class="fas fa-plus-circle"></i>添加子任务</h3><div style="margin:16px 0;"><label style="display:block; margin-bottom:6px;">子任务标题</label><input type="text" id="newSubtaskTitle" style="width:100%; padding:8px 12px; border-radius:40px; border:1px solid var(--border-light); background:var(--card-bg); color:var(--text-primary);" placeholder="输入子任务标题"></div><div class="modal-buttons"><button id="confirmAddSubtaskBtn" class="btn-sm btn-primary">添加</button><button id="cancelAddSubtaskBtn" class="btn-sm">取消</button></div></div></div>
-<div id="statusModal" class="modal"><div class="modal-content"><h3><i class="fas fa-tags"></i>自定义状态</h3><div id="statusList" class="config-list"></div><div class="add-config"><input type="text" id="newStatusName" placeholder="新状态名称"><button id="addStatusBtn" class="btn-sm btn-primary">添加</button></div><div class="modal-buttons"><button id="closeStatusBtn" class="btn-sm">关闭</button></div></div></div>
-<div id="typeModal" class="modal"><div class="modal-content"><h3><i class="fas fa-layer-group"></i>自定义类型</h3><div id="typeList" class="config-list"></div><div class="add-config"><input type="text" id="newTypeName" placeholder="新类型名称"><button id="addTypeBtn" class="btn-sm btn-primary">添加</button></div><div class="modal-buttons"><button id="closeTypeBtn" class="btn-sm">关闭</button></div></div></div>
-<div id="priorityModal" class="modal"><div class="modal-content"><h3><i class="fas fa-flag"></i>自定义优先级</h3><div id="priorityList" class="config-list"></div><div class="add-config"><input type="text" id="newPriorityName" placeholder="新优先级名称"><button id="addPriorityBtn" class="btn-sm btn-primary">添加</button></div><div class="modal-buttons"><button id="closePriorityBtn" class="btn-sm">关闭</button></div></div></div>
-<div id="exportModal" class="modal"><div class="modal-content"><h3><i class="fas fa-file-excel"></i>导出 Excel</h3><div style="margin:16px 0;"><label style="display:block; margin-bottom:6px;">文件名（.xlsx）</label><input type="text" id="exportFileName" style="width:100%; padding:8px 12px; border-radius:40px; border:1px solid var(--border-light); background:var(--card-bg); color:var(--text-primary);"></div><div class="modal-buttons"><button id="confirmExportBtn" class="btn-sm btn-primary">导出</button><button id="cancelExportBtn" class="btn-sm">取消</button></div></div></div>
+    <!-- 模态框 -->
+    <div id="confirmModal" class="modal">
+      <div class="modal-content">
+        <h3><i class="fas fa-question-circle"></i>确认操作</h3>
+        <p id="confirmMessage" style="margin: 16px 0"></p>
+        <div class="modal-buttons">
+          <button id="confirmOkBtn" class="btn-sm btn-primary">确认</button
+          ><button id="confirmCancelBtn" class="btn-sm">取消</button>
+        </div>
+      </div>
+    </div>
+    <div id="titleModal" class="modal">
+      <div class="modal-content">
+        <h3><i class="fas fa-edit"></i>编辑标题</h3>
+        <input
+          type="text"
+          id="titleInput"
+          style="
+            width: 100%;
+            padding: 8px 12px;
+            border-radius: 40px;
+            border: 1px solid var(--border-light);
+            background: var(--card-bg);
+            color: var(--text-primary);
+          "
+        />
+        <div class="modal-buttons">
+          <button id="saveTitleBtn" class="btn-sm btn-primary">保存</button
+          ><button id="cancelTitleBtn" class="btn-sm">取消</button>
+        </div>
+      </div>
+    </div>
+    <div id="dueDateModal" class="modal">
+      <div class="modal-content">
+        <h3><i class="far fa-calendar-alt"></i>设置截止时间</h3>
+        <input
+          type="date"
+          id="dueDatePicker"
+          style="
+            width: 100%;
+            padding: 8px 12px;
+            border-radius: 40px;
+            border: 1px solid var(--border-light);
+            background: var(--card-bg);
+            color: var(--text-primary);
+            margin: 16px 0;
+          "
+        />
+        <div class="modal-buttons">
+          <button id="saveDueDateBtn" class="btn-sm btn-primary">保存</button
+          ><button id="clearDueDateBtn" class="btn-sm">清除</button
+          ><button id="cancelDueDateBtn" class="btn-sm">取消</button>
+        </div>
+      </div>
+    </div>
+    <div id="descModal" class="modal">
+      <div class="modal-content">
+        <h3><i class="fas fa-edit"></i>编辑内容</h3>
+        <textarea
+          id="descText"
+          rows="6"
+          style="
+            width: 100%;
+            margin: 12px 0;
+            padding: 10px;
+            border-radius: 20px;
+            background: var(--card-bg);
+            color: var(--text-primary);
+            border: 1px solid var(--border-light);
+          "
+        ></textarea>
+        <div class="modal-buttons">
+          <button id="saveDescBtn" class="btn-sm btn-primary">保存</button
+          ><button id="closeDescBtn" class="btn-sm">取消</button>
+        </div>
+      </div>
+    </div>
+    <div id="checklistModal" class="modal">
+      <div class="modal-content">
+        <h3><i class="fas fa-check-square"></i>编辑清单项</h3>
+        <div id="checklistEditor" class="checklist-editor"></div>
+        <div style="display: flex; gap: 8px; margin: 8px 0">
+          <button id="addChecklistItemBtn" class="btn-sm btn-primary">
+            <i class="fas fa-plus"></i>添加项
+          </button>
+        </div>
+        <div class="modal-buttons">
+          <button id="saveChecklistBtn" class="btn-sm btn-primary">保存</button
+          ><button id="closeChecklistBtn" class="btn-sm">取消</button>
+        </div>
+      </div>
+    </div>
+    <div id="addSubtaskModal" class="modal">
+      <div class="modal-content">
+        <h3><i class="fas fa-plus-circle"></i>添加子任务</h3>
+        <div style="margin: 16px 0">
+          <label style="display: block; margin-bottom: 6px">子任务标题</label
+          ><input
+            type="text"
+            id="newSubtaskTitle"
+            style="
+              width: 100%;
+              padding: 8px 12px;
+              border-radius: 40px;
+              border: 1px solid var(--border-light);
+              background: var(--card-bg);
+              color: var(--text-primary);
+            "
+            placeholder="输入子任务标题"
+          />
+        </div>
+        <div class="modal-buttons">
+          <button id="confirmAddSubtaskBtn" class="btn-sm btn-primary">添加</button
+          ><button id="cancelAddSubtaskBtn" class="btn-sm">取消</button>
+        </div>
+      </div>
+    </div>
+    <div id="statusModal" class="modal">
+      <div class="modal-content">
+        <h3><i class="fas fa-tags"></i>自定义状态</h3>
+        <div id="statusList" class="config-list"></div>
+        <div class="add-config">
+          <input type="text" id="newStatusName" placeholder="新状态名称" /><button
+            id="addStatusBtn"
+            class="btn-sm btn-primary"
+          >
+            添加
+          </button>
+        </div>
+        <div class="modal-buttons"><button id="closeStatusBtn" class="btn-sm">关闭</button></div>
+      </div>
+    </div>
+    <div id="typeModal" class="modal">
+      <div class="modal-content">
+        <h3><i class="fas fa-layer-group"></i>自定义类型</h3>
+        <div id="typeList" class="config-list"></div>
+        <div class="add-config">
+          <input type="text" id="newTypeName" placeholder="新类型名称" /><button
+            id="addTypeBtn"
+            class="btn-sm btn-primary"
+          >
+            添加
+          </button>
+        </div>
+        <div class="modal-buttons"><button id="closeTypeBtn" class="btn-sm">关闭</button></div>
+      </div>
+    </div>
+    <div id="priorityModal" class="modal">
+      <div class="modal-content">
+        <h3><i class="fas fa-flag"></i>自定义优先级</h3>
+        <div id="priorityList" class="config-list"></div>
+        <div class="add-config">
+          <input type="text" id="newPriorityName" placeholder="新优先级名称" /><button
+            id="addPriorityBtn"
+            class="btn-sm btn-primary"
+          >
+            添加
+          </button>
+        </div>
+        <div class="modal-buttons"><button id="closePriorityBtn" class="btn-sm">关闭</button></div>
+      </div>
+    </div>
+    <div id="exportModal" class="modal">
+      <div class="modal-content">
+        <h3><i class="fas fa-file-excel"></i>导出 Excel</h3>
+        <div style="margin: 16px 0">
+          <label style="display: block; margin-bottom: 6px">文件名（.xlsx）</label
+          ><input
+            type="text"
+            id="exportFileName"
+            style="
+              width: 100%;
+              padding: 8px 12px;
+              border-radius: 40px;
+              border: 1px solid var(--border-light);
+              background: var(--card-bg);
+              color: var(--text-primary);
+            "
+          />
+        </div>
+        <div class="modal-buttons">
+          <button id="confirmExportBtn" class="btn-sm btn-primary">导出</button
+          ><button id="cancelExportBtn" class="btn-sm">取消</button>
+        </div>
+      </div>
+    </div>
 
-<script>
-    // ===================== 分隔条拖拽 =====================
-    const sidebar = document.getElementById('sidebar');
-    const splitter = document.getElementById('splitter');
-    let startX = 0, startWidth = 0, isResizing = false;
-    let sidebarWidthPercent = parseFloat(localStorage.getItem('sidebar_width_percent'));
-    if (isNaN(sidebarWidthPercent) || sidebarWidthPercent < 0.1) sidebarWidthPercent = 0.25;
-    if (sidebarWidthPercent > 0.6) sidebarWidthPercent = 0.6;
-    sidebar.style.width = (sidebarWidthPercent * 100) + '%';
-    function startResize(e) { isResizing = true; startX = e.clientX; startWidth = sidebar.getBoundingClientRect().width; document.body.classList.add('resizing'); splitter.classList.add('active'); document.addEventListener('mousemove', doResize); document.addEventListener('mouseup', stopResize); e.preventDefault(); }
-    function doResize(e) { if (!isResizing) return; let newWidth = startWidth + (e.clientX - startX); const parentWidth = sidebar.parentElement.getBoundingClientRect().width; let newPercent = newWidth / parentWidth; if (newPercent < 0.15) newPercent = 0.15; if (newPercent > 0.6) newPercent = 0.6; sidebar.style.width = (newPercent * 100) + '%'; localStorage.setItem('sidebar_width_percent', newPercent); }
-    function stopResize() { if (!isResizing) return; isResizing = false; document.body.classList.remove('resizing'); splitter.classList.remove('active'); document.removeEventListener('mousemove', doResize); document.removeEventListener('mouseup', stopResize); const finalPercent = sidebar.getBoundingClientRect().width / sidebar.parentElement.getBoundingClientRect().width; localStorage.setItem('sidebar_width_percent', finalPercent); }
-    if (splitter) splitter.addEventListener('mousedown', startResize);
-    window.addEventListener('resize', () => { const percent = parseFloat(localStorage.getItem('sidebar_width_percent')); if (!isNaN(percent) && percent >= 0.15 && percent <= 0.6) sidebar.style.width = (percent * 100) + '%'; });
+    <script>
+      // ===================== 分隔条拖拽 =====================
+      const sidebar = document.getElementById('sidebar')
+      const splitter = document.getElementById('splitter')
+      let startX = 0,
+        startWidth = 0,
+        isResizing = false
+      let sidebarWidthPercent = parseFloat(localStorage.getItem('sidebar_width_percent'))
+      if (isNaN(sidebarWidthPercent) || sidebarWidthPercent < 0.1) sidebarWidthPercent = 0.25
+      if (sidebarWidthPercent > 0.6) sidebarWidthPercent = 0.6
+      sidebar.style.width = sidebarWidthPercent * 100 + '%'
+      function startResize(e) {
+        isResizing = true
+        startX = e.clientX
+        startWidth = sidebar.getBoundingClientRect().width
+        document.body.classList.add('resizing')
+        splitter.classList.add('active')
+        document.addEventListener('mousemove', doResize)
+        document.addEventListener('mouseup', stopResize)
+        e.preventDefault()
+      }
+      function doResize(e) {
+        if (!isResizing) return
+        let newWidth = startWidth + (e.clientX - startX)
+        const parentWidth = sidebar.parentElement.getBoundingClientRect().width
+        let newPercent = newWidth / parentWidth
+        if (newPercent < 0.15) newPercent = 0.15
+        if (newPercent > 0.6) newPercent = 0.6
+        sidebar.style.width = newPercent * 100 + '%'
+        localStorage.setItem('sidebar_width_percent', newPercent)
+      }
+      function stopResize() {
+        if (!isResizing) return
+        isResizing = false
+        document.body.classList.remove('resizing')
+        splitter.classList.remove('active')
+        document.removeEventListener('mousemove', doResize)
+        document.removeEventListener('mouseup', stopResize)
+        const finalPercent =
+          sidebar.getBoundingClientRect().width /
+          sidebar.parentElement.getBoundingClientRect().width
+        localStorage.setItem('sidebar_width_percent', finalPercent)
+      }
+      if (splitter) splitter.addEventListener('mousedown', startResize)
+      window.addEventListener('resize', () => {
+        const percent = parseFloat(localStorage.getItem('sidebar_width_percent'))
+        if (!isNaN(percent) && percent >= 0.15 && percent <= 0.6)
+          sidebar.style.width = percent * 100 + '%'
+      })
 
-    // ===================== 核心数据 =====================
-    let config = { statuses: [{ id: "st_default", name: "待规划", color: "#6c757d" },{ id: "st_start", name: "已启动", color: "#2b8c5e" },{ id: "st_doing", name: "进行中", color: "#f59e0b" },{ id: "st_done", name: "已完成", color: "#3b82f6" },{ id: "st_delay", name: "已延期", color: "#dc2626" }], types: [{ id: "ty_work", name: "工作", color: "#0d6efd" },{ id: "ty_study", name: "学习", color: "#6f42c1" },{ id: "ty_life", name: "生活", color: "#20c997" }], priorities: [{ id: "p0", name: "最高优先级", color: "#e74c3c" },{ id: "p1", name: "非常紧急", color: "#e67e22" },{ id: "p2", name: "紧急", color: "#f39c12" },{ id: "p3", name: "重要", color: "#3498db" },{ id: "p4", name: "中等", color: "#2ecc71" },{ id: "p5", name: "一般", color: "#95a5a6" },{ id: "p6", name: "不紧急", color: "#bdc3c7" }] };
-    let todoData = {}; let currentDate = ""; let isDirty = false; let currentEditDescTarget = null; let currentEditingTitle = null; let currentDueDateTarget = null; let currentMainForSubtask = null;
-    let calendarYear = 2026, calendarMonth = 4; let mainGridCols = 2, subGridCols = 2; let currentFont = "medium";
-    function getTodayStr() { const d=new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; }
-    function markDirty() { if(!isDirty) { isDirty=true; document.getElementById("unsavedIndicator").style.display="inline-block"; } }
-    function clearDirty() { isDirty=false; document.getElementById("unsavedIndicator").style.display="none"; }
-    function ensureDate(date) { if (!todoData[date]) todoData[date] = []; }
-    function getStatus(id) { return config.statuses.find(s=>s.id===id) || config.statuses[0]; }
-    function getType(id) { return config.types.find(t=>t.id===id) || null; }
-    function getPriority(id) { return config.priorities.find(p=>p.id===id) || config.priorities[0]; }
-    function escapeHtml(str) { if(!str) return ''; return str.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'})[m] || m); }
-    function isDueWarning(task) { if (!task.dueDate) return false; if (task.statusId === config.statuses.find(s=>s.name==="已完成")?.id) return false; const today = new Date(); today.setHours(0,0,0,0); const due = new Date(task.dueDate); due.setHours(0,0,0,0); const diffDays = Math.ceil((due - today) / (1000*60*60*24)); return diffDays <= 1; }
-    function applyFontSize(size) { document.body.classList.remove('font-small','font-medium','font-large','font-xlarge'); if (size === 'small') document.body.classList.add('font-small'); else if (size === 'medium') document.body.classList.add('font-medium'); else if (size === 'large') document.body.classList.add('font-large'); else if (size === 'xlarge') document.body.classList.add('font-xlarge'); localStorage.setItem('font_size', size); }
-    // 统一的截止时间模态框打开
-    function openDueDateModalForTask(task) { if(!task) return; currentDueDateTarget = task; document.getElementById("dueDatePicker").value = task.dueDate || ''; document.getElementById("dueDateModal").style.display = "flex"; }
-    // 日历、树等函数略保持原样，但为了节省空间，核心改动在 attachMetaEvents 中
-    function renderCalendar() { /* 保持原样 */ const firstDay = new Date(calendarYear, calendarMonth, 1); let startWeekday = firstDay.getDay(); let startOffset = startWeekday === 0 ? 6 : startWeekday - 1; const daysInMonth = new Date(calendarYear, calendarMonth+1, 0).getDate(); const prevMonthDays = new Date(calendarYear, calendarMonth, 0).getDate(); const days = []; for (let i = 0; i < startOffset; i++) days.push({ year: calendarYear, month: calendarMonth-1, day: prevMonthDays - startOffset + i + 1, isCurrent: false }); for (let i = 1; i <= daysInMonth; i++) days.push({ year: calendarYear, month: calendarMonth, day: i, isCurrent: true }); let remaining = 42 - days.length; for (let i = 1; i <= remaining; i++) days.push({ year: calendarYear, month: calendarMonth+1, day: i, isCurrent: false }); const container = document.getElementById("calendarDays"); container.innerHTML = ""; days.forEach(day => { const dateStr = `${day.year}-${String(day.month+1).padStart(2,'0')}-${String(day.day).padStart(2,'0')}`; const isSelected = (dateStr === currentDate); const isToday = (dateStr === getTodayStr()); const div = document.createElement("div"); div.className = `cal-day ${!day.isCurrent ? 'other-month' : ''} ${isSelected ? 'selected' : ''}`; div.textContent = day.day; if (isToday && !isSelected) div.style.border = "1px solid var(--accent-blue)"; div.addEventListener("click", () => { setCurrentDate(dateStr); renderCalendar(); }); container.appendChild(div); }); document.getElementById("calendarMonth").innerHTML = `${calendarYear}年${calendarMonth+1}月`; }
-    function setCurrentDate(dateStr) { if (currentDate === dateStr) return; currentDate = dateStr; ensureDate(currentDate); renderCurrentView(); renderCalendar(); }
-    function renderTaskTreeAndStats() { const tasks = todoData[currentDate] || []; let totalMain = tasks.length, totalSub = tasks.reduce((s,t)=>s+(t.subtasks?.length||0),0); document.getElementById("treeStats").innerHTML = `<span><i class="fas fa-tasks"></i> 主:${totalMain}</span><span><i class="fas fa-code-branch"></i> 子:${totalSub}</span>`; const container = document.getElementById("taskTreeContainer"); if (!tasks.length) { container.innerHTML = `<div style="font-size:0.7rem; text-align:center; padding:8px; color:var(--text-secondary);">暂无任务</div>`; return; } let treeHtml = ""; tasks.forEach(main => { treeHtml += `<div class="tree-node main-node" data-id="${main.id}" data-type="main">📌 ${escapeHtml(main.title)}</div>`; if (main.useSubtasks !== false && main.subtasks && main.subtasks.length > 0) { main.subtasks.forEach(sub => { treeHtml += `<div class="tree-node sub-node" data-id="${sub.id}" data-type="sub" data-main="${main.id}">└─ ${escapeHtml(sub.title)}</div>`; }); } }); container.innerHTML = treeHtml; document.querySelectorAll('#taskTreeContainer .tree-node').forEach(node => { node.removeEventListener('click', node._treeClick); const handler = () => { const id = node.dataset.id, type = node.dataset.type; let target = type === 'main' ? document.querySelector(`.main-task-card[data-main-id="${id}"]`) : document.querySelector(`.subtask-card[data-sub-id="${id}"]`); if (target) { target.scrollIntoView({ behavior: 'smooth', block: 'center' }); target.classList.add('task-highlight'); setTimeout(() => target.classList.remove('task-highlight'), 800); } }; node.addEventListener('click', handler); node._treeClick = handler; }); }
-    function renderCurrentView() { if (!currentDate) return; ensureDate(currentDate); const mainContainer = document.getElementById("mainTasksContainer"); mainContainer.style.gridTemplateColumns = `repeat(${mainGridCols}, 1fr)`; renderMainTasks(todoData[currentDate]); renderTaskTreeAndStats(); }
-    function renderSubtasks(subtasks, mainId) { if (!subtasks.length) return `<div class="empty-subtasks">暂无子任务，点击上方按钮添加</div>`; return subtasks.map(sub => { const statusObj = getStatus(sub.statusId), typeObj = sub.typeId ? getType(sub.typeId) : null, priorityObj = sub.priorityId ? getPriority(sub.priorityId) : null, dueWarningClass = isDueWarning(sub) ? "due-warning" : ""; const hasChecklist = sub.checklist && sub.checklist.length > 0; const checklistHtml = hasChecklist ? `<div class="checklist-area">${sub.checklist.map(item => `<div class="checklist-item"><input type="checkbox" class="checklist-checkbox" data-sub-id="${sub.id}" data-item-id="${item.id}" ${item.checked ? 'checked' : ''}><span class="${item.checked ? 'checked' : ''}">${escapeHtml(item.text)}</span></div>`).join('')}</div>` : ""; return `<div class="subtask-card ${dueWarningClass}" data-sub-id="${sub.id}" data-main-id="${mainId}"><div class="subtask-header"><div class="subtask-title-area"><span class="drag-sub-handle"><i class="fas fa-grip-vertical"></i></span><div class="subtask-title"><span class="subtask-title-text" data-id="${sub.id}" data-type="sub" data-main="${mainId}">${escapeHtml(sub.title)}</span><i class="fas fa-pencil-alt edit-title-icon" data-id="${sub.id}" data-type="sub" data-main="${mainId}"></i></div></div><div class="subtask-right-actions"><span class="meta-item mini" data-task-id="${sub.id}" data-task-type="sub" data-main-id="${mainId}" data-field="type">${typeObj ? typeObj.name : "无类型"}</span><span class="meta-item mini" data-task-id="${sub.id}" data-task-type="sub" data-main-id="${mainId}" data-field="status">${statusObj.name}</span><button class="icon-text-btn edit-checklist" data-id="${sub.id}" data-main="${mainId}" style="background:transparent;"><i class="fas fa-edit"></i></button><button class="icon-text-btn delete-sub" data-id="${sub.id}" data-main="${mainId}" style="background:transparent; color:var(--danger);"><i class="fas fa-trash-alt"></i></button></div></div><div class="meta-row" style="padding:4px 10px;"><div class="meta-item" data-task-id="${sub.id}" data-task-type="sub" data-main-id="${mainId}" data-field="priority"><i class="fas fa-flag"></i> ${priorityObj ? priorityObj.name : "优先级"}</div><div class="meta-item due-date-meta" data-task-id="${sub.id}" data-task-type="sub" data-main-id="${mainId}" data-field="dueDate"><i class="far fa-calendar-alt"></i> ${sub.dueDate || "截止时间"}</div></div>${checklistHtml}</div>`; }).join(''); }
-    // 核心修改：attachMetaEvents 中 dueDate 改为弹出模态框
-    function attachMetaEvents() { document.querySelectorAll('.meta-item').forEach(el => { el.removeEventListener('click', el._handler); const handler = (e) => { e.stopPropagation(); const taskId = el.dataset.taskId; const taskType = el.dataset.taskType; const mainId = el.dataset.mainId; const field = el.dataset.field; let target = null; if (taskType === 'main') target = todoData[currentDate].find(t => t.id == taskId); else { const p = todoData[currentDate].find(t => t.id == mainId); if(p) target = p.subtasks.find(s => s.id == taskId); } if (!target) return; if (field === 'dueDate') { openDueDateModalForTask(target); return; } else if (field === 'priority') { const options = config.priorities.map(p => ({ value: p.id, label: p.name })); const select = document.createElement('select'); select.className = 'inline-select'; options.forEach(opt => { const option = document.createElement('option'); option.value = opt.value; option.textContent = opt.label; if (target.priorityId === opt.value) option.selected = true; select.appendChild(option); }); const parent = el.parentNode; parent.replaceChild(select, el); select.focus(); const commit = () => { const newVal = select.value; target.priorityId = newVal; markDirty(); renderCurrentView(); }; select.addEventListener('change', commit); select.addEventListener('blur', () => setTimeout(() => { if(document.body.contains(select)) commit(); }, 100)); } else { let options = field === 'status' ? config.statuses.map(s=>({value:s.id,label:s.name})) : [{value:'',label:'无类型'}, ...config.types.map(t=>({value:t.id,label:t.name}))]; const select = document.createElement('select'); select.className = 'inline-select'; options.forEach(opt => { const option = document.createElement('option'); option.value = opt.value; option.textContent = opt.label; if ((field==='status' && target.statusId===opt.value) || (field==='type' && (target.typeId||'')===opt.value)) option.selected = true; select.appendChild(option); }); const parent = el.parentNode; parent.replaceChild(select, el); select.focus(); const commit = () => { const newVal = select.value; if (field === 'status') target.statusId = newVal; else target.typeId = newVal || null; markDirty(); renderCurrentView(); }; select.addEventListener('change', commit); select.addEventListener('blur', () => setTimeout(() => { if(document.body.contains(select)) commit(); }, 100)); } }; el.addEventListener('click', handler); el._handler = handler; }); }
-    function renderMainTasks(tasks) { /* 保持完整渲染逻辑，但删除attachDueDateEvents调用 */
-        const container = document.getElementById("mainTasksContainer"); if (!tasks.length) { container.innerHTML = `<div style="grid-column:1/-1; text-align:center; padding:40px;">暂无主任务，添加一个吧</div>`; return; } let html = ""; tasks.forEach(main => { const statusObj = getStatus(main.statusId); const typeObj = main.typeId ? getType(main.typeId) : null; const priorityObj = main.priorityId ? getPriority(main.priorityId) : null; const dueWarningClass = isDueWarning(main) ? "due-warning" : ""; const useSubtasks = main.useSubtasks !== false; const hasDescription = main.description && main.description.trim().length > 0; const descSection = hasDescription ? `<div class="main-desc-area" data-main-id="${main.id}">${escapeHtml(main.description)}</div>` : ""; html += `<div class="main-task-card ${dueWarningClass}" data-main-id="${main.id}"><div class="main-card-header"><span class="drag-handle-main"><i class="fas fa-grip-vertical"></i></span><div class="main-title"><span class="main-title-text" data-id="${main.id}" data-type="main">${escapeHtml(main.title)}</span><i class="fas fa-pencil-alt edit-title-icon" data-id="${main.id}" data-type="main"></i></div><div class="main-actions"><label class="switch" data-main-id="${main.id}"><input type="checkbox" class="mode-switch" ${useSubtasks ? 'checked' : ''}><span class="slider"></span></label><button class="icon-text-btn delete-main" data-id="${main.id}" style="background:transparent; color:var(--danger);"><i class="fas fa-trash-alt"></i></button></div></div><div class="meta-row"><div class="meta-item" data-task-id="${main.id}" data-task-type="main" data-field="type"><i class="fas fa-tag"></i> ${typeObj ? typeObj.name : "无类型"}</div><div class="meta-item" data-task-id="${main.id}" data-task-type="main" data-field="status"><i class="fas fa-check-circle"></i> ${statusObj.name}</div><div class="meta-item" data-task-id="${main.id}" data-task-type="main" data-field="priority"><i class="fas fa-flag"></i> ${priorityObj ? priorityObj.name : "优先级"}</div><div class="meta-item due-date-meta" data-task-id="${main.id}" data-task-type="main" data-field="dueDate"><i class="far fa-calendar-alt"></i> ${main.dueDate || "截止时间"}</div><div class="action-buttons">${useSubtasks ? `<button class="icon-text-btn add-sub-main" data-id="${main.id}"><i class="fas fa-plus-circle"></i> 添加子任务</button>` : `<button class="icon-text-btn edit-checklist-main" data-id="${main.id}"><i class="fas fa-list-check"></i> 编辑清单</button>`}<button class="icon-text-btn edit-desc-main" data-id="${main.id}"><i class="fas fa-align-left"></i> 编辑备注</button></div></div>${descSection}${useSubtasks ? `<div class="subtask-grid" id="subGrid_${main.id}" style="grid-template-columns: repeat(${subGridCols}, 1fr);">${renderSubtasks(main.subtasks || [], main.id)}</div>` : (main.checklist && main.checklist.length ? `<div class="checklist-area">${main.checklist.map(item => `<div class="checklist-item"><input type="checkbox" class="main-checklist-checkbox" data-main-id="${main.id}" data-item-id="${item.id}" ${item.checked ? 'checked' : ''}><span class="${item.checked ? 'checked' : ''}">${escapeHtml(item.text)}</span></div>`).join('')}</div>` : "")}</div>`; }); container.innerHTML = html; if (window.mainSortable) window.mainSortable.destroy(); window.mainSortable = new Sortable(container, { handle: '.drag-handle-main', animation: 200, onEnd: () => { const items = Array.from(container.children), newOrder = items.map(el => el.getAttribute('data-main-id')); const currentTasks = todoData[currentDate], reordered = []; newOrder.forEach(id => { const found = currentTasks.find(t => t.id == id); if (found) reordered.push(found); }); todoData[currentDate] = reordered; markDirty(); renderCurrentView(); } }); tasks.forEach(main => { if (main.useSubtasks !== false) { const subGrid = document.getElementById(`subGrid_${main.id}`); if (subGrid && window[`sortable_sub_${main.id}`]) window[`sortable_sub_${main.id}`].destroy(); if (subGrid) { window[`sortable_sub_${main.id}`] = new Sortable(subGrid, { handle: '.drag-sub-handle', animation: 150, onEnd: () => { const items = Array.from(subGrid.children), newOrderIds = items.map(card => card.getAttribute('data-sub-id')); const mainTask = todoData[currentDate].find(t => t.id == main.id); if (mainTask && mainTask.subtasks) { const newSubtasks = []; newOrderIds.forEach(subId => { const found = mainTask.subtasks.find(s => s.id == subId); if (found) newSubtasks.push(found); }); mainTask.subtasks = newSubtasks; markDirty(); renderCurrentView(); } } }); } } }); attachMainEvents(); attachMetaEvents(); attachChecklistToggle(); attachDescDoubleClick(); attachModeSwitchEvents(); attachTitleEditEvents(); }
-    function attachChecklistToggle() { /* 保持原样，代码简单略，原函数逻辑完整 */ document.querySelectorAll('.checklist-checkbox').forEach(cb => { cb.removeEventListener('change', cb._toggleHandler); const handler = (e) => { e.stopPropagation(); const subId = cb.dataset.subId, itemId = cb.dataset.itemId; const mainTask = todoData[currentDate].find(t => t.subtasks?.some(s => s.id == subId)); if (!mainTask) return; const subtask = mainTask.subtasks.find(s => s.id == subId); if (subtask && subtask.checklist) { const item = subtask.checklist.find(i => i.id == itemId); if (item) { item.checked = cb.checked; markDirty(); const span = cb.nextElementSibling; if (span) { if (item.checked) span.classList.add('checked'); else span.classList.remove('checked'); } } } }; cb.addEventListener('change', handler); cb._toggleHandler = handler; }); document.querySelectorAll('.main-checklist-checkbox').forEach(cb => { cb.removeEventListener('change', cb._mainHandler); const handler = (e) => { e.stopPropagation(); const mainId = cb.dataset.mainId, itemId = cb.dataset.itemId; const mainTask = todoData[currentDate].find(t => t.id == mainId); if (mainTask && mainTask.checklist) { const item = mainTask.checklist.find(i => i.id == itemId); if (item) { item.checked = cb.checked; markDirty(); const span = cb.nextElementSibling; if (span) { if (item.checked) span.classList.add('checked'); else span.classList.remove('checked'); } } } }; cb.addEventListener('change', handler); cb._mainHandler = handler; }); }
-    function attachDescDoubleClick() { document.querySelectorAll('.main-desc-area').forEach(div => { div.removeEventListener('dblclick', div._handler); const handler = () => { const mainId = div.dataset.mainId; const mainTask = todoData[currentDate].find(t => t.id == mainId); if (mainTask) { currentEditDescTarget = { task: mainTask }; document.getElementById("descText").value = mainTask.description || ""; document.getElementById("descModal").style.display = "flex"; } }; div.addEventListener('dblclick', handler); div._handler = handler; }); }
-    function attachModeSwitchEvents() { document.querySelectorAll('.mode-switch').forEach(sw => { sw.removeEventListener('change', sw._handler); const handler = (e) => { e.stopPropagation(); const mainId = sw.closest('.main-task-card').getAttribute('data-main-id'); const mainTask = todoData[currentDate].find(t => t.id == mainId); if (mainTask) { const newMode = sw.checked; mainTask.useSubtasks = newMode; if (newMode) { mainTask.checklist = []; if (!mainTask.subtasks) mainTask.subtasks = []; } else { mainTask.subtasks = []; if (!mainTask.checklist) mainTask.checklist = []; } markDirty(); renderCurrentView(); } }; sw.addEventListener('change', handler); sw._handler = handler; }); }
-    function attachMainEvents() { document.querySelectorAll('.add-sub-main').forEach(btn => { btn.onclick = () => { currentMainForSubtask = btn.dataset.id; document.getElementById("newSubtaskTitle").value = ""; document.getElementById("addSubtaskModal").style.display = "flex"; }; }); document.querySelectorAll('.edit-desc-main').forEach(btn => { btn.onclick = () => { const mainId = btn.dataset.id; const mainTask = todoData[currentDate].find(t => t.id == mainId); if (mainTask) { currentEditDescTarget = { task: mainTask }; document.getElementById("descText").value = mainTask.description || ""; document.getElementById("descModal").style.display = "flex"; } }; }); document.querySelectorAll('.delete-main').forEach(btn => { btn.onclick = () => { const id = btn.dataset.id; showConfirm("确定删除主任务吗？", () => { todoData[currentDate] = todoData[currentDate].filter(t => t.id != id); markDirty(); renderCurrentView(); }); }; }); document.querySelectorAll('.delete-sub').forEach(btn => { btn.onclick = (e) => { e.stopPropagation(); const subId = btn.dataset.id, mainId = btn.dataset.main; showConfirm("确定删除该子任务吗？", () => { const mainTask = todoData[currentDate].find(t => t.id == mainId); if (mainTask) { mainTask.subtasks = mainTask.subtasks.filter(s => s.id != subId); markDirty(); renderCurrentView(); } }); }; }); document.querySelectorAll('.edit-checklist').forEach(btn => { btn.onclick = () => { const subId = btn.dataset.id, mainId = btn.dataset.main; const mainTask = todoData[currentDate].find(t => t.id == mainId); if (mainTask) { const subtask = mainTask.subtasks.find(s => s.id == subId); if (subtask) { currentEditSubtask = subtask; openChecklistEditor(subtask); } } }; }); document.querySelectorAll('.edit-checklist-main').forEach(btn => { btn.onclick = () => { const mainId = btn.dataset.id; const mainTask = todoData[currentDate].find(t => t.id == mainId); if (mainTask) { currentEditSubtask = mainTask; openChecklistEditorForMain(mainTask); } }; }); }
-    function attachTitleEditEvents() { document.querySelectorAll('.main-title-text, .edit-title-icon, .subtask-title-text').forEach(el => { el.removeEventListener('click', el._titleHandler); const handler = (e) => { e.stopPropagation(); let target = null, type = null, mainId = null; if (el.classList.contains('main-title-text') || (el.classList.contains('edit-title-icon') && el.closest('.main-title'))) { const card = el.closest('.main-task-card'); if (card) { const id = card.dataset.mainId; target = todoData[currentDate].find(t => t.id == id); type = 'main'; mainId = id; } } else if (el.classList.contains('subtask-title-text') || (el.classList.contains('edit-title-icon') && el.closest('.subtask-title'))) { const card = el.closest('.subtask-card'); if (card) { const subId = card.dataset.subId; mainId = card.dataset.mainId; const parent = todoData[currentDate].find(t => t.id == mainId); if (parent) target = parent.subtasks.find(s => s.id == subId); type = 'sub'; } } if (target) { currentEditingTitle = { target, type, mainId }; document.getElementById("titleInput").value = target.title; document.getElementById("titleModal").style.display = "flex"; } }; el.addEventListener('click', handler); el._titleHandler = handler; }); }
-    function showConfirm(message, onConfirm) { document.getElementById("confirmMessage").innerText = message; document.getElementById("confirmModal").style.display = "flex"; const okBtn = document.getElementById("confirmOkBtn"); const cancelBtn = document.getElementById("confirmCancelBtn"); const cleanup = () => { document.getElementById("confirmModal").style.display = "none"; okBtn.removeEventListener('click', okHandler); cancelBtn.removeEventListener('click', cancelHandler); }; const okHandler = () => { cleanup(); onConfirm(); }; const cancelHandler = () => { cleanup(); }; okBtn.addEventListener('click', okHandler); cancelBtn.addEventListener('click', cancelHandler); }
-    function openChecklistEditor(subtask) { /* 省略保持原样，不影响截止时间功能 */ const container = document.getElementById("checklistEditor"); const renderEditor = () => { const checklist = subtask.checklist || []; container.innerHTML = checklist.map((item, idx) => `<div class="checklist-editor-item" data-idx="${idx}"><input type="checkbox" ${item.checked ? 'checked' : ''} data-id="${item.id}"><input type="text" value="${escapeHtml(item.text)}" data-id="${item.id}"><button class="delete-checklist-item" data-id="${item.id}"><i class="fas fa-trash-alt"></i></button></div>`).join(''); container.querySelectorAll('.delete-checklist-item').forEach(btn => { btn.onclick = () => { const id = btn.dataset.id; subtask.checklist = subtask.checklist.filter(i => i.id != id); renderEditor(); }; }); container.querySelectorAll('input[type="checkbox"]').forEach(cb => { cb.onchange = () => { const id = cb.dataset.id; const item = subtask.checklist.find(i => i.id == id); if (item) item.checked = cb.checked; }; }); container.querySelectorAll('input[type="text"]').forEach(inp => { inp.onchange = () => { const id = inp.dataset.id; const item = subtask.checklist.find(i => i.id == id); if (item) item.text = inp.value; }; }); }; renderEditor(); document.getElementById("checklistModal").style.display = "flex"; document.getElementById("addChecklistItemBtn").onclick = () => { const newId = Date.now() + Math.random()*10000; if (!subtask.checklist) subtask.checklist = []; subtask.checklist.push({ id: newId, text: "新事项", checked: false }); renderEditor(); }; document.getElementById("saveChecklistBtn").onclick = () => { markDirty(); renderCurrentView(); document.getElementById("checklistModal").style.display = "none"; }; document.getElementById("closeChecklistBtn").onclick = () => document.getElementById("checklistModal").style.display = "none"; }
-    function openChecklistEditorForMain(mainTask) { const container = document.getElementById("checklistEditor"); const renderEditor = () => { const checklist = mainTask.checklist || []; container.innerHTML = checklist.map((item) => `<div class="checklist-editor-item"><input type="checkbox" ${item.checked ? 'checked' : ''} data-id="${item.id}"><input type="text" value="${escapeHtml(item.text)}" data-id="${item.id}"><button class="delete-checklist-item" data-id="${item.id}"><i class="fas fa-trash-alt"></i></button></div>`).join(''); container.querySelectorAll('.delete-checklist-item').forEach(btn => { btn.onclick = () => { const id = btn.dataset.id; mainTask.checklist = mainTask.checklist.filter(i => i.id != id); renderEditor(); }; }); container.querySelectorAll('input[type="checkbox"]').forEach(cb => { cb.onchange = () => { const id = cb.dataset.id; const item = mainTask.checklist.find(i => i.id == id); if (item) item.checked = cb.checked; }; }); container.querySelectorAll('input[type="text"]').forEach(inp => { inp.onchange = () => { const id = inp.dataset.id; const item = mainTask.checklist.find(i => i.id == id); if (item) item.text = inp.value; }; }); }; renderEditor(); document.getElementById("checklistModal").style.display = "flex"; document.getElementById("addChecklistItemBtn").onclick = () => { const newId = Date.now() + Math.random()*10000; if (!mainTask.checklist) mainTask.checklist = []; mainTask.checklist.push({ id: newId, text: "新事项", checked: false }); renderEditor(); }; document.getElementById("saveChecklistBtn").onclick = () => { markDirty(); renderCurrentView(); document.getElementById("checklistModal").style.display = "none"; }; document.getElementById("closeChecklistBtn").onclick = () => document.getElementById("checklistModal").style.display = "none"; }
-    function addMainTask(title) { if(!title.trim()) return; todoData[currentDate].push({ id: Date.now()+Math.random()*10000, title: title.trim(), statusId: config.statuses[0].id, typeId: null, priorityId: null, dueDate: null, description: "", useSubtasks: true, subtasks: [], checklist: [], createdAt: Date.now() }); markDirty(); renderCurrentView(); }
-    function exportExcelWithDialog() { document.getElementById("exportFileName").value = `Todo_Backup_${new Date().toISOString().slice(0,19).replace(/:/g, '-')}`; document.getElementById("exportModal").style.display = "flex"; }
-    function performExport() { let fileName = document.getElementById("exportFileName").value.trim(); if (!fileName) fileName = "Todo_Backup"; if (!fileName.toLowerCase().endsWith(".xlsx")) fileName += ".xlsx"; let rows = []; for(let date in todoData) { todoData[date].forEach(main => { rows.push({日期:date,层级:"主任务",任务标题:main.title,状态:getStatus(main.statusId).name,类型:main.typeId?getType(main.typeId)?.name:"",优先级:main.priorityId?getPriority(main.priorityId).name:"",截止时间:main.dueDate||"",描述:main.description||"",启用子任务:main.useSubtasks!==false?"是":"否",清单:JSON.stringify(main.checklist||[])}); if (main.useSubtasks !== false && main.subtasks) main.subtasks.forEach(sub => rows.push({日期:date,层级:"子任务",父任务:main.title,任务标题:sub.title,状态:getStatus(sub.statusId).name,类型:sub.typeId?getType(sub.typeId)?.name:"",优先级:sub.priorityId?getPriority(sub.priorityId).name:"",截止时间:sub.dueDate||"",描述:"",启用子任务:"",清单:JSON.stringify(sub.checklist||[])})); }); } if(!rows.length) { alert("无数据可导出"); document.getElementById("exportModal").style.display = "none"; return; } const ws = XLSX.utils.json_to_sheet(rows); const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "TodoBackup"); XLSX.writeFile(wb, fileName); clearDirty(); alert("导出成功！"); document.getElementById("exportModal").style.display = "none"; }
-    function fallbackImport() { let inp=document.createElement("input"); inp.type="file"; inp.accept=".xlsx"; inp.onchange=e=>{if(e.target.files[0]) importExcel(e.target.files[0]);}; inp.click(); }
-    function importExcel(file) { const reader = new FileReader(); reader.onload = (e) => { const wb = XLSX.read(new Uint8Array(e.target.result), { type: 'array' }); const rows = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]]); if(!rows.length) { alert("无数据"); return; } const newData = {}; rows.forEach(row => { const date = row["日期"]; if(!date) return; if(!newData[date]) newData[date] = []; if(row["层级"] === "主任务") { let checklist = []; try { checklist = JSON.parse(row["清单"] || "[]"); } catch(e) {} newData[date].push({ id: Date.now()+Math.random()*10000, title: row["任务标题"]||"未命名", statusId: config.statuses.find(s=>s.name===row["状态"])?.id||config.statuses[0].id, typeId: config.types.find(t=>t.name===row["类型"])?.id||null, priorityId: config.priorities.find(p=>p.name===row["优先级"])?.id||null, dueDate: row["截止时间"]||null, description: row["描述"]||"", useSubtasks: row["启用子任务"] === "是" ? true : false, subtasks: [], checklist: checklist, createdAt: Date.now() }); } else { const parent = newData[date].find(m => m.title === row["父任务"]); if(parent && parent.useSubtasks !== false) { let checklist = []; try { checklist = JSON.parse(row["清单"] || "[]"); } catch(e) {} parent.subtasks.push({ id: Date.now()+Math.random()*10000, title: row["任务标题"], statusId: config.statuses.find(s=>s.name===row["状态"])?.id||config.statuses[0].id, typeId: config.types.find(t=>t.name===row["类型"])?.id||null, priorityId: config.priorities.find(p=>p.name===row["优先级"])?.id||null, dueDate: row["截止时间"]||null, checklist: checklist, createdAt: Date.now() }); } } }); todoData = newData; markDirty(); renderCurrentView(); alert("导入成功！"); }; reader.readAsArrayBuffer(file); }
-    function openStatusModal() { renderStatusList(); document.getElementById("statusModal").style.display = "flex"; } function renderStatusList() { const container = document.getElementById("statusList"); container.innerHTML = ""; config.statuses.forEach((status) => { const div = document.createElement("div"); div.className = "config-item"; div.innerHTML = `<span class="config-name">${escapeHtml(status.name)}</span><button class="delete-config-btn" data-id="${status.id}" data-name="${status.name}"><i class="fas fa-trash-alt"></i> 删除</button>`; container.appendChild(div); }); document.querySelectorAll("#statusList .delete-config-btn").forEach(btn => { btn.onclick = () => { const id = btn.dataset.id; const name = btn.dataset.name; if (config.statuses.length <= 1) { alert("至少保留一个状态"); return; } if (confirm(`确定删除状态“${name}”吗？`)) { config.statuses = config.statuses.filter(s => s.id !== id); for(let date in todoData) { todoData[date].forEach(main => { if (main.statusId === id) main.statusId = config.statuses[0].id; (main.subtasks || []).forEach(sub => { if (sub.statusId === id) sub.statusId = config.statuses[0].id; }); }); } markDirty(); renderStatusList(); renderCurrentView(); } }; }); } function addStatus(newName) { if (!newName.trim()) return; if (config.statuses.some(s => s.name === newName.trim())) { alert("状态已存在"); return; } config.statuses.push({ id: `st_custom_${Date.now()}`, name: newName.trim(), color: "#a0aec0" }); markDirty(); renderStatusList(); renderCurrentView(); }
-    function openTypeModal() { renderTypeList(); document.getElementById("typeModal").style.display = "flex"; } function renderTypeList() { const container = document.getElementById("typeList"); container.innerHTML = ""; config.types.forEach((type) => { const div = document.createElement("div"); div.className = "config-item"; div.innerHTML = `<span class="config-name">${escapeHtml(type.name)}</span><button class="delete-config-btn" data-id="${type.id}" data-name="${type.name}"><i class="fas fa-trash-alt"></i>删除</button>`; container.appendChild(div); }); document.querySelectorAll("#typeList .delete-config-btn").forEach(btn => { btn.onclick = () => { const id = btn.dataset.id; const name = btn.dataset.name; if (confirm(`确定删除类型“${name}”吗？`)) { config.types = config.types.filter(t => t.id !== id); for(let date in todoData) { todoData[date].forEach(main => { if (main.typeId === id) main.typeId = null; (main.subtasks || []).forEach(sub => { if (sub.typeId === id) sub.typeId = null; }); }); } markDirty(); renderTypeList(); renderCurrentView(); } }; }); } function addType(newName) { if (!newName.trim()) return; if (config.types.some(t => t.name === newName.trim())) { alert("类型已存在"); return; } config.types.push({ id: `ty_custom_${Date.now()}`, name: newName.trim(), color: "#a0aec0" }); markDirty(); renderTypeList(); renderCurrentView(); }
-    function openPriorityModal() { renderPriorityList(); document.getElementById("priorityModal").style.display = "flex"; } function renderPriorityList() { const c=document.getElementById("priorityList"); c.innerHTML=""; config.priorities.forEach(p=>{ const d=document.createElement("div"); d.className="config-item"; d.innerHTML=`<span class="config-name">${escapeHtml(p.name)}</span><button class="delete-config-btn" data-id="${p.id}" data-name="${p.name}"><i class="fas fa-trash-alt"></i>删除</button>`; c.appendChild(d); }); document.querySelectorAll(".delete-config-btn").forEach(btn=>{ btn.onclick=()=>{ if(config.priorities.length<=1){ alert("至少保留一个优先级");return; } const id=btn.dataset.id; showConfirm(`删除优先级“${btn.dataset.name}”?`,()=>{ config.priorities=config.priorities.filter(p=>p.id!==id); for(let date in todoData){ todoData[date].forEach(m=>{ if(m.priorityId===id) m.priorityId=config.priorities[0].id; if(m.subtasks) m.subtasks.forEach(s=>{ if(s.priorityId===id) s.priorityId=config.priorities[0].id; }); }); } markDirty(); renderPriorityList(); renderCurrentView(); }); }; }); } function addPriority(n){ if(!n.trim()) return; if(config.priorities.some(p=>p.name===n.trim())){ alert("已存在"); return; } config.priorities.push({id:`p_c_${Date.now()}`,name:n.trim(),color:"#a0aec0"}); markDirty(); renderPriorityList(); renderCurrentView(); }
-    function initTheme() { const saved=localStorage.getItem('selected_theme')||'light'; applyTheme(saved); document.querySelectorAll('.theme-btn').forEach(btn=>{btn.addEventListener('click',()=>{applyTheme(btn.dataset.theme);localStorage.setItem('selected_theme',btn.dataset.theme);});}); }
-    function applyTheme(theme) { document.body.classList.remove('light','dark','eye','orange','purple','red','skyblue','navy','deep-purple'); if(theme!=='light') document.body.classList.add(theme); document.querySelectorAll('.theme-btn').forEach(btn=>{if(btn.dataset.theme===theme) btn.classList.add('active'); else btn.classList.remove('active');}); }
-    function init() { initTheme(); const savedFont=localStorage.getItem('font_size')||'medium'; document.getElementById("fontSizeSelect").value=savedFont; applyFontSize(savedFont); document.getElementById("fontSizeSelect").addEventListener("change",(e)=>applyFontSize(e.target.value)); const mainColsInput=document.getElementById("mainGridCols"), subColsInput=document.getElementById("subGridCols"); mainGridCols=parseInt(mainColsInput.value)||2; subGridCols=parseInt(subColsInput.value)||2; mainColsInput.addEventListener("change",()=>{mainGridCols=parseInt(mainColsInput.value)||2; renderCurrentView();}); subColsInput.addEventListener("change",()=>{subGridCols=parseInt(subColsInput.value)||2; renderCurrentView();}); currentDate=getTodayStr(); const today=new Date(); calendarYear=today.getFullYear(); calendarMonth=today.getMonth(); ensureDate(currentDate); if(todoData[currentDate].length===0) { todoData[currentDate].push({id:10001,title:"示例主任务（子任务模式）",statusId:"st_doing",typeId:"ty_work",priorityId:"p3",dueDate:"2026-05-10",description:"子任务模式备注",useSubtasks:true, subtasks:[{id:2001,title:"设计原型",statusId:"st_start",typeId:"ty_work",priorityId:"p2",dueDate:"2026-05-08",checklist:[{id:"c1",text:"完成初稿",checked:false},{id:"c2",text:"评审",checked:true}],createdAt:Date.now()},{id:2002,title:"开发前端",statusId:"st_doing",typeId:"ty_work",priorityId:"p1",dueDate:"2026-05-09",checklist:[],createdAt:Date.now()+1}],createdAt:Date.now()}); todoData[currentDate].push({id:10002,title:"示例主任务（清单模式）",statusId:"st_default",typeId:"ty_life",priorityId:"p4",dueDate:"2026-05-12",description:"购物清单",useSubtasks:false, checklist:[{id:"c3",text:"买牛奶",checked:false},{id:"c4",text:"交水电费",checked:true}],createdAt:Date.now()}); } renderCalendar(); renderCurrentView(); document.getElementById("prevMonthBtn").onclick=()=>{if(calendarMonth===0){calendarYear--;calendarMonth=11;}else calendarMonth--;renderCalendar();}; document.getElementById("nextMonthBtn").onclick=()=>{if(calendarMonth===11){calendarYear++;calendarMonth=0;}else calendarMonth++;renderCalendar();}; document.getElementById("todayCalBtn").onclick=()=>{const t=new Date();calendarYear=t.getFullYear();calendarMonth=t.getMonth();renderCalendar();setCurrentDate(getTodayStr());}; document.getElementById("addMainBtn").onclick=()=>{addMainTask(document.getElementById("newMainTitle").value);document.getElementById("newMainTitle").value="";}; document.getElementById("newMainTitle").addEventListener("keypress",(e)=>{if(e.key==="Enter"){addMainTask(e.target.value);e.target.value="";}}); document.getElementById("exportExcelBtn").onclick=exportExcelWithDialog; document.getElementById("importExcelBtn").onclick=fallbackImport; document.getElementById("manageStatusBtn").onclick=openStatusModal; document.getElementById("manageTypeBtn").onclick=openTypeModal; document.getElementById("managePriorityBtn").onclick=openPriorityModal; document.getElementById("closeStatusBtn").onclick=()=>document.getElementById("statusModal").style.display="none"; document.getElementById("closeTypeBtn").onclick=()=>document.getElementById("typeModal").style.display="none"; document.getElementById("closePriorityBtn").onclick=()=>document.getElementById("priorityModal").style.display="none"; document.getElementById("closeDescBtn").onclick=()=>document.getElementById("descModal").style.display="none"; document.getElementById("saveDescBtn").onclick=()=>{if(currentEditDescTarget){currentEditDescTarget.task.description=document.getElementById("descText").value;markDirty();renderCurrentView();}document.getElementById("descModal").style.display="none";}; document.getElementById("addStatusBtn").onclick=()=>{const inp=document.getElementById("newStatusName");addStatus(inp.value);inp.value="";}; document.getElementById("newStatusName").addEventListener("keypress",(e)=>{if(e.key==="Enter"){addStatus(e.target.value);e.target.value="";}}); document.getElementById("addTypeBtn").onclick=()=>{const inp=document.getElementById("newTypeName");addType(inp.value);inp.value="";}; document.getElementById("newTypeName").addEventListener("keypress",(e)=>{if(e.key==="Enter"){addType(e.target.value);e.target.value="";}}); document.getElementById("addPriorityBtn").onclick=()=>{const inp=document.getElementById("newPriorityName");addPriority(inp.value);inp.value="";}; document.getElementById("newPriorityName").addEventListener("keypress",(e)=>{if(e.key==="Enter"){addPriority(e.target.value);e.target.value="";}}); document.getElementById("saveTitleBtn").onclick=()=>{if(currentEditingTitle){const newTitle=document.getElementById("titleInput").value.trim();if(newTitle){currentEditingTitle.target.title=newTitle;markDirty();renderCurrentView();}}document.getElementById("titleModal").style.display="none";}; document.getElementById("cancelTitleBtn").onclick=()=>document.getElementById("titleModal").style.display="none"; document.getElementById("saveDueDateBtn").onclick=()=>{if(currentDueDateTarget){currentDueDateTarget.dueDate=document.getElementById("dueDatePicker").value;markDirty();renderCurrentView();} currentDueDateTarget=null; document.getElementById("dueDateModal").style.display="none";}; document.getElementById("clearDueDateBtn").onclick=()=>{if(currentDueDateTarget){currentDueDateTarget.dueDate=null;markDirty();renderCurrentView();} currentDueDateTarget=null; document.getElementById("dueDateModal").style.display="none";}; document.getElementById("cancelDueDateBtn").onclick=()=>{currentDueDateTarget=null; document.getElementById("dueDateModal").style.display="none";}; document.getElementById("confirmAddSubtaskBtn").onclick=()=>{const title=document.getElementById("newSubtaskTitle").value.trim();if(title&&currentMainForSubtask){const mainTask=todoData[currentDate].find(t=>t.id==currentMainForSubtask);if(mainTask&&mainTask.useSubtasks!==false){if(!mainTask.subtasks)mainTask.subtasks=[];mainTask.subtasks.push({id:Date.now()+Math.random()*10000,title:title,statusId:config.statuses[0].id,typeId:null,priorityId:null,dueDate:null,checklist:[],createdAt:Date.now()});markDirty();renderCurrentView();}}document.getElementById("addSubtaskModal").style.display="none";currentMainForSubtask=null;}; document.getElementById("cancelAddSubtaskBtn").onclick=()=>{document.getElementById("addSubtaskModal").style.display="none";currentMainForSubtask=null;}; document.getElementById("confirmExportBtn").onclick=performExport; document.getElementById("cancelExportBtn").onclick=()=>document.getElementById("exportModal").style.display="none"; window.addEventListener("beforeunload",(e)=>{if(isDirty){e.preventDefault();e.returnValue="数据未导出，关闭会丢失！";return e.returnValue;}}); } init();
-</script>
-</body>
+      // ===================== 核心数据 =====================
+      let config = {
+        statuses: [
+          { id: 'st_default', name: '待规划', color: '#6c757d' },
+          { id: 'st_start', name: '已启动', color: '#2b8c5e' },
+          { id: 'st_doing', name: '进行中', color: '#f59e0b' },
+          { id: 'st_done', name: '已完成', color: '#3b82f6' },
+          { id: 'st_delay', name: '已延期', color: '#dc2626' },
+        ],
+        types: [
+          { id: 'ty_work', name: '工作', color: '#0d6efd' },
+          { id: 'ty_study', name: '学习', color: '#6f42c1' },
+          { id: 'ty_life', name: '生活', color: '#20c997' },
+        ],
+        priorities: [
+          { id: 'p0', name: '最高优先级', color: '#e74c3c' },
+          { id: 'p1', name: '非常紧急', color: '#e67e22' },
+          { id: 'p2', name: '紧急', color: '#f39c12' },
+          { id: 'p3', name: '重要', color: '#3498db' },
+          { id: 'p4', name: '中等', color: '#2ecc71' },
+          { id: 'p5', name: '一般', color: '#95a5a6' },
+          { id: 'p6', name: '不紧急', color: '#bdc3c7' },
+        ],
+      }
+      let todoData = {}
+      let currentDate = ''
+      let isDirty = false
+      let currentEditDescTarget = null
+      let currentEditingTitle = null
+      let currentDueDateTarget = null
+      let currentMainForSubtask = null
+      let calendarYear = 2026,
+        calendarMonth = 4
+      let mainGridCols = 2,
+        subGridCols = 2
+      let currentFont = 'medium'
+      function getTodayStr() {
+        const d = new Date()
+        return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+      }
+      function markDirty() {
+        if (!isDirty) {
+          isDirty = true
+          document.getElementById('unsavedIndicator').style.display = 'inline-block'
+        }
+      }
+      function clearDirty() {
+        isDirty = false
+        document.getElementById('unsavedIndicator').style.display = 'none'
+      }
+      function ensureDate(date) {
+        if (!todoData[date]) todoData[date] = []
+      }
+      function getStatus(id) {
+        return config.statuses.find(s => s.id === id) || config.statuses[0]
+      }
+      function getType(id) {
+        return config.types.find(t => t.id === id) || null
+      }
+      function getPriority(id) {
+        return config.priorities.find(p => p.id === id) || config.priorities[0]
+      }
+      function escapeHtml(str) {
+        if (!str) return ''
+        return str.replace(/[&<>]/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' })[m] || m)
+      }
+      function isDueWarning(task) {
+        if (!task.dueDate) return false
+        if (task.statusId === config.statuses.find(s => s.name === '已完成')?.id) return false
+        const today = new Date()
+        today.setHours(0, 0, 0, 0)
+        const due = new Date(task.dueDate)
+        due.setHours(0, 0, 0, 0)
+        const diffDays = Math.ceil((due - today) / (1000 * 60 * 60 * 24))
+        return diffDays <= 1
+      }
+      function applyFontSize(size) {
+        document.body.classList.remove('font-small', 'font-medium', 'font-large', 'font-xlarge')
+        if (size === 'small') document.body.classList.add('font-small')
+        else if (size === 'medium') document.body.classList.add('font-medium')
+        else if (size === 'large') document.body.classList.add('font-large')
+        else if (size === 'xlarge') document.body.classList.add('font-xlarge')
+        localStorage.setItem('font_size', size)
+      }
+      // 统一的截止时间模态框打开
+      function openDueDateModalForTask(task) {
+        if (!task) return
+        currentDueDateTarget = task
+        document.getElementById('dueDatePicker').value = task.dueDate || ''
+        document.getElementById('dueDateModal').style.display = 'flex'
+      }
+      // 日历、树等函数略保持原样，但为了节省空间，核心改动在 attachMetaEvents 中
+      function renderCalendar() {
+        /* 保持原样 */ const firstDay = new Date(calendarYear, calendarMonth, 1)
+        let startWeekday = firstDay.getDay()
+        let startOffset = startWeekday === 0 ? 6 : startWeekday - 1
+        const daysInMonth = new Date(calendarYear, calendarMonth + 1, 0).getDate()
+        const prevMonthDays = new Date(calendarYear, calendarMonth, 0).getDate()
+        const days = []
+        for (let i = 0; i < startOffset; i++)
+          days.push({
+            year: calendarYear,
+            month: calendarMonth - 1,
+            day: prevMonthDays - startOffset + i + 1,
+            isCurrent: false,
+          })
+        for (let i = 1; i <= daysInMonth; i++)
+          days.push({ year: calendarYear, month: calendarMonth, day: i, isCurrent: true })
+        let remaining = 42 - days.length
+        for (let i = 1; i <= remaining; i++)
+          days.push({ year: calendarYear, month: calendarMonth + 1, day: i, isCurrent: false })
+        const container = document.getElementById('calendarDays')
+        container.innerHTML = ''
+        days.forEach(day => {
+          const dateStr = `${day.year}-${String(day.month + 1).padStart(2, '0')}-${String(day.day).padStart(2, '0')}`
+          const isSelected = dateStr === currentDate
+          const isToday = dateStr === getTodayStr()
+          const div = document.createElement('div')
+          div.className = `cal-day ${!day.isCurrent ? 'other-month' : ''} ${isSelected ? 'selected' : ''}`
+          div.textContent = day.day
+          if (isToday && !isSelected) div.style.border = '1px solid var(--accent-blue)'
+          div.addEventListener('click', () => {
+            setCurrentDate(dateStr)
+            renderCalendar()
+          })
+          container.appendChild(div)
+        })
+        document.getElementById('calendarMonth').innerHTML =
+          `${calendarYear}年${calendarMonth + 1}月`
+      }
+      function setCurrentDate(dateStr) {
+        if (currentDate === dateStr) return
+        currentDate = dateStr
+        ensureDate(currentDate)
+        renderCurrentView()
+        renderCalendar()
+      }
+      function renderTaskTreeAndStats() {
+        const tasks = todoData[currentDate] || []
+        let totalMain = tasks.length,
+          totalSub = tasks.reduce((s, t) => s + (t.subtasks?.length || 0), 0)
+        document.getElementById('treeStats').innerHTML =
+          `<span><i class="fas fa-tasks"></i> 主:${totalMain}</span><span><i class="fas fa-code-branch"></i> 子:${totalSub}</span>`
+        const container = document.getElementById('taskTreeContainer')
+        if (!tasks.length) {
+          container.innerHTML = `<div style="font-size:0.7rem; text-align:center; padding:8px; color:var(--text-secondary);">暂无任务</div>`
+          return
+        }
+        let treeHtml = ''
+        tasks.forEach(main => {
+          treeHtml += `<div class="tree-node main-node" data-id="${main.id}" data-type="main">📌 ${escapeHtml(main.title)}</div>`
+          if (main.useSubtasks !== false && main.subtasks && main.subtasks.length > 0) {
+            main.subtasks.forEach(sub => {
+              treeHtml += `<div class="tree-node sub-node" data-id="${sub.id}" data-type="sub" data-main="${main.id}">└─ ${escapeHtml(sub.title)}</div>`
+            })
+          }
+        })
+        container.innerHTML = treeHtml
+        document.querySelectorAll('#taskTreeContainer .tree-node').forEach(node => {
+          node.removeEventListener('click', node._treeClick)
+          const handler = () => {
+            const id = node.dataset.id,
+              type = node.dataset.type
+            let target =
+              type === 'main'
+                ? document.querySelector(`.main-task-card[data-main-id="${id}"]`)
+                : document.querySelector(`.subtask-card[data-sub-id="${id}"]`)
+            if (target) {
+              target.scrollIntoView({ behavior: 'smooth', block: 'center' })
+              target.classList.add('task-highlight')
+              setTimeout(() => target.classList.remove('task-highlight'), 800)
+            }
+          }
+          node.addEventListener('click', handler)
+          node._treeClick = handler
+        })
+      }
+      function renderCurrentView() {
+        if (!currentDate) return
+        ensureDate(currentDate)
+        const mainContainer = document.getElementById('mainTasksContainer')
+        mainContainer.style.gridTemplateColumns = `repeat(${mainGridCols}, 1fr)`
+        renderMainTasks(todoData[currentDate])
+        renderTaskTreeAndStats()
+      }
+      function renderSubtasks(subtasks, mainId) {
+        if (!subtasks.length)
+          return `<div class="empty-subtasks">暂无子任务，点击上方按钮添加</div>`
+        return subtasks
+          .map(sub => {
+            const statusObj = getStatus(sub.statusId),
+              typeObj = sub.typeId ? getType(sub.typeId) : null,
+              priorityObj = sub.priorityId ? getPriority(sub.priorityId) : null,
+              dueWarningClass = isDueWarning(sub) ? 'due-warning' : ''
+            const hasChecklist = sub.checklist && sub.checklist.length > 0
+            const checklistHtml = hasChecklist
+              ? `<div class="checklist-area">${sub.checklist.map(item => `<div class="checklist-item"><input type="checkbox" class="checklist-checkbox" data-sub-id="${sub.id}" data-item-id="${item.id}" ${item.checked ? 'checked' : ''}><span class="${item.checked ? 'checked' : ''}">${escapeHtml(item.text)}</span></div>`).join('')}</div>`
+              : ''
+            return `<div class="subtask-card ${dueWarningClass}" data-sub-id="${sub.id}" data-main-id="${mainId}"><div class="subtask-header"><div class="subtask-title-area"><span class="drag-sub-handle"><i class="fas fa-grip-vertical"></i></span><div class="subtask-title"><span class="subtask-title-text" data-id="${sub.id}" data-type="sub" data-main="${mainId}">${escapeHtml(sub.title)}</span><i class="fas fa-pencil-alt edit-title-icon" data-id="${sub.id}" data-type="sub" data-main="${mainId}"></i></div></div><div class="subtask-right-actions"><span class="meta-item mini" data-task-id="${sub.id}" data-task-type="sub" data-main-id="${mainId}" data-field="type">${typeObj ? typeObj.name : '无类型'}</span><span class="meta-item mini" data-task-id="${sub.id}" data-task-type="sub" data-main-id="${mainId}" data-field="status">${statusObj.name}</span><button class="icon-text-btn edit-checklist" data-id="${sub.id}" data-main="${mainId}" style="background:transparent;"><i class="fas fa-edit"></i></button><button class="icon-text-btn delete-sub" data-id="${sub.id}" data-main="${mainId}" style="background:transparent; color:var(--danger);"><i class="fas fa-trash-alt"></i></button></div></div><div class="meta-row" style="padding:4px 10px;"><div class="meta-item" data-task-id="${sub.id}" data-task-type="sub" data-main-id="${mainId}" data-field="priority"><i class="fas fa-flag"></i> ${priorityObj ? priorityObj.name : '优先级'}</div><div class="meta-item due-date-meta" data-task-id="${sub.id}" data-task-type="sub" data-main-id="${mainId}" data-field="dueDate"><i class="far fa-calendar-alt"></i> ${sub.dueDate || '截止时间'}</div></div>${checklistHtml}</div>`
+          })
+          .join('')
+      }
+      // 核心修改：attachMetaEvents 中 dueDate 改为弹出模态框
+      function attachMetaEvents() {
+        document.querySelectorAll('.meta-item').forEach(el => {
+          el.removeEventListener('click', el._handler)
+          const handler = e => {
+            e.stopPropagation()
+            const taskId = el.dataset.taskId
+            const taskType = el.dataset.taskType
+            const mainId = el.dataset.mainId
+            const field = el.dataset.field
+            let target = null
+            if (taskType === 'main') target = todoData[currentDate].find(t => t.id == taskId)
+            else {
+              const p = todoData[currentDate].find(t => t.id == mainId)
+              if (p) target = p.subtasks.find(s => s.id == taskId)
+            }
+            if (!target) return
+            if (field === 'dueDate') {
+              openDueDateModalForTask(target)
+              return
+            } else if (field === 'priority') {
+              const options = config.priorities.map(p => ({ value: p.id, label: p.name }))
+              const select = document.createElement('select')
+              select.className = 'inline-select'
+              options.forEach(opt => {
+                const option = document.createElement('option')
+                option.value = opt.value
+                option.textContent = opt.label
+                if (target.priorityId === opt.value) option.selected = true
+                select.appendChild(option)
+              })
+              const parent = el.parentNode
+              parent.replaceChild(select, el)
+              select.focus()
+              const commit = () => {
+                const newVal = select.value
+                target.priorityId = newVal
+                markDirty()
+                renderCurrentView()
+              }
+              select.addEventListener('change', commit)
+              select.addEventListener('blur', () =>
+                setTimeout(() => {
+                  if (document.body.contains(select)) commit()
+                }, 100)
+              )
+            } else {
+              let options =
+                field === 'status'
+                  ? config.statuses.map(s => ({ value: s.id, label: s.name }))
+                  : [
+                      { value: '', label: '无类型' },
+                      ...config.types.map(t => ({ value: t.id, label: t.name })),
+                    ]
+              const select = document.createElement('select')
+              select.className = 'inline-select'
+              options.forEach(opt => {
+                const option = document.createElement('option')
+                option.value = opt.value
+                option.textContent = opt.label
+                if (
+                  (field === 'status' && target.statusId === opt.value) ||
+                  (field === 'type' && (target.typeId || '') === opt.value)
+                )
+                  option.selected = true
+                select.appendChild(option)
+              })
+              const parent = el.parentNode
+              parent.replaceChild(select, el)
+              select.focus()
+              const commit = () => {
+                const newVal = select.value
+                if (field === 'status') target.statusId = newVal
+                else target.typeId = newVal || null
+                markDirty()
+                renderCurrentView()
+              }
+              select.addEventListener('change', commit)
+              select.addEventListener('blur', () =>
+                setTimeout(() => {
+                  if (document.body.contains(select)) commit()
+                }, 100)
+              )
+            }
+          }
+          el.addEventListener('click', handler)
+          el._handler = handler
+        })
+      }
+      function renderMainTasks(tasks) {
+        /* 保持完整渲染逻辑，但删除attachDueDateEvents调用 */
+        const container = document.getElementById('mainTasksContainer')
+        if (!tasks.length) {
+          container.innerHTML = `<div style="grid-column:1/-1; text-align:center; padding:40px;">暂无主任务，添加一个吧</div>`
+          return
+        }
+        let html = ''
+        tasks.forEach(main => {
+          const statusObj = getStatus(main.statusId)
+          const typeObj = main.typeId ? getType(main.typeId) : null
+          const priorityObj = main.priorityId ? getPriority(main.priorityId) : null
+          const dueWarningClass = isDueWarning(main) ? 'due-warning' : ''
+          const useSubtasks = main.useSubtasks !== false
+          const hasDescription = main.description && main.description.trim().length > 0
+          const descSection = hasDescription
+            ? `<div class="main-desc-area" data-main-id="${main.id}">${escapeHtml(main.description)}</div>`
+            : ''
+          html += `<div class="main-task-card ${dueWarningClass}" data-main-id="${main.id}"><div class="main-card-header"><span class="drag-handle-main"><i class="fas fa-grip-vertical"></i></span><div class="main-title"><span class="main-title-text" data-id="${main.id}" data-type="main">${escapeHtml(main.title)}</span><i class="fas fa-pencil-alt edit-title-icon" data-id="${main.id}" data-type="main"></i></div><div class="main-actions"><label class="switch" data-main-id="${main.id}"><input type="checkbox" class="mode-switch" ${useSubtasks ? 'checked' : ''}><span class="slider"></span></label><button class="icon-text-btn delete-main" data-id="${main.id}" style="background:transparent; color:var(--danger);"><i class="fas fa-trash-alt"></i></button></div></div><div class="meta-row"><div class="meta-item" data-task-id="${main.id}" data-task-type="main" data-field="type"><i class="fas fa-tag"></i> ${typeObj ? typeObj.name : '无类型'}</div><div class="meta-item" data-task-id="${main.id}" data-task-type="main" data-field="status"><i class="fas fa-check-circle"></i> ${statusObj.name}</div><div class="meta-item" data-task-id="${main.id}" data-task-type="main" data-field="priority"><i class="fas fa-flag"></i> ${priorityObj ? priorityObj.name : '优先级'}</div><div class="meta-item due-date-meta" data-task-id="${main.id}" data-task-type="main" data-field="dueDate"><i class="far fa-calendar-alt"></i> ${main.dueDate || '截止时间'}</div><div class="action-buttons">${useSubtasks ? `<button class="icon-text-btn add-sub-main" data-id="${main.id}"><i class="fas fa-plus-circle"></i> 添加子任务</button>` : `<button class="icon-text-btn edit-checklist-main" data-id="${main.id}"><i class="fas fa-list-check"></i> 编辑清单</button>`}<button class="icon-text-btn edit-desc-main" data-id="${main.id}"><i class="fas fa-align-left"></i> 编辑备注</button></div></div>${descSection}${useSubtasks ? `<div class="subtask-grid" id="subGrid_${main.id}" style="grid-template-columns: repeat(${subGridCols}, 1fr);">${renderSubtasks(main.subtasks || [], main.id)}</div>` : main.checklist && main.checklist.length ? `<div class="checklist-area">${main.checklist.map(item => `<div class="checklist-item"><input type="checkbox" class="main-checklist-checkbox" data-main-id="${main.id}" data-item-id="${item.id}" ${item.checked ? 'checked' : ''}><span class="${item.checked ? 'checked' : ''}">${escapeHtml(item.text)}</span></div>`).join('')}</div>` : ''}</div>`
+        })
+        container.innerHTML = html
+        if (window.mainSortable) window.mainSortable.destroy()
+        window.mainSortable = new Sortable(container, {
+          handle: '.drag-handle-main',
+          animation: 200,
+          onEnd: () => {
+            const items = Array.from(container.children),
+              newOrder = items.map(el => el.getAttribute('data-main-id'))
+            const currentTasks = todoData[currentDate],
+              reordered = []
+            newOrder.forEach(id => {
+              const found = currentTasks.find(t => t.id == id)
+              if (found) reordered.push(found)
+            })
+            todoData[currentDate] = reordered
+            markDirty()
+            renderCurrentView()
+          },
+        })
+        tasks.forEach(main => {
+          if (main.useSubtasks !== false) {
+            const subGrid = document.getElementById(`subGrid_${main.id}`)
+            if (subGrid && window[`sortable_sub_${main.id}`])
+              window[`sortable_sub_${main.id}`].destroy()
+            if (subGrid) {
+              window[`sortable_sub_${main.id}`] = new Sortable(subGrid, {
+                handle: '.drag-sub-handle',
+                animation: 150,
+                onEnd: () => {
+                  const items = Array.from(subGrid.children),
+                    newOrderIds = items.map(card => card.getAttribute('data-sub-id'))
+                  const mainTask = todoData[currentDate].find(t => t.id == main.id)
+                  if (mainTask && mainTask.subtasks) {
+                    const newSubtasks = []
+                    newOrderIds.forEach(subId => {
+                      const found = mainTask.subtasks.find(s => s.id == subId)
+                      if (found) newSubtasks.push(found)
+                    })
+                    mainTask.subtasks = newSubtasks
+                    markDirty()
+                    renderCurrentView()
+                  }
+                },
+              })
+            }
+          }
+        })
+        attachMainEvents()
+        attachMetaEvents()
+        attachChecklistToggle()
+        attachDescDoubleClick()
+        attachModeSwitchEvents()
+        attachTitleEditEvents()
+      }
+      function attachChecklistToggle() {
+        /* 保持原样，代码简单略，原函数逻辑完整 */ document
+          .querySelectorAll('.checklist-checkbox')
+          .forEach(cb => {
+            cb.removeEventListener('change', cb._toggleHandler)
+            const handler = e => {
+              e.stopPropagation()
+              const subId = cb.dataset.subId,
+                itemId = cb.dataset.itemId
+              const mainTask = todoData[currentDate].find(t => t.subtasks?.some(s => s.id == subId))
+              if (!mainTask) return
+              const subtask = mainTask.subtasks.find(s => s.id == subId)
+              if (subtask && subtask.checklist) {
+                const item = subtask.checklist.find(i => i.id == itemId)
+                if (item) {
+                  item.checked = cb.checked
+                  markDirty()
+                  const span = cb.nextElementSibling
+                  if (span) {
+                    if (item.checked) span.classList.add('checked')
+                    else span.classList.remove('checked')
+                  }
+                }
+              }
+            }
+            cb.addEventListener('change', handler)
+            cb._toggleHandler = handler
+          })
+        document.querySelectorAll('.main-checklist-checkbox').forEach(cb => {
+          cb.removeEventListener('change', cb._mainHandler)
+          const handler = e => {
+            e.stopPropagation()
+            const mainId = cb.dataset.mainId,
+              itemId = cb.dataset.itemId
+            const mainTask = todoData[currentDate].find(t => t.id == mainId)
+            if (mainTask && mainTask.checklist) {
+              const item = mainTask.checklist.find(i => i.id == itemId)
+              if (item) {
+                item.checked = cb.checked
+                markDirty()
+                const span = cb.nextElementSibling
+                if (span) {
+                  if (item.checked) span.classList.add('checked')
+                  else span.classList.remove('checked')
+                }
+              }
+            }
+          }
+          cb.addEventListener('change', handler)
+          cb._mainHandler = handler
+        })
+      }
+      function attachDescDoubleClick() {
+        document.querySelectorAll('.main-desc-area').forEach(div => {
+          div.removeEventListener('dblclick', div._handler)
+          const handler = () => {
+            const mainId = div.dataset.mainId
+            const mainTask = todoData[currentDate].find(t => t.id == mainId)
+            if (mainTask) {
+              currentEditDescTarget = { task: mainTask }
+              document.getElementById('descText').value = mainTask.description || ''
+              document.getElementById('descModal').style.display = 'flex'
+            }
+          }
+          div.addEventListener('dblclick', handler)
+          div._handler = handler
+        })
+      }
+      function attachModeSwitchEvents() {
+        document.querySelectorAll('.mode-switch').forEach(sw => {
+          sw.removeEventListener('change', sw._handler)
+          const handler = e => {
+            e.stopPropagation()
+            const mainId = sw.closest('.main-task-card').getAttribute('data-main-id')
+            const mainTask = todoData[currentDate].find(t => t.id == mainId)
+            if (mainTask) {
+              const newMode = sw.checked
+              mainTask.useSubtasks = newMode
+              if (newMode) {
+                mainTask.checklist = []
+                if (!mainTask.subtasks) mainTask.subtasks = []
+              } else {
+                mainTask.subtasks = []
+                if (!mainTask.checklist) mainTask.checklist = []
+              }
+              markDirty()
+              renderCurrentView()
+            }
+          }
+          sw.addEventListener('change', handler)
+          sw._handler = handler
+        })
+      }
+      function attachMainEvents() {
+        document.querySelectorAll('.add-sub-main').forEach(btn => {
+          btn.onclick = () => {
+            currentMainForSubtask = btn.dataset.id
+            document.getElementById('newSubtaskTitle').value = ''
+            document.getElementById('addSubtaskModal').style.display = 'flex'
+          }
+        })
+        document.querySelectorAll('.edit-desc-main').forEach(btn => {
+          btn.onclick = () => {
+            const mainId = btn.dataset.id
+            const mainTask = todoData[currentDate].find(t => t.id == mainId)
+            if (mainTask) {
+              currentEditDescTarget = { task: mainTask }
+              document.getElementById('descText').value = mainTask.description || ''
+              document.getElementById('descModal').style.display = 'flex'
+            }
+          }
+        })
+        document.querySelectorAll('.delete-main').forEach(btn => {
+          btn.onclick = () => {
+            const id = btn.dataset.id
+            showConfirm('确定删除主任务吗？', () => {
+              todoData[currentDate] = todoData[currentDate].filter(t => t.id != id)
+              markDirty()
+              renderCurrentView()
+            })
+          }
+        })
+        document.querySelectorAll('.delete-sub').forEach(btn => {
+          btn.onclick = e => {
+            e.stopPropagation()
+            const subId = btn.dataset.id,
+              mainId = btn.dataset.main
+            showConfirm('确定删除该子任务吗？', () => {
+              const mainTask = todoData[currentDate].find(t => t.id == mainId)
+              if (mainTask) {
+                mainTask.subtasks = mainTask.subtasks.filter(s => s.id != subId)
+                markDirty()
+                renderCurrentView()
+              }
+            })
+          }
+        })
+        document.querySelectorAll('.edit-checklist').forEach(btn => {
+          btn.onclick = () => {
+            const subId = btn.dataset.id,
+              mainId = btn.dataset.main
+            const mainTask = todoData[currentDate].find(t => t.id == mainId)
+            if (mainTask) {
+              const subtask = mainTask.subtasks.find(s => s.id == subId)
+              if (subtask) {
+                currentEditSubtask = subtask
+                openChecklistEditor(subtask)
+              }
+            }
+          }
+        })
+        document.querySelectorAll('.edit-checklist-main').forEach(btn => {
+          btn.onclick = () => {
+            const mainId = btn.dataset.id
+            const mainTask = todoData[currentDate].find(t => t.id == mainId)
+            if (mainTask) {
+              currentEditSubtask = mainTask
+              openChecklistEditorForMain(mainTask)
+            }
+          }
+        })
+      }
+      function attachTitleEditEvents() {
+        document
+          .querySelectorAll('.main-title-text, .edit-title-icon, .subtask-title-text')
+          .forEach(el => {
+            el.removeEventListener('click', el._titleHandler)
+            const handler = e => {
+              e.stopPropagation()
+              let target = null,
+                type = null,
+                mainId = null
+              if (
+                el.classList.contains('main-title-text') ||
+                (el.classList.contains('edit-title-icon') && el.closest('.main-title'))
+              ) {
+                const card = el.closest('.main-task-card')
+                if (card) {
+                  const id = card.dataset.mainId
+                  target = todoData[currentDate].find(t => t.id == id)
+                  type = 'main'
+                  mainId = id
+                }
+              } else if (
+                el.classList.contains('subtask-title-text') ||
+                (el.classList.contains('edit-title-icon') && el.closest('.subtask-title'))
+              ) {
+                const card = el.closest('.subtask-card')
+                if (card) {
+                  const subId = card.dataset.subId
+                  mainId = card.dataset.mainId
+                  const parent = todoData[currentDate].find(t => t.id == mainId)
+                  if (parent) target = parent.subtasks.find(s => s.id == subId)
+                  type = 'sub'
+                }
+              }
+              if (target) {
+                currentEditingTitle = { target, type, mainId }
+                document.getElementById('titleInput').value = target.title
+                document.getElementById('titleModal').style.display = 'flex'
+              }
+            }
+            el.addEventListener('click', handler)
+            el._titleHandler = handler
+          })
+      }
+      function showConfirm(message, onConfirm) {
+        document.getElementById('confirmMessage').innerText = message
+        document.getElementById('confirmModal').style.display = 'flex'
+        const okBtn = document.getElementById('confirmOkBtn')
+        const cancelBtn = document.getElementById('confirmCancelBtn')
+        const cleanup = () => {
+          document.getElementById('confirmModal').style.display = 'none'
+          okBtn.removeEventListener('click', okHandler)
+          cancelBtn.removeEventListener('click', cancelHandler)
+        }
+        const okHandler = () => {
+          cleanup()
+          onConfirm()
+        }
+        const cancelHandler = () => {
+          cleanup()
+        }
+        okBtn.addEventListener('click', okHandler)
+        cancelBtn.addEventListener('click', cancelHandler)
+      }
+      function openChecklistEditor(subtask) {
+        /* 省略保持原样，不影响截止时间功能 */ const container =
+          document.getElementById('checklistEditor')
+        const renderEditor = () => {
+          const checklist = subtask.checklist || []
+          container.innerHTML = checklist
+            .map(
+              (item, idx) =>
+                `<div class="checklist-editor-item" data-idx="${idx}"><input type="checkbox" ${item.checked ? 'checked' : ''} data-id="${item.id}"><input type="text" value="${escapeHtml(item.text)}" data-id="${item.id}"><button class="delete-checklist-item" data-id="${item.id}"><i class="fas fa-trash-alt"></i></button></div>`
+            )
+            .join('')
+          container.querySelectorAll('.delete-checklist-item').forEach(btn => {
+            btn.onclick = () => {
+              const id = btn.dataset.id
+              subtask.checklist = subtask.checklist.filter(i => i.id != id)
+              renderEditor()
+            }
+          })
+          container.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+            cb.onchange = () => {
+              const id = cb.dataset.id
+              const item = subtask.checklist.find(i => i.id == id)
+              if (item) item.checked = cb.checked
+            }
+          })
+          container.querySelectorAll('input[type="text"]').forEach(inp => {
+            inp.onchange = () => {
+              const id = inp.dataset.id
+              const item = subtask.checklist.find(i => i.id == id)
+              if (item) item.text = inp.value
+            }
+          })
+        }
+        renderEditor()
+        document.getElementById('checklistModal').style.display = 'flex'
+        document.getElementById('addChecklistItemBtn').onclick = () => {
+          const newId = Date.now() + Math.random() * 10000
+          if (!subtask.checklist) subtask.checklist = []
+          subtask.checklist.push({ id: newId, text: '新事项', checked: false })
+          renderEditor()
+        }
+        document.getElementById('saveChecklistBtn').onclick = () => {
+          markDirty()
+          renderCurrentView()
+          document.getElementById('checklistModal').style.display = 'none'
+        }
+        document.getElementById('closeChecklistBtn').onclick = () =>
+          (document.getElementById('checklistModal').style.display = 'none')
+      }
+      function openChecklistEditorForMain(mainTask) {
+        const container = document.getElementById('checklistEditor')
+        const renderEditor = () => {
+          const checklist = mainTask.checklist || []
+          container.innerHTML = checklist
+            .map(
+              item =>
+                `<div class="checklist-editor-item"><input type="checkbox" ${item.checked ? 'checked' : ''} data-id="${item.id}"><input type="text" value="${escapeHtml(item.text)}" data-id="${item.id}"><button class="delete-checklist-item" data-id="${item.id}"><i class="fas fa-trash-alt"></i></button></div>`
+            )
+            .join('')
+          container.querySelectorAll('.delete-checklist-item').forEach(btn => {
+            btn.onclick = () => {
+              const id = btn.dataset.id
+              mainTask.checklist = mainTask.checklist.filter(i => i.id != id)
+              renderEditor()
+            }
+          })
+          container.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+            cb.onchange = () => {
+              const id = cb.dataset.id
+              const item = mainTask.checklist.find(i => i.id == id)
+              if (item) item.checked = cb.checked
+            }
+          })
+          container.querySelectorAll('input[type="text"]').forEach(inp => {
+            inp.onchange = () => {
+              const id = inp.dataset.id
+              const item = mainTask.checklist.find(i => i.id == id)
+              if (item) item.text = inp.value
+            }
+          })
+        }
+        renderEditor()
+        document.getElementById('checklistModal').style.display = 'flex'
+        document.getElementById('addChecklistItemBtn').onclick = () => {
+          const newId = Date.now() + Math.random() * 10000
+          if (!mainTask.checklist) mainTask.checklist = []
+          mainTask.checklist.push({ id: newId, text: '新事项', checked: false })
+          renderEditor()
+        }
+        document.getElementById('saveChecklistBtn').onclick = () => {
+          markDirty()
+          renderCurrentView()
+          document.getElementById('checklistModal').style.display = 'none'
+        }
+        document.getElementById('closeChecklistBtn').onclick = () =>
+          (document.getElementById('checklistModal').style.display = 'none')
+      }
+      function addMainTask(title) {
+        if (!title.trim()) return
+        todoData[currentDate].push({
+          id: Date.now() + Math.random() * 10000,
+          title: title.trim(),
+          statusId: config.statuses[0].id,
+          typeId: null,
+          priorityId: null,
+          dueDate: null,
+          description: '',
+          useSubtasks: true,
+          subtasks: [],
+          checklist: [],
+          createdAt: Date.now(),
+        })
+        markDirty()
+        renderCurrentView()
+      }
+      function exportExcelWithDialog() {
+        document.getElementById('exportFileName').value =
+          `Todo_Backup_${new Date().toISOString().slice(0, 19).replace(/:/g, '-')}`
+        document.getElementById('exportModal').style.display = 'flex'
+      }
+      function performExport() {
+        let fileName = document.getElementById('exportFileName').value.trim()
+        if (!fileName) fileName = 'Todo_Backup'
+        if (!fileName.toLowerCase().endsWith('.xlsx')) fileName += '.xlsx'
+        let rows = []
+        for (let date in todoData) {
+          todoData[date].forEach(main => {
+            rows.push({
+              日期: date,
+              层级: '主任务',
+              任务标题: main.title,
+              状态: getStatus(main.statusId).name,
+              类型: main.typeId ? getType(main.typeId)?.name : '',
+              优先级: main.priorityId ? getPriority(main.priorityId).name : '',
+              截止时间: main.dueDate || '',
+              描述: main.description || '',
+              启用子任务: main.useSubtasks !== false ? '是' : '否',
+              清单: JSON.stringify(main.checklist || []),
+            })
+            if (main.useSubtasks !== false && main.subtasks)
+              main.subtasks.forEach(sub =>
+                rows.push({
+                  日期: date,
+                  层级: '子任务',
+                  父任务: main.title,
+                  任务标题: sub.title,
+                  状态: getStatus(sub.statusId).name,
+                  类型: sub.typeId ? getType(sub.typeId)?.name : '',
+                  优先级: sub.priorityId ? getPriority(sub.priorityId).name : '',
+                  截止时间: sub.dueDate || '',
+                  描述: '',
+                  启用子任务: '',
+                  清单: JSON.stringify(sub.checklist || []),
+                })
+              )
+          })
+        }
+        if (!rows.length) {
+          alert('无数据可导出')
+          document.getElementById('exportModal').style.display = 'none'
+          return
+        }
+        const ws = XLSX.utils.json_to_sheet(rows)
+        const wb = XLSX.utils.book_new()
+        XLSX.utils.book_append_sheet(wb, ws, 'TodoBackup')
+        XLSX.writeFile(wb, fileName)
+        clearDirty()
+        alert('导出成功！')
+        document.getElementById('exportModal').style.display = 'none'
+      }
+      function fallbackImport() {
+        let inp = document.createElement('input')
+        inp.type = 'file'
+        inp.accept = '.xlsx'
+        inp.onchange = e => {
+          if (e.target.files[0]) importExcel(e.target.files[0])
+        }
+        inp.click()
+      }
+      function importExcel(file) {
+        const reader = new FileReader()
+        reader.onload = e => {
+          const wb = XLSX.read(new Uint8Array(e.target.result), { type: 'array' })
+          const rows = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]])
+          if (!rows.length) {
+            alert('无数据')
+            return
+          }
+          const newData = {}
+          rows.forEach(row => {
+            const date = row['日期']
+            if (!date) return
+            if (!newData[date]) newData[date] = []
+            if (row['层级'] === '主任务') {
+              let checklist = []
+              try {
+                checklist = JSON.parse(row['清单'] || '[]')
+              } catch (e) {}
+              newData[date].push({
+                id: Date.now() + Math.random() * 10000,
+                title: row['任务标题'] || '未命名',
+                statusId:
+                  config.statuses.find(s => s.name === row['状态'])?.id || config.statuses[0].id,
+                typeId: config.types.find(t => t.name === row['类型'])?.id || null,
+                priorityId: config.priorities.find(p => p.name === row['优先级'])?.id || null,
+                dueDate: row['截止时间'] || null,
+                description: row['描述'] || '',
+                useSubtasks: row['启用子任务'] === '是' ? true : false,
+                subtasks: [],
+                checklist: checklist,
+                createdAt: Date.now(),
+              })
+            } else {
+              const parent = newData[date].find(m => m.title === row['父任务'])
+              if (parent && parent.useSubtasks !== false) {
+                let checklist = []
+                try {
+                  checklist = JSON.parse(row['清单'] || '[]')
+                } catch (e) {}
+                parent.subtasks.push({
+                  id: Date.now() + Math.random() * 10000,
+                  title: row['任务标题'],
+                  statusId:
+                    config.statuses.find(s => s.name === row['状态'])?.id || config.statuses[0].id,
+                  typeId: config.types.find(t => t.name === row['类型'])?.id || null,
+                  priorityId: config.priorities.find(p => p.name === row['优先级'])?.id || null,
+                  dueDate: row['截止时间'] || null,
+                  checklist: checklist,
+                  createdAt: Date.now(),
+                })
+              }
+            }
+          })
+          todoData = newData
+          markDirty()
+          renderCurrentView()
+          alert('导入成功！')
+        }
+        reader.readAsArrayBuffer(file)
+      }
+      function openStatusModal() {
+        renderStatusList()
+        document.getElementById('statusModal').style.display = 'flex'
+      }
+      function renderStatusList() {
+        const container = document.getElementById('statusList')
+        container.innerHTML = ''
+        config.statuses.forEach(status => {
+          const div = document.createElement('div')
+          div.className = 'config-item'
+          div.innerHTML = `<span class="config-name">${escapeHtml(status.name)}</span><button class="delete-config-btn" data-id="${status.id}" data-name="${status.name}"><i class="fas fa-trash-alt"></i> 删除</button>`
+          container.appendChild(div)
+        })
+        document.querySelectorAll('#statusList .delete-config-btn').forEach(btn => {
+          btn.onclick = () => {
+            const id = btn.dataset.id
+            const name = btn.dataset.name
+            if (config.statuses.length <= 1) {
+              alert('至少保留一个状态')
+              return
+            }
+            if (confirm(`确定删除状态“${name}”吗？`)) {
+              config.statuses = config.statuses.filter(s => s.id !== id)
+              for (let date in todoData) {
+                todoData[date].forEach(main => {
+                  if (main.statusId === id) main.statusId = config.statuses[0].id
+                  ;(main.subtasks || []).forEach(sub => {
+                    if (sub.statusId === id) sub.statusId = config.statuses[0].id
+                  })
+                })
+              }
+              markDirty()
+              renderStatusList()
+              renderCurrentView()
+            }
+          }
+        })
+      }
+      function addStatus(newName) {
+        if (!newName.trim()) return
+        if (config.statuses.some(s => s.name === newName.trim())) {
+          alert('状态已存在')
+          return
+        }
+        config.statuses.push({
+          id: `st_custom_${Date.now()}`,
+          name: newName.trim(),
+          color: '#a0aec0',
+        })
+        markDirty()
+        renderStatusList()
+        renderCurrentView()
+      }
+      function openTypeModal() {
+        renderTypeList()
+        document.getElementById('typeModal').style.display = 'flex'
+      }
+      function renderTypeList() {
+        const container = document.getElementById('typeList')
+        container.innerHTML = ''
+        config.types.forEach(type => {
+          const div = document.createElement('div')
+          div.className = 'config-item'
+          div.innerHTML = `<span class="config-name">${escapeHtml(type.name)}</span><button class="delete-config-btn" data-id="${type.id}" data-name="${type.name}"><i class="fas fa-trash-alt"></i>删除</button>`
+          container.appendChild(div)
+        })
+        document.querySelectorAll('#typeList .delete-config-btn').forEach(btn => {
+          btn.onclick = () => {
+            const id = btn.dataset.id
+            const name = btn.dataset.name
+            if (confirm(`确定删除类型“${name}”吗？`)) {
+              config.types = config.types.filter(t => t.id !== id)
+              for (let date in todoData) {
+                todoData[date].forEach(main => {
+                  if (main.typeId === id) main.typeId = null
+                  ;(main.subtasks || []).forEach(sub => {
+                    if (sub.typeId === id) sub.typeId = null
+                  })
+                })
+              }
+              markDirty()
+              renderTypeList()
+              renderCurrentView()
+            }
+          }
+        })
+      }
+      function addType(newName) {
+        if (!newName.trim()) return
+        if (config.types.some(t => t.name === newName.trim())) {
+          alert('类型已存在')
+          return
+        }
+        config.types.push({ id: `ty_custom_${Date.now()}`, name: newName.trim(), color: '#a0aec0' })
+        markDirty()
+        renderTypeList()
+        renderCurrentView()
+      }
+      function openPriorityModal() {
+        renderPriorityList()
+        document.getElementById('priorityModal').style.display = 'flex'
+      }
+      function renderPriorityList() {
+        const c = document.getElementById('priorityList')
+        c.innerHTML = ''
+        config.priorities.forEach(p => {
+          const d = document.createElement('div')
+          d.className = 'config-item'
+          d.innerHTML = `<span class="config-name">${escapeHtml(p.name)}</span><button class="delete-config-btn" data-id="${p.id}" data-name="${p.name}"><i class="fas fa-trash-alt"></i>删除</button>`
+          c.appendChild(d)
+        })
+        document.querySelectorAll('.delete-config-btn').forEach(btn => {
+          btn.onclick = () => {
+            if (config.priorities.length <= 1) {
+              alert('至少保留一个优先级')
+              return
+            }
+            const id = btn.dataset.id
+            showConfirm(`删除优先级“${btn.dataset.name}”?`, () => {
+              config.priorities = config.priorities.filter(p => p.id !== id)
+              for (let date in todoData) {
+                todoData[date].forEach(m => {
+                  if (m.priorityId === id) m.priorityId = config.priorities[0].id
+                  if (m.subtasks)
+                    m.subtasks.forEach(s => {
+                      if (s.priorityId === id) s.priorityId = config.priorities[0].id
+                    })
+                })
+              }
+              markDirty()
+              renderPriorityList()
+              renderCurrentView()
+            })
+          }
+        })
+      }
+      function addPriority(n) {
+        if (!n.trim()) return
+        if (config.priorities.some(p => p.name === n.trim())) {
+          alert('已存在')
+          return
+        }
+        config.priorities.push({ id: `p_c_${Date.now()}`, name: n.trim(), color: '#a0aec0' })
+        markDirty()
+        renderPriorityList()
+        renderCurrentView()
+      }
+      function initTheme() {
+        const saved = localStorage.getItem('selected_theme') || 'light'
+        applyTheme(saved)
+        document.querySelectorAll('.theme-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            applyTheme(btn.dataset.theme)
+            localStorage.setItem('selected_theme', btn.dataset.theme)
+          })
+        })
+      }
+      function applyTheme(theme) {
+        document.body.classList.remove(
+          'light',
+          'dark',
+          'eye',
+          'orange',
+          'purple',
+          'red',
+          'skyblue',
+          'navy',
+          'deep-purple'
+        )
+        if (theme !== 'light') document.body.classList.add(theme)
+        document.querySelectorAll('.theme-btn').forEach(btn => {
+          if (btn.dataset.theme === theme) btn.classList.add('active')
+          else btn.classList.remove('active')
+        })
+      }
+      function init() {
+        initTheme()
+        const savedFont = localStorage.getItem('font_size') || 'medium'
+        document.getElementById('fontSizeSelect').value = savedFont
+        applyFontSize(savedFont)
+        document
+          .getElementById('fontSizeSelect')
+          .addEventListener('change', e => applyFontSize(e.target.value))
+        const mainColsInput = document.getElementById('mainGridCols'),
+          subColsInput = document.getElementById('subGridCols')
+        mainGridCols = parseInt(mainColsInput.value) || 2
+        subGridCols = parseInt(subColsInput.value) || 2
+        mainColsInput.addEventListener('change', () => {
+          mainGridCols = parseInt(mainColsInput.value) || 2
+          renderCurrentView()
+        })
+        subColsInput.addEventListener('change', () => {
+          subGridCols = parseInt(subColsInput.value) || 2
+          renderCurrentView()
+        })
+        currentDate = getTodayStr()
+        const today = new Date()
+        calendarYear = today.getFullYear()
+        calendarMonth = today.getMonth()
+        ensureDate(currentDate)
+        if (todoData[currentDate].length === 0) {
+          todoData[currentDate].push({
+            id: 10001,
+            title: '示例主任务（子任务模式）',
+            statusId: 'st_doing',
+            typeId: 'ty_work',
+            priorityId: 'p3',
+            dueDate: '2026-05-10',
+            description: '子任务模式备注',
+            useSubtasks: true,
+            subtasks: [
+              {
+                id: 2001,
+                title: '设计原型',
+                statusId: 'st_start',
+                typeId: 'ty_work',
+                priorityId: 'p2',
+                dueDate: '2026-05-08',
+                checklist: [
+                  { id: 'c1', text: '完成初稿', checked: false },
+                  { id: 'c2', text: '评审', checked: true },
+                ],
+                createdAt: Date.now(),
+              },
+              {
+                id: 2002,
+                title: '开发前端',
+                statusId: 'st_doing',
+                typeId: 'ty_work',
+                priorityId: 'p1',
+                dueDate: '2026-05-09',
+                checklist: [],
+                createdAt: Date.now() + 1,
+              },
+            ],
+            createdAt: Date.now(),
+          })
+          todoData[currentDate].push({
+            id: 10002,
+            title: '示例主任务（清单模式）',
+            statusId: 'st_default',
+            typeId: 'ty_life',
+            priorityId: 'p4',
+            dueDate: '2026-05-12',
+            description: '购物清单',
+            useSubtasks: false,
+            checklist: [
+              { id: 'c3', text: '买牛奶', checked: false },
+              { id: 'c4', text: '交水电费', checked: true },
+            ],
+            createdAt: Date.now(),
+          })
+        }
+        renderCalendar()
+        renderCurrentView()
+        document.getElementById('prevMonthBtn').onclick = () => {
+          if (calendarMonth === 0) {
+            calendarYear--
+            calendarMonth = 11
+          } else calendarMonth--
+          renderCalendar()
+        }
+        document.getElementById('nextMonthBtn').onclick = () => {
+          if (calendarMonth === 11) {
+            calendarYear++
+            calendarMonth = 0
+          } else calendarMonth++
+          renderCalendar()
+        }
+        document.getElementById('todayCalBtn').onclick = () => {
+          const t = new Date()
+          calendarYear = t.getFullYear()
+          calendarMonth = t.getMonth()
+          renderCalendar()
+          setCurrentDate(getTodayStr())
+        }
+        document.getElementById('addMainBtn').onclick = () => {
+          addMainTask(document.getElementById('newMainTitle').value)
+          document.getElementById('newMainTitle').value = ''
+        }
+        document.getElementById('newMainTitle').addEventListener('keypress', e => {
+          if (e.key === 'Enter') {
+            addMainTask(e.target.value)
+            e.target.value = ''
+          }
+        })
+        document.getElementById('exportExcelBtn').onclick = exportExcelWithDialog
+        document.getElementById('importExcelBtn').onclick = fallbackImport
+        document.getElementById('manageStatusBtn').onclick = openStatusModal
+        document.getElementById('manageTypeBtn').onclick = openTypeModal
+        document.getElementById('managePriorityBtn').onclick = openPriorityModal
+        document.getElementById('closeStatusBtn').onclick = () =>
+          (document.getElementById('statusModal').style.display = 'none')
+        document.getElementById('closeTypeBtn').onclick = () =>
+          (document.getElementById('typeModal').style.display = 'none')
+        document.getElementById('closePriorityBtn').onclick = () =>
+          (document.getElementById('priorityModal').style.display = 'none')
+        document.getElementById('closeDescBtn').onclick = () =>
+          (document.getElementById('descModal').style.display = 'none')
+        document.getElementById('saveDescBtn').onclick = () => {
+          if (currentEditDescTarget) {
+            currentEditDescTarget.task.description = document.getElementById('descText').value
+            markDirty()
+            renderCurrentView()
+          }
+          document.getElementById('descModal').style.display = 'none'
+        }
+        document.getElementById('addStatusBtn').onclick = () => {
+          const inp = document.getElementById('newStatusName')
+          addStatus(inp.value)
+          inp.value = ''
+        }
+        document.getElementById('newStatusName').addEventListener('keypress', e => {
+          if (e.key === 'Enter') {
+            addStatus(e.target.value)
+            e.target.value = ''
+          }
+        })
+        document.getElementById('addTypeBtn').onclick = () => {
+          const inp = document.getElementById('newTypeName')
+          addType(inp.value)
+          inp.value = ''
+        }
+        document.getElementById('newTypeName').addEventListener('keypress', e => {
+          if (e.key === 'Enter') {
+            addType(e.target.value)
+            e.target.value = ''
+          }
+        })
+        document.getElementById('addPriorityBtn').onclick = () => {
+          const inp = document.getElementById('newPriorityName')
+          addPriority(inp.value)
+          inp.value = ''
+        }
+        document.getElementById('newPriorityName').addEventListener('keypress', e => {
+          if (e.key === 'Enter') {
+            addPriority(e.target.value)
+            e.target.value = ''
+          }
+        })
+        document.getElementById('saveTitleBtn').onclick = () => {
+          if (currentEditingTitle) {
+            const newTitle = document.getElementById('titleInput').value.trim()
+            if (newTitle) {
+              currentEditingTitle.target.title = newTitle
+              markDirty()
+              renderCurrentView()
+            }
+          }
+          document.getElementById('titleModal').style.display = 'none'
+        }
+        document.getElementById('cancelTitleBtn').onclick = () =>
+          (document.getElementById('titleModal').style.display = 'none')
+        document.getElementById('saveDueDateBtn').onclick = () => {
+          if (currentDueDateTarget) {
+            currentDueDateTarget.dueDate = document.getElementById('dueDatePicker').value
+            markDirty()
+            renderCurrentView()
+          }
+          currentDueDateTarget = null
+          document.getElementById('dueDateModal').style.display = 'none'
+        }
+        document.getElementById('clearDueDateBtn').onclick = () => {
+          if (currentDueDateTarget) {
+            currentDueDateTarget.dueDate = null
+            markDirty()
+            renderCurrentView()
+          }
+          currentDueDateTarget = null
+          document.getElementById('dueDateModal').style.display = 'none'
+        }
+        document.getElementById('cancelDueDateBtn').onclick = () => {
+          currentDueDateTarget = null
+          document.getElementById('dueDateModal').style.display = 'none'
+        }
+        document.getElementById('confirmAddSubtaskBtn').onclick = () => {
+          const title = document.getElementById('newSubtaskTitle').value.trim()
+          if (title && currentMainForSubtask) {
+            const mainTask = todoData[currentDate].find(t => t.id == currentMainForSubtask)
+            if (mainTask && mainTask.useSubtasks !== false) {
+              if (!mainTask.subtasks) mainTask.subtasks = []
+              mainTask.subtasks.push({
+                id: Date.now() + Math.random() * 10000,
+                title: title,
+                statusId: config.statuses[0].id,
+                typeId: null,
+                priorityId: null,
+                dueDate: null,
+                checklist: [],
+                createdAt: Date.now(),
+              })
+              markDirty()
+              renderCurrentView()
+            }
+          }
+          document.getElementById('addSubtaskModal').style.display = 'none'
+          currentMainForSubtask = null
+        }
+        document.getElementById('cancelAddSubtaskBtn').onclick = () => {
+          document.getElementById('addSubtaskModal').style.display = 'none'
+          currentMainForSubtask = null
+        }
+        document.getElementById('confirmExportBtn').onclick = performExport
+        document.getElementById('cancelExportBtn').onclick = () =>
+          (document.getElementById('exportModal').style.display = 'none')
+        window.addEventListener('beforeunload', e => {
+          if (isDirty) {
+            e.preventDefault()
+            e.returnValue = '数据未导出，关闭会丢失！'
+            return e.returnValue
+          }
+        })
+      }
+      init()
+    </script>
+  </body>
 </html>

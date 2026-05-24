@@ -1,4 +1,5 @@
 import { Ref } from 'vue'
+
 import { useDialog } from '../../composables/useDialog'
 
 const { showAlert, showConfirm, showConfirmWithClose } = useDialog()
@@ -61,20 +62,12 @@ export interface ConfigHandlers<T> {
   /**
    * 上移配置项
    */
-  handleMoveUp: (
-    index: number,
-    items: Ref<T[]>,
-    modifiedIds: Ref<Set<string>>
-  ) => void
+  handleMoveUp: (index: number, items: Ref<T[]>, modifiedIds: Ref<Set<string>>) => void
 
   /**
    * 下移配置项
    */
-  handleMoveDown: (
-    index: number,
-    items: Ref<T[]>,
-    modifiedIds: Ref<Set<string>>
-  ) => void
+  handleMoveDown: (index: number, items: Ref<T[]>, modifiedIds: Ref<Set<string>>) => void
 
   /**
    * 开始调整模态框大小
@@ -90,7 +83,9 @@ export interface ConfigHandlers<T> {
 /**
  * 创建配置项的保存、关闭、删除、添加、移动和调整大小处理函数
  */
-export function createConfigHandlers<T extends { id: string; name: string; emoji: string }>(): ConfigHandlers<T> {
+export function createConfigHandlers<
+  T extends { id: string; name: string; emoji: string },
+>(): ConfigHandlers<T> {
   const handleSave = async (
     items: Ref<T[]>,
     updateApi: (items: T[]) => Promise<T[]>,
@@ -105,7 +100,7 @@ export function createConfigHandlers<T extends { id: string; name: string; emoji
       items.value = result
       modifiedIds.value.clear()
       emitUpdated(result)
-      
+
       if (closeAfterSave) {
         showAlert('成功', `所有${itemName}已保存`, () => {
           emitClose()
@@ -136,7 +131,7 @@ export function createConfigHandlers<T extends { id: string; name: string; emoji
         '取消',
         '不保存关闭'
       )
-      
+
       if (choice === 'confirm') {
         // 保存并关闭
         try {
@@ -201,7 +196,7 @@ export function createConfigHandlers<T extends { id: string; name: string; emoji
       showAlert('提示', `请输入${itemName}名称`)
       return
     }
-    
+
     // 检查是否已存在
     if (items.value.some(item => item.name === newItemName.value.trim())) {
       showAlert('提示', `${itemName}已存在`)
@@ -218,36 +213,28 @@ export function createConfigHandlers<T extends { id: string; name: string; emoji
     // 添加到列表
     items.value.push(newItem)
     modifiedIds.value.add(newItem.id)
-    
+
     // 清空输入
     newItemName.value = ''
   }
 
-  const handleMoveUp = (
-    index: number,
-    items: Ref<T[]>,
-    modifiedIds: Ref<Set<string>>
-  ) => {
-    if (index > 0) {
+  const handleMoveUp = (index: number, items: Ref<T[]>, modifiedIds: Ref<Set<string>>) => {
+    if (index > 0 && items.value[index] && items.value[index - 1]) {
       const temp = items.value[index]
-      items.value[index] = items.value[index - 1]
-      items.value[index - 1] = temp
-      modifiedIds.value.add(items.value[index].id)
-      modifiedIds.value.add(items.value[index - 1].id)
+      items.value[index] = items.value[index - 1]!
+      items.value[index - 1] = temp!
+      modifiedIds.value.add(items.value[index]!.id)
+      modifiedIds.value.add(items.value[index - 1]!.id)
     }
   }
 
-  const handleMoveDown = (
-    index: number,
-    items: Ref<T[]>,
-    modifiedIds: Ref<Set<string>>
-  ) => {
-    if (index < items.value.length - 1) {
+  const handleMoveDown = (index: number, items: Ref<T[]>, modifiedIds: Ref<Set<string>>) => {
+    if (index < items.value.length - 1 && items.value[index] && items.value[index + 1]) {
       const temp = items.value[index]
-      items.value[index] = items.value[index + 1]
-      items.value[index + 1] = temp
-      modifiedIds.value.add(items.value[index].id)
-      modifiedIds.value.add(items.value[index + 1].id)
+      items.value[index] = items.value[index + 1]!
+      items.value[index + 1] = temp!
+      modifiedIds.value.add(items.value[index]!.id)
+      modifiedIds.value.add(items.value[index + 1]!.id)
     }
   }
 
@@ -258,12 +245,12 @@ export function createConfigHandlers<T extends { id: string; name: string; emoji
     modalHeight: Ref<number>
   ) => {
     event.preventDefault()
-    
+
     const startX = event.clientX
     const startY = event.clientY
     const startWidth = modalWidth.value
     const startHeight = modalHeight.value
-    
+
     const handleMouseMove = (e: MouseEvent) => {
       if (direction === 'right' || direction === 'corner') {
         const newWidth = startWidth + (e.clientX - startX)
@@ -274,12 +261,12 @@ export function createConfigHandlers<T extends { id: string; name: string; emoji
         modalHeight.value = Math.max(400, Math.min(800, newHeight))
       }
     }
-    
+
     const handleMouseUp = () => {
       document.removeEventListener('mousemove', handleMouseMove)
       document.removeEventListener('mouseup', handleMouseUp)
     }
-    
+
     document.addEventListener('mousemove', handleMouseMove)
     document.addEventListener('mouseup', handleMouseUp)
   }
@@ -291,6 +278,6 @@ export function createConfigHandlers<T extends { id: string; name: string; emoji
     handleAdd,
     handleMoveUp,
     handleMoveDown,
-    handleStartResize
+    handleStartResize,
   }
 }

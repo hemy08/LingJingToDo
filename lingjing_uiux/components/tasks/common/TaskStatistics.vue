@@ -20,7 +20,7 @@
       <span class="stat-label">今日到期</span>
       <span class="stat-value">{{ statistics.due_today_count }}</span>
     </div>
-    <div class="stat-item stat-danger" v-if="statistics.overdue_count > 0">
+    <div v-if="statistics.overdue_count > 0" class="stat-item stat-danger">
       <i class="fas fa-exclamation-circle"></i>
       <span class="stat-label">已经延期</span>
       <span class="stat-value">{{ statistics.overdue_count }}</span>
@@ -43,43 +43,3 @@ defineProps<{
   statistics: ITaskStatistics
 }>()
 </script>
-
-<style scoped>
-.task-statistics {
-  padding: 12px;
-  background: var(--card-bg);
-  border-radius: 8px;
-  margin-bottom: 12px;
-}
-
-.stat-item {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 6px 0;
-  font-size: 13px;
-}
-
-.stat-item i {
-  width: 16px;
-  color: var(--primary-color);
-}
-
-.stat-label {
-  flex: 1;
-  color: var(--text-secondary);
-}
-
-.stat-value {
-  font-weight: 600;
-  color: var(--text-color);
-}
-
-.stat-danger {
-  color: var(--danger-color);
-}
-
-.stat-danger i {
-  color: var(--danger-color);
-}
-</style>

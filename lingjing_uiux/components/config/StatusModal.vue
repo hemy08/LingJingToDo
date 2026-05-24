@@ -1,43 +1,40 @@
 <template>
   <div v-if="visible" class="status-modal" @click.self="handleClose">
-    <div 
-      class="status-modal-content" 
-      :style="{ width: modalWidth + 'px', height: modalHeight + 'px' }"
+    <div
       ref="modalRef"
+      class="status-modal-content"
+      :style="{ width: modalWidth + 'px', height: modalHeight + 'px' }"
     >
       <!-- 拖动调整大小的手柄 -->
       <div class="resize-handle resize-right" @mousedown="startResize('right', $event)"></div>
       <div class="resize-handle resize-bottom" @mousedown="startResize('bottom', $event)"></div>
       <div class="resize-handle resize-corner" @mousedown="startResize('corner', $event)"></div>
-      
+
       <h3><i class="fas fa-tags"></i> 自定义状态</h3>
       <div class="config-list">
         <div v-for="(status, index) in localStatuses" :key="status.id" class="config-card">
           <div class="card-left">
             <select v-model="status.emoji" class="emoji-select" @change="markAsModified(status.id)">
-              <option v-for="emoji in availableEmojis" :key="emoji" :value="emoji">{{ emoji }}</option>
+              <option v-for="emoji in availableEmojis" :key="emoji" :value="emoji">
+                {{ emoji }}
+              </option>
             </select>
-            <input 
-              v-model="status.name" 
-              class="config-input" 
+            <input
+              v-model="status.name"
+              class="config-input"
               placeholder="状态名称"
               @change="markAsModified(status.id)"
             />
           </div>
           <div class="card-actions">
-            <button 
-              v-if="index > 0" 
-              class="btn-sm" 
-              @click="moveUp(index)"
-              title="上移"
-            >
+            <button v-if="index > 0" class="btn-sm" title="上移" @click="moveUp(index)">
               <span>⬆️</span>
             </button>
-            <button 
-              v-if="index < localStatuses.length - 1" 
-              class="btn-sm" 
-              @click="moveDown(index)"
+            <button
+              v-if="index < localStatuses.length - 1"
+              class="btn-sm"
               title="下移"
+              @click="moveDown(index)"
             >
               <span>⬇️</span>
             </button>
@@ -51,19 +48,17 @@
         <select v-model="newStatusEmoji" class="emoji-select">
           <option v-for="emoji in availableEmojis" :key="emoji" :value="emoji">{{ emoji }}</option>
         </select>
-        <input 
-          v-model="newStatusName" 
-          type="text" 
-          placeholder="新状态名称" 
+        <input
+          v-model="newStatusName"
+          type="text"
+          placeholder="新状态名称"
           @keypress.enter="addStatus"
-        >
+        />
         <button class="btn-sm btn-primary" @click="addStatus">添加</button>
       </div>
       <div class="modal-buttons">
         <button class="btn-sm" @click="handleClose"><span>🚫</span> 关闭</button>
-        <button class="btn-sm btn-primary" @click="handleSave">
-          <span>💾</span> 保存全部
-        </button>
+        <button class="btn-sm btn-primary" @click="handleSave"><span>💾</span> 保存全部</button>
       </div>
     </div>
   </div>
@@ -73,10 +68,12 @@
 
 <script setup lang="ts">
 import { ref, watch, onUnmounted } from 'vue'
-import { statusApi } from '../../connections/config_apis'
+
 import { useDialog } from '../../composables/useDialog'
-import { createConfigHandlers } from './config_common'
+import { statusApi } from '../../connections/config_apis'
 import type { TaskStatus } from '../../types'
+
+import { createConfigHandlers } from './config_common'
 
 interface Props {
   visible: boolean
@@ -92,8 +89,30 @@ const props = defineProps<Props>()
 const emit = defineEmits<Emits>()
 
 // 可用的emoji列表
-const availableEmojis = ['✅', '❎', '⚠️', 'ℹ️', '⏳', '⏸️', '▶️', '🟢', '🔴', '🟡', '🔵', '⚫️', '💀', '🛡️', '🔔',
-    '📋', '📌', '📝', '⏹️', '📅','🔒','⏰','🚀'
+const availableEmojis = [
+  '✅',
+  '❎',
+  '⚠️',
+  'ℹ️',
+  '⏳',
+  '⏸️',
+  '▶️',
+  '🟢',
+  '🔴',
+  '🟡',
+  '🔵',
+  '⚫️',
+  '💀',
+  '🛡️',
+  '🔔',
+  '📋',
+  '📌',
+  '📝',
+  '⏹️',
+  '📅',
+  '🔒',
+  '⏰',
+  '🚀',
 ]
 
 // 本地状态列表
@@ -115,25 +134,29 @@ const {
   handleAdd: configHandleAdd,
   handleMoveUp: handleMoveUp,
   handleMoveDown: handleMoveDown,
-  handleStartResize: handleStartResize } = createConfigHandlers<TaskStatus>()
+  handleStartResize: handleStartResize,
+} = createConfigHandlers<TaskStatus>()
 const { showAlert } = useDialog()
 
 // 是否有修改
 const hasModifications = () => modifiedIds.value.size > 0
 
 // 监听 visible 变化，从后端获取最新数据
-watch(() => props.visible, async (newVisible) => {
-  if (newVisible) {
-    try {
-      const result = await statusApi.getAll()
-      localStatuses.value = result
-      modifiedIds.value.clear()
-    } catch (error) {
-      console.error('获取状态列表失败:', error)
-      showAlert('错误', '获取状态列表失败')
+watch(
+  () => props.visible,
+  async newVisible => {
+    if (newVisible) {
+      try {
+        const result = await statusApi.getAll()
+        localStatuses.value = result
+        modifiedIds.value.clear()
+      } catch (error) {
+        console.error('获取状态列表失败:', error)
+        showAlert('错误', '获取状态列表失败')
+      }
     }
   }
-})
+)
 
 // 标记为已修改
 const markAsModified = (id: string) => {
@@ -162,8 +185,8 @@ const addStatus = () => {
     (id, name, emoji) => ({
       id,
       name,
-      color: "#a0aec0",
-      emoji
+      color: '#a0aec0',
+      emoji,
     })
   )
   newStatusEmoji.value = '📋'
@@ -176,7 +199,7 @@ const deleteStatus = async (id: string) => {
     localStatuses,
     statusApi.delete.bind(statusApi),
     modifiedIds,
-    (result) => emit('updated', result),
+    result => emit('updated', result),
     '状态'
   )
 }
@@ -187,7 +210,7 @@ const handleSave = async () => {
     localStatuses,
     statusApi.update.bind(statusApi),
     modifiedIds,
-    (result) => emit('updated', result),
+    result => emit('updated', result),
     () => emit('update:visible', false),
     '状态',
     true
@@ -201,7 +224,7 @@ const handleClose = async () => {
     localStatuses,
     statusApi.update.bind(statusApi),
     modifiedIds,
-    (result) => emit('updated', result),
+    result => emit('updated', result),
     () => emit('update:visible', false),
     '状态'
   )
@@ -217,4 +240,3 @@ onUnmounted(() => {
   // 清理代码
 })
 </script>
-

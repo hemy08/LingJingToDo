@@ -1,0 +1,11 @@
+node_modules
+dist
+*.local
+*.log*
+.vscode
+.idea
+*.md
+lingjing_server
+.tauri
+*.min.js
+.ollamassist

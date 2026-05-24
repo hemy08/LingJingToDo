@@ -1,42 +1,40 @@
 <template>
-  <div 
+  <div
     :data-task-id="task.id"
     class="task-card"
-    :class="{ 
-      'selected': selectedTaskId === task.id,
-      'is-highlighted': isHighlighted
+    :class="{
+      selected: selectedTaskId === task.id,
+      'is-highlighted': isHighlighted,
+      'due-soon': isDueSoon,
     }"
     @click="$emit('select', task.id)"
   >
     <div class="task-card-header">
-      <h3 
-          v-if="!isEditing"
-          class="task-title" 
-          @click.stop="startEdit"
-          title="单击编辑"
-        >{{ task.title }}</h3>
-        <input
-          v-else
-          v-model="editTitle"
-          class="edit-input task-edit-input"
-          @blur="saveEdit"
-          @keyup.enter="saveEdit"
-          @keyup.escape="cancelEdit"
-          ref="editInput"
-          @click.stop
-        />
+      <h3 v-if="!isEditing" class="task-title" title="单击编辑" @click.stop="startEdit">
+        {{ task.title }}
+      </h3>
+      <input
+        v-else
+        ref="editInput"
+        v-model="editTitle"
+        class="edit-input task-edit-input"
+        @blur="saveEdit"
+        @keyup.enter="saveEdit"
+        @keyup.escape="cancelEdit"
+        @click.stop
+      />
       <div class="task-actions">
-        <button 
+        <button
           class="components-action-btn toggle-subtask-btn"
+          :title="subtaskDisplayMode === 'card' ? '切换为表格显示' : '切换为卡片显示'"
           @click="$emit('toggle-subtask-mode', task.id)"
           @mousedown.stop
           @click.stop
-          :title="subtaskDisplayMode === 'card' ? '切换为表格显示' : '切换为卡片显示'"
         >
           <i :class="subtaskDisplayMode === 'card' ? 'fas fa-table' : 'fas fa-th-large'"></i>
           {{ subtaskDisplayMode === 'card' ? '表格' : '卡片' }}
         </button>
-        <button 
+        <button
           class="components-action-btn add-subtask-btn"
           @click="$emit('add-subtask', task)"
           @mousedown.stop
@@ -59,9 +57,11 @@
     <div class="task-card-body">
       <div class="task-meta-row">
         <!-- 创建日期 -->
-        <div class="meta-item" v-if="task.created_date">
+        <div v-if="task.created_date" class="meta-item">
           <label class="meta-label">🕐</label>
-          <span class="meta-text" :title="task.created_date">{{ formatDate(task.created_date) }}</span>
+          <span class="meta-text" :title="task.created_date">{{
+            formatDate(task.created_date)
+          }}</span>
         </div>
         <!-- 截止日期 -->
         <div class="meta-item">
@@ -81,7 +81,8 @@
             :value="task.type_id"
             @change="onUpdateTask({ ...task, type_id: ($event.target as HTMLSelectElement).value })"
           >
-            <option v-for="type in types" :key="type.id" :value="type.id">{{ type.emoji }} {{ type.name }}
+            <option v-for="type in types" :key="type.id" :value="type.id">
+              {{ type.emoji }} {{ type.name }}
             </option>
           </select>
         </div>
@@ -91,10 +92,13 @@
           <select
             class="meta-select"
             :value="task.status_id"
-            @change="onUpdateTask({ ...task, status_id: ($event.target as HTMLSelectElement).value })"
             :disabled="task.status_id === 'st_closed' && !canCloseTask"
+            @change="
+              onUpdateTask({ ...task, status_id: ($event.target as HTMLSelectElement).value })
+            "
           >
-            <option v-for="status in statuses" :key="status.id" :value="status.id">{{ status.emoji }} {{ status.name }}
+            <option v-for="status in statuses" :key="status.id" :value="status.id">
+              {{ status.emoji }} {{ status.name }}
             </option>
           </select>
         </div>
@@ -104,9 +108,12 @@
           <select
             class="meta-select"
             :value="task.priority_id"
-            @change="onUpdateTask({ ...task, priority_id: ($event.target as HTMLSelectElement).value })"
+            @change="
+              onUpdateTask({ ...task, priority_id: ($event.target as HTMLSelectElement).value })
+            "
           >
-            <option v-for="priority in priorities" :key="priority.id" :value="priority.id">{{ priority.emoji }} {{ priority.name }}
+            <option v-for="priority in priorities" :key="priority.id" :value="priority.id">
+              {{ priority.emoji }} {{ priority.name }}
             </option>
           </select>
         </div>
@@ -121,9 +128,9 @@
         <textarea
           class="detail-textarea"
           :value="task.remark || ''"
-          @change="onUpdateTask({ ...task, remark: ($event.target as HTMLTextAreaElement).value })"
           placeholder="添加任务详细描述..."
           rows="3"
+          @change="onUpdateTask({ ...task, remark: ($event.target as HTMLTextAreaElement).value })"
         ></textarea>
       </div>
 
@@ -141,8 +148,9 @@
 
 <script setup lang="ts">
 import { ref, computed, nextTick, type Ref } from 'vue'
-import type { Task, TaskStatus, TaskType, TaskPriority } from '../../../types.ts'
+
 import { useTaskHighlightStore } from '../../../stores/taskHighlight.ts'
+import type { Task, TaskStatus, TaskType, TaskPriority } from '../../../types.ts'
 
 const props = defineProps<{
   task: Task
@@ -163,14 +171,28 @@ const emit = defineEmits<{
   delete: [taskId: string]
 }>()
 
-
 // 任务高亮状态
 const taskHighlight = useTaskHighlightStore()
 
 // 检查是否高亮
-const isHighlighted = computed(() => 
-  taskHighlight.isHighlighted(props.task.id)
-)
+const isHighlighted = computed(() => taskHighlight.isHighlighted(props.task.id))
+
+// 检查是否即将到期（截止前1天）
+const isDueSoon = computed(() => {
+  if (!props.task.due_date) return false
+  if (props.task.status_id === 'st_done' || props.task.status_id === 'st_closed') return false
+
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+
+  const dueDate = new Date(props.task.due_date)
+  dueDate.setHours(0, 0, 0, 0)
+
+  const diffTime = dueDate.getTime() - today.getTime()
+  const diffDays = diffTime / (1000 * 60 * 60 * 24)
+
+  return diffDays >= 0 && diffDays <= 1
+})
 
 // 子任务列表（响应式）
 const taskSubtasks = computed(() => {
@@ -182,8 +204,8 @@ const canCloseTask = computed(() => {
   if (!taskSubtasks.value || taskSubtasks.value.length === 0) {
     return true
   }
-  return taskSubtasks.value.every(subtask => 
-    subtask.status_id === 'st_done' || subtask.status_id === 'st_closed'
+  return taskSubtasks.value.every(
+    subtask => subtask.status_id === 'st_done' || subtask.status_id === 'st_closed'
   )
 })
 
@@ -230,33 +252,7 @@ const formatDate = (dateStr: string) => {
   return date.toLocaleDateString('zh-CN', {
     year: 'numeric',
     month: '2-digit',
-    day: '2-digit'
+    day: '2-digit',
   })
 }
-
 </script>
-
-<style scoped>
-/* 高亮样式 */
-.task-card.is-highlighted {
-  animation: highlight-pulse 2s ease-in-out;
-  box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.6),
-              0 4px 16px rgba(33, 150, 243, 0.4);
-  z-index: 10;
-}
-
-/* 高亮脉冲动画 */
-@keyframes highlight-pulse {
-  0% {
-    box-shadow: 0 0 0 0 rgba(33, 150, 243, 0.8);
-  }
-  50% {
-    box-shadow: 0 0 0 8px rgba(33, 150, 243, 0.2),
-                0 4px 16px rgba(33, 150, 243, 0.5);
-  }
-  100% {
-    box-shadow: 0 0 0 0 rgba(33, 150, 243, 0),
-                0 4px 16px rgba(33, 150, 243, 0.4);
-  }
-}
-</style>

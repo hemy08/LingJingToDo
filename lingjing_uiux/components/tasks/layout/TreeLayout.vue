@@ -5,8 +5,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, watch, type Ref } from 'vue'
 import Sortable from 'sortablejs'
+import { ref, onMounted, watch, type Ref } from 'vue'
+
 import type { Task } from '../../../types.ts'
 import { handleReorderTasks } from '../common/tasks_common.ts'
 
@@ -37,20 +38,17 @@ const initSortable = () => {
     fallbackTolerance: 3,
     swap: props.dragMode === 'swap',
     swapThreshold: 0.65,
-    onEnd: (evt) => {
+    onEnd: evt => {
       if (evt.oldIndex === evt.newIndex) return
 
       const reorderedTasks = [...props.tasks]
       const [movedTask] = reorderedTasks.splice(evt.oldIndex!, 1)
+      if (!movedTask) return
       reorderedTasks.splice(evt.newIndex!, 0, movedTask)
 
       // 直接调用公共函数处理重排序
-      handleReorderTasks(
-        props.currentDate,
-        reorderedTasks,
-        props.tasksRef
-      )
-    }
+      handleReorderTasks(props.currentDate, reorderedTasks, props.tasksRef)
+    },
   })
 }
 
@@ -58,7 +56,10 @@ onMounted(() => {
   initSortable()
 })
 
-watch(() => props.dragMode, () => {
-  initSortable()
-})
+watch(
+  () => props.dragMode,
+  () => {
+    initSortable()
+  }
+)
 </script>

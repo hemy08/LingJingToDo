@@ -42,7 +42,7 @@ const addHistoryFile = (filePath: string) => {
     path: filePath,
     name: fileName,
     lastOpened: new Date().toLocaleString('zh-CN'),
-    icon: '📊'
+    icon: '📊',
   }
 
   // 移除已存在的相同路径
@@ -68,7 +68,7 @@ const openHistoryFile = async (file: HistoryFile) => {
     historyFiles.value.unshift(file)
   }
   saveHistoryFiles()
-  
+
   // 触发事件，通知父组件
   emit('file-selected', file.path)
 }
@@ -83,7 +83,7 @@ const removeHistoryFile = (event: Event, file: HistoryFile) => {
 // 暴露方法给父组件
 defineExpose({
   addHistoryFile,
-  historyFiles
+  historyFiles,
 })
 
 onMounted(() => {
@@ -93,11 +93,18 @@ onMounted(() => {
 
 <template>
   <!-- 历史文件列表 -->
-  <div class="history-section" v-if="historyFiles.length > 0">
+  <div v-if="historyFiles.length > 0" class="history-section">
     <h3 class="history-title">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <circle cx="12" cy="12" r="10"/>
-        <polyline points="12 6 12 12 16 14"/>
+      <svg
+        width="20"
+        height="20"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+      >
+        <circle cx="12" cy="12" r="10" />
+        <polyline points="12 6 12 12 16 14" />
       </svg>
       最近打开
     </h3>
@@ -115,14 +122,24 @@ onMounted(() => {
             <span class="history-item-time">{{ file.lastOpened }}</span>
           </div>
         </div>
-        <button class="history-item-remove" @click="removeHistoryFile($event, file)" title="从列表中移除">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <line x1="18" y1="6" x2="6" y2="18"/>
-            <line x1="6" y1="6" x2="18" y2="18"/>
+        <button
+          class="history-item-remove"
+          title="从列表中移除"
+          @click="removeHistoryFile($event, file)"
+        >
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
           </svg>
         </button>
       </div>
     </div>
   </div>
 </template>
-

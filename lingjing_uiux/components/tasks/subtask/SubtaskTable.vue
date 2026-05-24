@@ -1,16 +1,16 @@
 <template>
   <div class="subtasks-list table-mode">
-    <table class="subtask-table auto-wrap" >
+    <table class="subtask-table auto-wrap">
       <colgroup>
-        <col style="width: 20px">
-        <col style="width: 300px">
-        <col style="width: 120px">
-        <col style="width: 120px">
-        <col style="width: 120px">
-        <col style="width: 120px">
-        <col style="width: 120px">
-        <col style="width: 300px">
-        <col style="width: 40px">
+        <col style="width: 20px" />
+        <col style="width: 300px" />
+        <col style="width: 120px" />
+        <col style="width: 120px" />
+        <col style="width: 120px" />
+        <col style="width: 120px" />
+        <col style="width: 120px" />
+        <col style="width: 300px" />
+        <col style="width: 40px" />
       </colgroup>
       <thead>
         <tr>
@@ -39,21 +39,30 @@
             </div>
           </td>
           <td>
-            <span class="date-text" v-if="subtask.created_date">{{ formatDate(subtask.created_date) }}</span>
+            <span v-if="subtask.created_date" class="date-text">{{
+              formatDate(subtask.created_date)
+            }}</span>
           </td>
           <td>
             <input
               type="date"
               class="inline-date"
               :value="subtask.due_date"
-              @change="onUpdateSubtask({ ...subtask, due_date: ($event.target as HTMLInputElement).value })"
+              @change="
+                onUpdateSubtask({ ...subtask, due_date: ($event.target as HTMLInputElement).value })
+              "
             />
           </td>
           <td>
             <select
               class="inline-select"
               :value="subtask.status_id"
-              @change="onUpdateSubtask({ ...subtask, status_id: ($event.target as HTMLSelectElement).value })"
+              @change="
+                onUpdateSubtask({
+                  ...subtask,
+                  status_id: ($event.target as HTMLSelectElement).value,
+                })
+              "
             >
               <option v-for="status in statuses" :key="status.id" :value="status.id">
                 {{ status.emoji }} {{ status.name }}
@@ -64,7 +73,9 @@
             <select
               class="inline-select"
               :value="subtask.type_id"
-              @change="onUpdateSubtask({ ...subtask, type_id: ($event.target as HTMLSelectElement).value })"
+              @change="
+                onUpdateSubtask({ ...subtask, type_id: ($event.target as HTMLSelectElement).value })
+              "
             >
               <option v-for="type in types" :key="type.id" :value="type.id">
                 {{ type.emoji }} {{ type.name }}
@@ -75,7 +86,12 @@
             <select
               class="inline-select"
               :value="subtask.priority_id"
-              @change="onUpdateSubtask({ ...subtask, priority_id: ($event.target as HTMLSelectElement).value })"
+              @change="
+                onUpdateSubtask({
+                  ...subtask,
+                  priority_id: ($event.target as HTMLSelectElement).value,
+                })
+              "
             >
               <option v-for="priority in priorities" :key="priority.id" :value="priority.id">
                 {{ priority.emoji }} {{ priority.name }}
@@ -111,6 +127,7 @@
 
 <script setup lang="ts">
 import { type Ref } from 'vue'
+
 import type { Task, TaskStatus, TaskType, TaskPriority } from '../../../types.ts'
 
 const props = defineProps<{
@@ -127,8 +144,8 @@ const props = defineProps<{
 void props
 
 const emit = defineEmits<{
-  'update': [subtask: Task]
-  'delete': [subtaskId: string]
+  update: [subtask: Task]
+  delete: [subtaskId: string]
 }>()
 
 // 处理子任务更新
@@ -158,8 +175,7 @@ const formatDate = (dateStr: string) => {
   return date.toLocaleDateString('zh-CN', {
     year: 'numeric',
     month: '2-digit',
-    day: '2-digit'
+    day: '2-digit',
   })
 }
-
 </script>
