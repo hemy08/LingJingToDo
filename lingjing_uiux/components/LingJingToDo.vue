@@ -377,14 +377,3 @@ onMounted(async () => {
     </div>
   </div>
 </template>
-
-<style>
-@import '../assets/main.css';
-@import '../assets/buttons.css';
-@import '../assets/config.css';
-@import '../assets/statusbar.css';
-@import '../assets/titlebar.css';
-@import '../assets/tasks.css';
-@import '../assets/components.css';
-@import '../assets/themes.css';
-</style>

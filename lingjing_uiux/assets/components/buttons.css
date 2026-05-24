@@ -71,3 +71,58 @@
   background: rgba(255, 255, 255, 0.3);
   transform: translateY(-2px);
 }
+
+/* 小按钮样式 - 统一定义 */
+.btn-sm {
+  padding: 4px 12px;
+  background: var(--accent-blue, #e74c3c);
+  border: 1px solid var(--border-medium, var(--border-light));
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  color: var(--border-light, #ffffff);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.2s;
+  font-weight: 500;
+}
+
+.btn-sm:hover {
+  background: var(--accent-light, var(--tag-bg));
+  border-color: var(--accent-color, var(--accent-blue));
+  color: var(--accent-color, var(--accent-blue));
+}
+
+.btn-sm.active {
+  background: var(--accent-color, var(--accent-blue));
+  color: white;
+  border-color: var(--accent-color, var(--accent-blue));
+}
+
+.btn-sm:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: var(--tag-bg);
+  color: var(--text-secondary);
+}
+
+.btn-sm.btn-primary {
+  background: var(--accent-blue, #3b82f6);
+  color: #fff;
+  border-color: var(--accent-blue, #3b82f6);
+}
+
+.btn-sm.btn-primary:hover {
+  background: var(--accent-blue-light, #2563eb);
+}
+
+.btn-sm.btn-danger {
+  background: var(--danger, #dc2626);
+  color: #fff;
+  border-color: var(--danger, #dc2626);
+}
+
+.btn-sm.btn-danger:hover {
+  background: #b91c1c;
+}

@@ -1,16 +1,10 @@
 <script setup lang="ts">
 import { useHistory } from '../../composables/useHistory'
 
-const props = withDefaults(
-  defineProps<{
-    showTooltip?: boolean
-    size?: 'sm' | 'md' | 'lg'
-  }>(),
-  {
-    showTooltip: true,
-    size: 'md',
-  }
-)
+const { showTooltip = true, size = 'md' } = defineProps<{
+  showTooltip?: boolean
+  size?: 'sm' | 'md' | 'lg'
+}>()
 
 const emit = defineEmits<{
   undo: []
@@ -41,12 +35,6 @@ async function handleRedo() {
     emit('redo-failed')
   }
 }
-
-const sizeClass = {
-  sm: 'btn-xs',
-  md: 'btn-sm',
-  lg: 'btn-md',
-}[props.size]
 </script>
 
 <template>

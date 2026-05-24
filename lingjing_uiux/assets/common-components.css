@@ -155,41 +155,6 @@
   filter: brightness(1.1);
 }
 
-/* 小按钮样式 */
-.btn-sm {
-  padding: 4px 12px;
-  background: var(--accent-blue, #e74c3c);
-  border: 1px solid var(--border-medium, var(--border-light));
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 12px;
-  color: var(--border-light, #ffffff);
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  transition: all 0.2s;
-  font-weight: 500;
-}
-
-.btn-sm:hover {
-  background: var(--accent-light, var(--tag-bg));
-  border-color: var(--accent-color, var(--accent-blue));
-  color: var(--accent-color, var(--accent-blue));
-}
-
-.btn-sm.active {
-  background: var(--accent-color, var(--accent-blue));
-  color: white;
-  border-color: var(--accent-color, var(--accent-blue));
-}
-
-.btn-sm:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-  background: var(--tag-bg);
-  color: var(--text-secondary);
-}
-
 /* 工具栏按钮样式 */
 .toolbar-right {
   background: var(--toolbar-button-bg);
@@ -290,29 +255,7 @@
   z-index: 1000;
 }
 
-.modal-content {
-  background: var(--bg-primary, var(--card-bg));
-  border-radius: 8px;
-  width: 500px;
-  max-width: 90vw;
-  max-height: 80vh;
-  display: flex;
-  flex-direction: column;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-}
 
-/* 空状态样式 */
-.empty-state {
-  text-align: center;
-  padding: 40px;
-  color: var(--text-secondary);
-}
-
-.empty-state i {
-  font-size: 48px;
-  margin-bottom: 16px;
-  opacity: 0.5;
-}
 
 /* 选中项样式 */
 .selected-item {

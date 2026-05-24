@@ -1,0 +1,450 @@
+/* ========================================
+   TaskPanel 组件样式
+   ======================================== */
+
+.task-panel {
+  padding: 16px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0; /* 重要：允许flex子项收缩 */
+  overflow: hidden; /* 防止内容溢出 */
+}
+
+.task-add-area {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.task-input {
+  flex: 1;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--border-light);
+  background: var(--card-bg);
+  color: var(--text-primary);
+  font-size: 0.9rem;
+}
+
+.task-input:focus {
+  outline: none;
+  border-color: var(--accent-blue);
+}
+
+.settings-area {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 16px;
+  padding: 12px;
+  background: var(--tag-bg);
+  border-radius: 8px;
+  flex-wrap: wrap;
+}
+
+.setting-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.setting-item label {
+  font-size: 0.85rem;
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.setting-item select {
+  padding: 4px 8px;
+  border-radius: 4px;
+  border: 1px solid var(--border-light);
+  background: var(--card-bg);
+  color: var(--text-primary);
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+/* 任务列表 - 瀑布流布局 */
+.task-list {
+  column-count: 2;
+  width: 100%;
+  flex: 1;
+  position: relative;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* 列表布局 - 两列显示 */
+.task-list.list-layout {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  column-count: unset;
+  --list-columns: 2;
+}
+
+.task-list.list-layout .task-card {
+  flex: 0 0 calc((100% / var(--list-columns)) - 8px);
+  width: calc((100% / var(--list-columns)) - 8px);
+  max-width: calc((100% / var(--list-columns)) - 8px);
+  break-inside: unset;
+}
+
+/* 树形布局 */
+.task-list.tree-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  column-count: unset;
+}
+
+.task-list.tree-layout .task-card {
+  flex: none;
+  width: 100%;
+  max-width: 100%;
+  break-inside: unset;
+  margin-left: 0;
+}
+
+/* 树形布局的子任务缩进 */
+.task-list.tree-layout .subtasks-section {
+  margin-left: 40px;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-left: 2px solid var(--accent-blue);
+  border-top: none;
+  padding-left: 16px;
+}
+
+.task-list.tree-layout .subtasks-list {
+  position: relative;
+}
+
+.task-list.tree-layout .subtasks-list::before {
+  content: '';
+  position: absolute;
+  left: -16px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--border-light);
+}
+
+.task-list.tree-layout .subtask-card {
+  position: relative;
+  margin-left: 0;
+}
+
+.task-list.tree-layout .subtask-card::before {
+  content: '';
+  position: absolute;
+  left: -16px;
+  top: 50%;
+  width: 12px;
+  height: 2px;
+  background: var(--border-light);
+}
+
+/* 树形布局的连接线 */
+.task-list.tree-layout .subtask-card:last-child::after {
+  content: '';
+  position: absolute;
+  left: -16px;
+  top: 50%;
+  bottom: 0;
+  width: 2px;
+  background: var(--card-bg);
+}
+
+.task-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border-light);
+  border-radius: 12px;
+  padding: 16px;
+  transition: all 0.2s;
+  break-inside: avoid;
+  margin-bottom: 16px;
+  user-select: none;
+  position: relative;
+}
+
+.task-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-color: var(--accent-blue);
+}
+
+/* 拖动图标 */
+.drag-handle {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  padding: 4px 6px;
+  cursor: grab;
+  color: var(--text-secondary);
+  opacity: 0.5;
+  transition: all 0.2s;
+  border-radius: 4px;
+  z-index: 10;
+}
+
+.drag-handle:hover {
+  opacity: 1;
+  color: var(--accent-blue);
+  background: var(--tag-bg);
+}
+
+.drag-handle:active {
+  cursor: grabbing;
+}
+
+/* 拖拽样式 */
+.sortable-ghost {
+  opacity: 0.4;
+  background: var(--accent-blue-light, #e3f2fd) !important;
+}
+
+.sortable-chosen {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2) !important;
+  transform: scale(1.02);
+}
+
+.sortable-drag {
+  opacity: 1 !important;
+}
+
+.task-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  padding-bottom: 12px;
+  padding-left: 24px;
+  border-bottom: 2px solid var(--border-light);
+}
+
+.task-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+  flex: 1;
+}
+
+.task-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.components-action-btn {
+  padding: 6px 8px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 500;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.add-subtask-btn {
+  background: var(--accent-blue);
+  color: white;
+  box-shadow: 0 2px 4px rgba(0, 119, 200, 0.2);
+}
+
+.add-subtask-btn:hover {
+  background: var(--accent-blue-dark, #005a9e);
+  box-shadow: 0 4px 8px rgba(0, 119, 200, 0.3);
+  transform: translateY(-1px);
+}
+
+.delete-btn {
+  background: #fee;
+  color: #dc2626;
+  border: 1px solid #fecaca;
+  box-shadow: 0 2px 4px rgba(220, 38, 38, 0.1);
+}
+
+.delete-btn:hover {
+  background: #dc2626;
+  color: white;
+  border-color: #dc2626;
+  box-shadow: 0 4px 8px rgba(220, 38, 38, 0.2);
+  transform: translateY(-1px);
+}
+
+.task-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* 状态、类型、优先级在一行 */
+.task-meta-row {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.meta-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: 1;
+  min-width: 150px;
+}
+
+.meta-label {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.meta-select {
+  flex: 1;
+  padding: 6px 10px;
+  border-radius: 2px;
+  border: 1px solid var(--border-light);
+  background: var(--card-bg);
+  color: var(--text-primary);
+  cursor: pointer;
+  font-size: 0.85rem;
+  min-width: 0;
+}
+
+.meta-select:focus {
+  outline: none;
+  border-color: var(--accent-blue);
+}
+
+.task-description {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  padding: 8px 12px;
+  background: var(--tag-bg);
+  border-radius: 6px;
+}
+
+/* 子任务列表样式 */
+.subtasks-section {
+  margin-top: 8px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border-light);
+}
+
+/* 任务详细信息区域 */
+.task-detail-section {
+  margin-top: 12px;
+  padding: 12px;
+  background: var(--tag-bg);
+  border-radius: 8px;
+  border: 1px solid var(--border-light);
+}
+
+.detail-header {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.detail-textarea {
+  width: 100%;
+  min-height: 60px;
+  padding: 8px;
+  border: 1px solid var(--border-light);
+  border-radius: 6px;
+  background: var(--card-bg);
+  color: var(--text-primary);
+  font-size: 0.85rem;
+  font-family: inherit;
+  resize: vertical;
+  line-height: 1.5;
+}
+
+.detail-textarea:focus {
+  outline: none;
+  border-color: var(--accent-blue);
+}
+
+.detail-textarea::placeholder {
+  color: var(--text-secondary);
+  opacity: 0.6;
+}
+
+.subtasks-header {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.subtasks-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* 子任务卡片 */
+.subtask-card {
+  background: var(--tag-bg);
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+  padding: 12px;
+  position: relative;
+  transition: all 0.2s;
+}
+
+.subtask-card:hover {
+  border-color: var(--accent-blue);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.subtask-drag-handle {
+  top: 6px;
+  left: 6px;
+  padding: 2px 4px;
+  font-size: 0.75rem;
+}
+
+.subtask-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  padding-left: 20px;
+}
+
+.subtask-title {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  flex: 1;
+}
+
+.subtask-delete-btn {
+  padding: 4px 8px;
+  border: none;
+  width: 40px;
+  border-radius: 4px;
+  background: #fee;
+  color: #dc2626;
+  cursor: pointer;
+  font-size: 0.75rem;
+  transition: all 0.2s;
+}
+
+.subtask-delete-btn:hover {
+  background: #dc2626;
+  color: white;
+}
+

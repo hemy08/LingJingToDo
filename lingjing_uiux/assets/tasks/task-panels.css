@@ -1,0 +1,262 @@
+/* TaskAddArea */
+.task-add-area {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  background: var(--bg-primary, var(--card-bg));
+  border-bottom: 1px solid var(--border-light);
+}
+
+.task-input {
+  min-width: 250px;
+}
+
+.search-wrapper {
+  flex: 0 0 auto;
+  min-width: 280px;
+}
+
+/* TaskPanel */
+.task-list-container {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  min-height: 0;
+}
+
+.task-list-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.task-list-container::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 4px;
+}
+
+.task-list-container::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+}
+
+.task-list-container::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+@media (prefers-color-scheme: dark) {
+  .task-list-container::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+  }
+  
+  .task-list-container::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+  }
+  
+  .task-list-container::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.3);
+  }
+}
+
+/* AdvancedSearchBar */
+.advanced-search-bar {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.search-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+}
+
+.advanced-toggle {
+  padding: 8px 12px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  cursor: pointer;
+  color: var(--text-secondary);
+}
+
+.advanced-toggle.active {
+  background: var(--accent-color, var(--accent-blue));
+  color: white;
+  border-color: var(--accent-color, var(--accent-blue));
+}
+
+.history-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  margin-top: 4px;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  z-index: 100;
+}
+
+.history-header {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border-color);
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.clear-history-btn {
+  background: transparent;
+  border: none;
+  color: var(--accent-color, var(--accent-blue));
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.history-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 12px;
+  cursor: pointer;
+}
+
+.history-item:hover {
+  background: var(--bg-secondary);
+}
+
+.history-keyword {
+  color: var(--text-primary);
+}
+
+.history-count {
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+
+.advanced-options {
+  display: flex;
+  gap: 16px;
+  padding: 12px;
+  background: var(--bg-secondary);
+  border-radius: 4px;
+}
+
+.option-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.option-group label {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.option-group select {
+  padding: 6px 8px;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+.checkbox-group {
+  flex-direction: row;
+  align-items: center;
+  gap: 16px;
+}
+
+.checkbox-group label {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+}
+
+/* CalendarPanel */
+.calendar-panel {
+  padding: 12px;
+}
+
+.calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.calendar-title {
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--text-primary);
+}
+
+.calendar-nav {
+  display: flex;
+  gap: 4px;
+}
+
+.cal-btn {
+  padding: 4px 8px;
+  border: none;
+  border-radius: 4px;
+  background: var(--tag-bg);
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-size: 0.75rem;
+  transition: all 0.2s;
+}
+
+.cal-btn:hover {
+  background: var(--accent-light, var(--accent-blue-light));
+  color: var(--accent-color, var(--accent-blue));
+}
+
+.cal-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+  margin-bottom: 8px;
+  text-align: center;
+  font-size: 0.7rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.cal-days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+}
+
+.cal-day {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.75rem;
+  transition: all 0.15s;
+  color: var(--text-primary);
+}
+
+.cal-day:hover {
+  background: var(--accent-light, var(--accent-blue-light));
+}
+
+.cal-day.other-month {
+  color: var(--text-secondary);
+  opacity: 0.4;
+}
+
+.cal-day.selected {
+  background: var(--accent-color, var(--accent-blue));
+  color: white;
+  font-weight: 600;
+}
+
+/* TaskStatistics */

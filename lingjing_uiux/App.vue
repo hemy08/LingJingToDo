@@ -263,14 +263,33 @@ const createNewProject = async () => {
 </template>
 
 <style>
-@import './assets/main.css';
-@import './assets/buttons.css';
-@import './assets/config.css';
-@import './assets/statusbar.css';
-@import './assets/titlebar.css';
-@import './assets/tasks.css';
-@import './assets/components.css';
-@import './assets/themes.css';
+/* 全局基础 */
+@import './assets/base/theme-variables.css';
+@import './assets/base/global-common.css';
+@import './assets/base/layout.css';
+
+/* 交互组件 */
+@import './assets/components/common-interactive.css';
+@import './assets/components/buttons.css';
+@import './assets/components/modals.css';
+@import './assets/components/panels.css';
+@import './assets/components/config.css';
+@import './assets/components/statusbar.css';
+@import './assets/components/titlebar.css';
 @import './assets/common-components.css';
-@import './assets/components-common.css';
+
+/* 任务相关 */
+@import './assets/tasks/task-panels.css';
+@import './assets/tasks/task-tree.css';
+@import './assets/tasks/skeletons.css';
+@import './assets/tasks/tasks.css';
+
+/* 高级组件 */
+@import './assets/components/advanced.css';
+@import './assets/components/task-list-components.css';
+@import './assets/components/welcome.css';
+
+/* 主题 */
+@import './assets/main.css';
+@import './assets/themes/themes.css';
 </style>

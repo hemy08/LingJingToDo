@@ -1,0 +1,163 @@
+/* CSS主题变量定义 */
+
+:root {
+  --bg-page: #f5f7fa;
+  --card-bg: #ffffff;
+  --border-light: #e9ecef;
+  --text-primary: #1e2a3e;
+  --text-secondary: #5a6e7c;
+  --accent-blue: #0077c8;
+  --accent-blue-light: #e6f0fa;
+  --tag-bg: #f0f2f5;
+  --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 8px 20px rgba(0, 0, 0, 0.06);
+  --danger: #e74c3c;
+  --success: #2c7a4d;
+  --warning: #f39c12;
+  --transition: all 0.2s ease;
+  --tree-hover: #eef2fa;
+  --due-warning: #ffe6e5;
+  --checklist-bg: #fafcff;
+  --splitter-width: 6px;
+  --toolbar-bg: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --toolbar-text: #ffffff;
+  --toolbar-border: rgba(255, 255, 255, 0.1);
+  --toolbar-button-bg: rgba(255, 255, 255, 0.1);
+  --toolbar-button-hover: rgba(255, 255, 255, 0.2);
+}
+
+body.dark {
+  --bg-page: #121826;
+  --card-bg: #1e293b;
+  --border-light: #2d3a4e;
+  --text-primary: #e9edf2;
+  --text-secondary: #94a3b8;
+  --accent-blue: #3b82f6;
+  --accent-blue-light: #1e293b;
+  --tag-bg: #334155;
+  --tree-hover: #2d3a4e;
+  --due-warning: #4a2626;
+  --checklist-bg: #1e2a3a;
+  --toolbar-bg: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+  --toolbar-text: #e9edf2;
+  --toolbar-border: rgba(59, 130, 246, 0.3);
+}
+
+body.eye {
+  --bg-page: #e8f5e9;
+  --card-bg: #fef9e6;
+  --border-light: #c8e6c9;
+  --text-primary: #2c3e2f;
+  --text-secondary: #5d6e5e;
+  --accent-blue: #2e7d32;
+  --accent-blue-light: #dcfce7;
+  --tag-bg: #e8f0e8;
+  --tree-hover: #dcfce7;
+  --due-warning: #ffe0e0;
+  --checklist-bg: #fef9e6;
+  --toolbar-bg: linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%);
+  --toolbar-text: #ffffff;
+  --toolbar-border: rgba(46, 125, 50, 0.3);
+}
+
+body.orange {
+  --bg-page: #fff3e0;
+  --card-bg: #ffffffd9;
+  --border-light: #ffe0b3;
+  --text-primary: #4e2e1e;
+  --text-secondary: #b66a1a;
+  --accent-blue: #e67e22;
+  --accent-blue-light: #ffebcc;
+  --tag-bg: #ffe6cc;
+  --tree-hover: #ffe6cc;
+  --due-warning: #ffcccc;
+  --checklist-bg: #fff5e6;
+  --toolbar-bg: linear-gradient(135deg, #ff6d00 0%, #e65100 100%);
+  --toolbar-text: #ffffff;
+  --toolbar-border: rgba(255, 109, 0, 0.3);
+}
+
+body.purple {
+  --bg-page: #f3e8ff;
+  --card-bg: #ffffff;
+  --border-light: #d9c8f0;
+  --text-primary: #2e1e4e;
+  --text-secondary: #7e5aa6;
+  --accent-blue: #8e44ad;
+  --accent-blue-light: #f0e4ff;
+  --tag-bg: #ede2f5;
+  --tree-hover: #ede2f5;
+  --due-warning: #f0d9ff;
+  --checklist-bg: #faf5ff;
+  --toolbar-bg: linear-gradient(135deg, #7b1fa2 0%, #4a148c 100%);
+  --toolbar-text: #ffffff;
+  --toolbar-border: rgba(123, 31, 162, 0.3);
+}
+
+body.red {
+  --bg-page: #ffe8e8;
+  --card-bg: #fff5f5;
+  --border-light: #ffc9c9;
+  --text-primary: #5e2e2e;
+  --text-secondary: #c0392b;
+  --accent-blue: #e74c3c;
+  --accent-blue-light: #ffe0e0;
+  --tag-bg: #ffe0e0;
+  --tree-hover: #ffe0e0;
+  --due-warning: #ffcccc;
+  --checklist-bg: #fff0f0;
+  --toolbar-bg: linear-gradient(135deg, #c62828 0%, #b71c1c 100%);
+  --toolbar-text: #ffffff;
+  --toolbar-border: rgba(198, 40, 40, 0.3);
+}
+
+body.skyblue {
+  --bg-page: #e0f2fe;
+  --card-bg: #ffffff;
+  --border-light: #bae6fd;
+  --text-primary: #0c4a6e;
+  --text-secondary: #0284c7;
+  --accent-blue: #0284c7;
+  --accent-blue-light: #e0f2fe;
+  --tag-bg: #f0f9ff;
+  --tree-hover: #f0f9ff;
+  --due-warning: #ffe0e0;
+  --checklist-bg: #ffffff;
+  --toolbar-bg: linear-gradient(135deg, #0288d1 0%, #01579b 100%);
+  --toolbar-text: #ffffff;
+  --toolbar-border: rgba(2, 136, 209, 0.3);
+}
+
+body.navy {
+  --bg-page: #0f172a;
+  --card-bg: #1e293b;
+  --border-light: #334155;
+  --text-primary: #e2e8f0;
+  --text-secondary: #94a3b8;
+  --accent-blue: #3b82f6;
+  --accent-blue-light: #1e293b;
+  --tag-bg: #1e293b;
+  --tree-hover: #334155;
+  --due-warning: #4a2626;
+  --checklist-bg: #1e293b;
+  --toolbar-bg: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+  --toolbar-text: #e2e8f0;
+  --toolbar-border: rgba(59, 130, 246, 0.3);
+}
+
+body.deep-purple {
+  --bg-page: #1e1b4b;
+  --card-bg: #2e2a5e;
+  --border-light: #4338ca;
+  --text-primary: #e0e7ff;
+  --text-secondary: #c7d2fe;
+  --accent-blue: #8b5cf6;
+  --accent-blue-light: #312e81;
+  --tag-bg: #312e81;
+  --tree-hover: #4338ca;
+  --due-warning: #4a2626;
+  --checklist-bg: #2e2a5e;
+  --toolbar-bg: linear-gradient(135deg, #4338ca 0%, #1e1b4b 100%);
+  --toolbar-text: #e0e7ff;
+  --toolbar-border: rgba(139, 92, 246, 0.3);
+}
