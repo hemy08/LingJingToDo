@@ -246,6 +246,9 @@ export function createConfigHandlers<
   ) => {
     event.preventDefault()
 
+    const MIN_WIDTH = 300
+    const MIN_HEIGHT = 400
+
     const startX = event.clientX
     const startY = event.clientY
     const startWidth = modalWidth.value
@@ -254,11 +257,11 @@ export function createConfigHandlers<
     const handleMouseMove = (e: MouseEvent) => {
       if (direction === 'right' || direction === 'corner') {
         const newWidth = startWidth + (e.clientX - startX)
-        modalWidth.value = Math.max(400, Math.min(800, newWidth))
+        modalWidth.value = Math.max(MIN_WIDTH, Math.min(window.innerWidth * 0.9, newWidth))
       }
       if (direction === 'bottom' || direction === 'corner') {
         const newHeight = startHeight + (e.clientY - startY)
-        modalHeight.value = Math.max(400, Math.min(800, newHeight))
+        modalHeight.value = Math.max(MIN_HEIGHT, Math.min(window.innerHeight * 0.9, newHeight))
       }
     }
 

@@ -29,25 +29,6 @@
   }
 }
 
-/* ������ */
-.titlebar {
-  height: 32px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: var(--toolbar-bg);
-  backdrop-filter: blur(10px);
-  padding: 0 8px;
-  z-index: 100;
-}
-
-.titlebar-left {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  color: var(--toolbar-text);
-}
-
 .app-icon {
   font-size: 16px;
 }
@@ -55,34 +36,6 @@
 .app-title {
   font-size: 13px;
   font-weight: 500;
-}
-
-.titlebar-right {
-  display: flex;
-  gap: 4px;
-}
-
-.titlebar-btn {
-  width: 32px;
-  height: 24px;
-  border: none;
-  background: transparent;
-  color: var(--toolbar-text);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 4px;
-  transition: background 0.2s;
-}
-
-.titlebar-btn:hover {
-  background: var(--toolbar-button-hover);
-}
-
-.titlebar-btn.close-btn:hover {
-  background: #e74c3c;
-  color: white;
 }
 
 /* ��ӭ���� */

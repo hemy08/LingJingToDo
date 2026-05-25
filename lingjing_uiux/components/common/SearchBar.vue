@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
+
 import { useSearch } from '../../composables/useSearch'
 import type { Task } from '../../types'
 
@@ -49,7 +50,9 @@ const suggestions = computed(() => {
   const kw = localKeyword.value.toLowerCase()
 
   return tasks
-    .filter(t => t.title.toLowerCase().includes(kw) || (t.remark && t.remark.toLowerCase().includes(kw)))
+    .filter(
+      t => t.title.toLowerCase().includes(kw) || (t.remark && t.remark.toLowerCase().includes(kw))
+    )
     .slice(0, props.maxSuggestions)
 })
 
@@ -115,18 +118,16 @@ function handleSearch() {
         @blur="handleBlur"
         @keyup.enter="handleSearch"
       />
-      <button v-if="hasKeyword" class="clear-btn" @click="handleClear" title="清空搜索">
+      <button v-if="hasKeyword" class="clear-btn" title="清空搜索" @click="handleClear">
         <i class="fas fa-times"></i>
       </button>
     </div>
 
-    <button class="search-btn" @click="handleSearch" title="搜索">
+    <button class="search-btn" title="搜索" @click="handleSearch">
       <i class="fas fa-search">搜索</i>
     </button>
 
-    <div v-if="hasKeyword && matchedCount > 0" class="match-count">
-      {{ matchedCount }} 个匹配
-    </div>
+    <div v-if="hasKeyword && matchedCount > 0" class="match-count">{{ matchedCount }} 个匹配</div>
 
     <div v-if="showDropdown && suggestions.length > 0" class="dropdown">
       <div
@@ -139,7 +140,10 @@ function handleSearch() {
       </div>
     </div>
 
-    <div v-if="showDropdown && hasKeyword && suggestions.length === 0 && !isSearching" class="no-result">
+    <div
+      v-if="showDropdown && hasKeyword && suggestions.length === 0 && !isSearching"
+      class="no-result"
+    >
       未找到匹配的任务
     </div>
   </div>

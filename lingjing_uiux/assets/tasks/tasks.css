@@ -59,30 +59,6 @@
   font-size: 0.7rem;
 }
 
-/* 模态框样式 */
-.modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.6);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-}
-
-
-.theme-modal {
-  width: 1100px;
-  min-width: 850px;
-  max-width: 1400px;
-  resize: both;
-  overflow: hidden;
-  position: relative;
-}
-
 .theme-close-btn {
   position: absolute;
   top: 16px;

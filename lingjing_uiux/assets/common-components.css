@@ -155,23 +155,6 @@
   filter: brightness(1.1);
 }
 
-/* 工具栏按钮样式 */
-.toolbar-right {
-  background: var(--toolbar-button-bg);
-  color: var(--toolbar-text);
-  border: 1px solid transparent;
-}
-
-.toolbar-right :hover {
-  background: var(--toolbar-button-hover);
-  color: var(--toolbar-text);
-}
-
-.toolbar-right .active {
-  background: var(--toolbar-button-hover);
-  color: var(--toolbar-text);
-}
-
 /* 徽章样式 */
 .badge {
   display: inline-flex;
@@ -310,4 +293,51 @@
 .toolbar-btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+/* ========== 对话框样式 ========== */
+
+.dialog-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+}
+
+.dialog-box {
+  background: var(--card-bg);
+  border-radius: 16px;
+  padding: 24px;
+  min-width: 320px;
+  max-width: 90vw;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  z-index: 2001;
+}
+
+.dialog-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.dialog-content {
+  color: var(--text-secondary);
+  margin-bottom: 24px;
+  line-height: 1.6;
+}
+
+.dialog-buttons {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
 }

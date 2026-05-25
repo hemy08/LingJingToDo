@@ -21,9 +21,43 @@
   --splitter-width: 6px;
   --toolbar-bg: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   --toolbar-text: #ffffff;
+  --toolbar-button-bg: #667eea;
+  --toolbar-button-text: #764ba2;
   --toolbar-border: rgba(255, 255, 255, 0.1);
   --toolbar-button-bg: rgba(255, 255, 255, 0.1);
   --toolbar-button-hover: rgba(255, 255, 255, 0.2);
+  --modal-min-width: 300px;
+  --modal-min-height: 400px;
+  --modal-default-width: 600px;
+  --modal-default-height: 500px;
+  --modal-max-width-ratio: 0.9;
+  --modal-max-height-ratio: 0.9;
+  --modal-button-margin-bottom: 10px;
+  --modal-button-gap: 8px;
+  --config-list-min-height: 200px;
+  --config-list-scrollbar-width: 8px;
+  --modal-header-height: 60px;
+  --modal-add-area-height: 60px;
+  --modal-buttons-height: 60px;
+  --add-config-gap: 8px;
+  --add-config-padding: 12px 0;
+
+  /* 子任务表格样式变量 */
+  --subtask-table-min-width: 700px;
+  --subtask-table-header-height: 42px;
+  --subtask-table-row-height: 48px;
+
+  /* 子任务卡片样式变量 */
+  --subtask-card-gap: 10px;
+  --subtask-card-padding: 12px;
+  --subtask-card-border-radius: 12px;
+
+  /* 过渡动画变量 */
+  --subtask-transition-duration: 0.2s;
+
+  /* 内联控件样式变量 */
+  --subtask-inline-padding: 4px 8px;
+  --subtask-inline-border-radius: 4px;
 }
 
 body.dark {
@@ -39,7 +73,9 @@ body.dark {
   --due-warning: #4a2626;
   --checklist-bg: #1e2a3a;
   --toolbar-bg: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-  --toolbar-text: #e9edf2;
+  --toolbar-text: #1e293b;
+  --toolbar-button-bg: #0f172a;
+  --toolbar-button-text: #ffffff;
   --toolbar-border: rgba(59, 130, 246, 0.3);
 }
 
@@ -56,7 +92,9 @@ body.eye {
   --due-warning: #ffe0e0;
   --checklist-bg: #fef9e6;
   --toolbar-bg: linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%);
-  --toolbar-text: #ffffff;
+  --toolbar-text: #2e7d32;
+  --toolbar-button-bg: #1b5e20;
+  --toolbar-button-text: #ffffff;
   --toolbar-border: rgba(46, 125, 50, 0.3);
 }
 
@@ -73,7 +111,9 @@ body.orange {
   --due-warning: #ffcccc;
   --checklist-bg: #fff5e6;
   --toolbar-bg: linear-gradient(135deg, #ff6d00 0%, #e65100 100%);
-  --toolbar-text: #ffffff;
+  --toolbar-text: #ff6d00;
+  --toolbar-button-bg: #e65100;
+  --toolbar-button-text: #ffffff;
   --toolbar-border: rgba(255, 109, 0, 0.3);
 }
 
@@ -90,7 +130,9 @@ body.purple {
   --due-warning: #f0d9ff;
   --checklist-bg: #faf5ff;
   --toolbar-bg: linear-gradient(135deg, #7b1fa2 0%, #4a148c 100%);
-  --toolbar-text: #ffffff;
+  --toolbar-text: #7b1fa2;
+  --toolbar-button-bg: #4a148c;
+  --toolbar-button-text: #ffffff;
   --toolbar-border: rgba(123, 31, 162, 0.3);
 }
 
@@ -107,7 +149,9 @@ body.red {
   --due-warning: #ffcccc;
   --checklist-bg: #fff0f0;
   --toolbar-bg: linear-gradient(135deg, #c62828 0%, #b71c1c 100%);
-  --toolbar-text: #ffffff;
+  --toolbar-text: #c62828;
+  --toolbar-button-bg: #b71c1c;
+  --toolbar-button-text: #ffffff;
   --toolbar-border: rgba(198, 40, 40, 0.3);
 }
 
@@ -124,7 +168,9 @@ body.skyblue {
   --due-warning: #ffe0e0;
   --checklist-bg: #ffffff;
   --toolbar-bg: linear-gradient(135deg, #0288d1 0%, #01579b 100%);
-  --toolbar-text: #ffffff;
+  --toolbar-text: #0288d1;
+  --toolbar-button-bg: #01579b;
+  --toolbar-button-text: #ffffff;
   --toolbar-border: rgba(2, 136, 209, 0.3);
 }
 
@@ -141,7 +187,9 @@ body.navy {
   --due-warning: #4a2626;
   --checklist-bg: #1e293b;
   --toolbar-bg: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-  --toolbar-text: #e2e8f0;
+  --toolbar-text: #1e293b;
+  --toolbar-button-bg: #0f172a;
+  --toolbar-button-text: #ffffff;
   --toolbar-border: rgba(59, 130, 246, 0.3);
 }
 
@@ -158,6 +206,209 @@ body.deep-purple {
   --due-warning: #4a2626;
   --checklist-bg: #2e2a5e;
   --toolbar-bg: linear-gradient(135deg, #4338ca 0%, #1e1b4b 100%);
-  --toolbar-text: #e0e7ff;
+  --toolbar-text: #4338ca;
+  --toolbar-button-bg: #1e1b4b;
+  --toolbar-button-text: #ffffff;
   --toolbar-border: rgba(139, 92, 246, 0.3);
+}
+
+body.titian-red {
+  --bg-page: #fef5f5;
+  --card-bg: #ffffff;
+  --text-primary: #8b2942;
+  --text-secondary: #a8546b;
+  --border-light: #e8c5cf;
+  --border-medium: #d4a0b3;
+  --accent-color: #c0405b;
+  --accent-hover: #d4536e;
+  --accent-light: #f5d5dc;
+  --toolbar-bg: linear-gradient(135deg, #c0405b 0%, #8b2942 100%);
+  --toolbar-text: #c0405b;
+  --toolbar-button-bg: #8b2942;
+  --toolbar-button-text: #ffffff;
+  --toolbar-border: rgba(192, 64, 91, 0.3);
+}
+
+/* ���˹������ */
+body.mars-green {
+  --bg-page: #f0f7f4;
+  --card-bg: #ffffff;
+  --text-primary: #1d4d3a;
+  --text-secondary: #3a6b55;
+  --border-light: #c5dcd2;
+  --border-medium: #9fc4b5;
+  --accent-color: #2d6b4f;
+  --accent-hover: #3d7b5f;
+  --accent-light: #d5ebe3;
+  --toolbar-bg: linear-gradient(135deg, #2d6b4f 0%, #1d4d3a 100%);
+  --toolbar-text: #2d6b4f;
+  --toolbar-button-bg: #1d4d3a;
+  --toolbar-button-text: #ffffff;
+  --toolbar-border: rgba(45, 107, 79, 0.3);
+}
+
+/* ������������ */
+body.klein-blue {
+  --bg-page: #f0f5ff;
+  --card-bg: #ffffff;
+  --text-primary: #002fa7;
+  --text-secondary: #1a4fb8;
+  --border-light: #c5d5f5;
+  --border-medium: #9fb8e8;
+  --accent-color: #0055ff;
+  --accent-hover: #1a6aff;
+  --accent-light: #d5e5ff;
+  --toolbar-bg: linear-gradient(135deg, #0055ff 0%, #002fa7 100%);
+  --toolbar-text: #0055ff;
+  --toolbar-button-bg: #002fa7;
+  --toolbar-button-text: #ffffff;
+  --toolbar-border: rgba(0, 85, 255, 0.3);
+}
+
+/* 勃艮第红主题 */
+body.burgundy-red {
+  --bg-page: #fef3f5;
+  --card-bg: #ffffff;
+  --text-primary: #722f37;
+  --text-secondary: #8f4a52;
+  --border-light: #e8c5ca;
+  --border-medium: #d4a0a8;
+  --accent-color: #a04a52;
+  --accent-hover: #b05a62;
+  --accent-light: #f5d5d8;
+  --toolbar-bg: linear-gradient(135deg, #a04a52 0%, #722f37 100%);
+  --toolbar-text: #a04a52;
+  --toolbar-button-bg: #722f37;
+  --toolbar-button-text: #ffffff;
+  --toolbar-border: rgba(160, 74, 82, 0.3);
+}
+
+/* 申布伦黄主题 */
+body.schoenbrunn-yellow {
+  --bg-page: #fffef5;
+  --card-bg: #ffffff;
+  --text-primary: #c4a000;
+  --text-secondary: #d4b020;
+  --border-light: #e8e0c5;
+  --border-medium: #d4c5a0;
+  --accent-color: #e6c200;
+  --accent-hover: #f6d210;
+  --accent-light: #f5f0d5;
+  --toolbar-bg: linear-gradient(135deg, #e6c200 0%, #c4a000 100%);
+  --toolbar-text: #e6c200;
+  --toolbar-button-bg: #ffffff;
+  --toolbar-button-text: #c4a000;
+  --toolbar-border: rgba(0, 0, 0, 0.2);
+  --toolbar-button-bg: rgba(0, 0, 0, 0.05);
+  --toolbar-button-hover: rgba(0, 0, 0, 0.1);
+}
+
+/* 蒂芙尼蓝主题 */
+body.tiffany-blue {
+  --bg-page: #f0fafb;
+  --card-bg: #ffffff;
+  --text-primary: #007d80;
+  --text-secondary: #209da0;
+  --border-light: #c5e8ea;
+  --border-medium: #9fd5d8;
+  --accent-color: #00b4b8;
+  --accent-hover: #10c4c8;
+  --accent-light: #d5f5f6;
+  --toolbar-bg: linear-gradient(135deg, #00b4b8 0%, #007d80 100%);
+  --toolbar-text: #00b4b8;
+  --toolbar-button-bg: #007d80;
+  --toolbar-button-text: #ffffff;
+  --toolbar-border: rgba(0, 180, 184, 0.3);
+}
+
+/* 中国红主题 */
+body.china-red {
+  --bg-page: #fff5f5;
+  --card-bg: #ffffff;
+  --text-primary: #c41e3a;
+  --text-secondary: #d43e5a;
+  --border-light: #f5c5ca;
+  --border-medium: #e8a0a8;
+  --accent-color: #e52d4a;
+  --accent-hover: #f53d5a;
+  --accent-light: #ffd5da;
+  --toolbar-bg: linear-gradient(135deg, #e52d4a 0%, #c41e3a 100%);
+  --toolbar-text: #e52d4a;
+  --toolbar-button-bg: #c41e3a;
+  --toolbar-button-text: #ffffff;
+  --toolbar-border: rgba(229, 45, 74, 0.3);
+}
+
+/* 范戴克棕主题 */
+body.vandyke-brown {
+  --bg-page: #faf8f5;
+  --card-bg: #ffffff;
+  --text-primary: #5c4033;
+  --text-secondary: #7c6053;
+  --border-light: #d5c8c0;
+  --border-medium: #c5b0a0;
+  --accent-color: #8b6b4d;
+  --accent-hover: #9b7b5d;
+  --accent-light: #e5d8d0;
+  --toolbar-bg: linear-gradient(135deg, #8b6b4d 0%, #5c4033 100%);
+  --toolbar-text: #8b6b4d;
+  --toolbar-button-bg: #5c4033;
+  --toolbar-button-text: #ffffff;
+  --toolbar-border: rgba(139, 107, 77, 0.3);
+}
+
+/* 爱马仕橙主题 */
+body.hermes-orange {
+  --bg-page: #fff8f3;
+  --card-bg: #ffffff;
+  --text-primary: #d4710f;
+  --text-secondary: #e4812f;
+  --border-light: #f5dcc5;
+  --border-medium: #e8c5a0;
+  --accent-color: #f37021;
+  --accent-hover: #ff8031;
+  --accent-light: #ffdcd5;
+  --toolbar-bg: linear-gradient(135deg, #f37021 0%, #d4710f 100%);
+  --toolbar-text: #f37021;
+  --toolbar-button-bg: #d4710f;
+  --toolbar-button-text: #ffffff;
+  --toolbar-border: rgba(243, 112, 33, 0.3);
+}
+
+/* 普鲁士蓝主题 */
+body.prussian-blue {
+  --bg-page: #f5f8fa;
+  --card-bg: #ffffff;
+  --text-primary: #003153;
+  --text-secondary: #205173;
+  --border-light: #c5d5e0;
+  --border-medium: #a0c0d0;
+  --accent-color: #004d80;
+  --accent-hover: #105d90;
+  --accent-light: #d5e5f0;
+  --toolbar-bg: linear-gradient(135deg, #004d80 0%, #003153 100%);
+  --toolbar-text: #004d80;
+  --toolbar-button-bg: #003153;
+  --toolbar-button-text: #ffffff;
+  --toolbar-border: rgba(0, 77, 128, 0.3);
+}
+
+/* 莱姆绿主题 */
+body.lime-green {
+  --bg-page: #f5faf5;
+  --card-bg: #ffffff;
+  --text-primary: #32cd32;
+  --text-secondary: #52dd52;
+  --border-light: #c5f0c5;
+  --border-medium: #a0e0a0;
+  --accent-color: #50e450;
+  --accent-hover: #60f460;
+  --accent-light: #d5f5d5;
+  --toolbar-bg: linear-gradient(135deg, #50e450 0%, #32cd32 100%);
+  --toolbar-text: #50e450;
+  --toolbar-button-bg: #ffffff;
+  --toolbar-button-text: #32cd32;
+  --toolbar-border: rgba(0, 0, 0, 0.2);
+  --toolbar-button-bg: rgba(0, 0, 0, 0.05);
+  --toolbar-button-hover: rgba(0, 0, 0, 0.1);
 }

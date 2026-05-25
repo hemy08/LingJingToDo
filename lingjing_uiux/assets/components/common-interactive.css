@@ -80,8 +80,3 @@
   color: var(--warning-color);
   font-size: 12px;
 }
-
-.toolbar-right {
-  display: flex;
-  gap: 8px;
-}

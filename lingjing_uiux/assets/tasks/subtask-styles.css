@@ -1,0 +1,475 @@
+/* ========================================
+   子任务列表样式优化
+   包含表格模式和卡片模式的样式定义
+   ======================================== */
+
+/* ========================================
+   表格模式样式
+   ======================================== */
+
+/* 表格容器样式 */
+.subtasks-list.table-mode {
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: auto;
+  background: var(--card-bg);
+  border-radius: 8px;
+  padding: 0;
+}
+
+.subtask-table {
+  width: 100%;
+  min-width: var(--subtask-table-min-width);
+  border-collapse: collapse;
+  background: var(--card-bg);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.subtask-table.auto-wrap {
+  table-layout: auto;
+}
+
+/* 表头样式 */
+.subtask-table thead {
+  background: var(--tag-bg);
+}
+
+.subtask-table th {
+  padding: 12px 8px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: var(--text-primary);
+  border-bottom: 2px solid var(--border-light);
+  white-space: nowrap;
+}
+
+/* 数据行样式 */
+.subtask-table tbody tr {
+  transition: all var(--subtask-transition-duration) ease;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.subtask-table tbody tr:hover {
+  background: var(--tree-hover);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.subtask-table td {
+  padding: 10px 8px;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  border-bottom: 1px solid var(--border-light);
+}
+
+/* 列宽配置 - 通过colgroup在组件中定义 */
+
+/* 内联输入框样式 */
+.inline-input {
+  width: 100%;
+  padding: var(--subtask-inline-padding);
+  border: 1px solid transparent;
+  border-radius: var(--subtask-inline-border-radius);
+  background: transparent;
+  color: var(--text-primary);
+  font-size: 0.85rem;
+  transition: all var(--subtask-transition-duration) ease;
+}
+
+.inline-input:hover {
+  border-color: var(--border-light);
+  background: var(--tag-bg);
+}
+
+.inline-input:focus {
+  outline: none;
+  border-color: var(--accent-blue);
+  background: var(--card-bg);
+  box-shadow: 0 0 0 2px rgba(var(--accent-blue-rgb, 0, 119, 200), 0.1);
+}
+
+/* 内联下拉框样式 */
+.inline-select {
+  width: 100%;
+  padding: var(--subtask-inline-padding);
+  border: 1px solid transparent;
+  border-radius: var(--subtask-inline-border-radius);
+  background: transparent;
+  color: var(--text-primary);
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all var(--subtask-transition-duration) ease;
+}
+
+.inline-select:hover {
+  border-color: var(--border-light);
+  background: var(--tag-bg);
+}
+
+.inline-select:focus {
+  outline: none;
+  border-color: var(--accent-blue);
+  background: var(--card-bg);
+  box-shadow: 0 0 0 2px rgba(var(--accent-blue-rgb, 0, 119, 200), 0.1);
+}
+
+/* 内联日期选择器样式 */
+.inline-date {
+  width: 100%;
+  padding: var(--subtask-inline-padding);
+  border: 1px solid transparent;
+  border-radius: var(--subtask-inline-border-radius);
+  background: transparent;
+  color: var(--text-primary);
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all var(--subtask-transition-duration) ease;
+}
+
+.inline-date:hover {
+  border-color: var(--border-light);
+  background: var(--tag-bg);
+}
+
+.inline-date:focus {
+  outline: none;
+  border-color: var(--accent-blue);
+  background: var(--card-bg);
+  box-shadow: 0 0 0 2px rgba(var(--accent-blue-rgb, 0, 119, 200), 0.1);
+}
+
+/* 单元格内容样式 */
+.cell-content {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
+}
+
+.cell-content:hover {
+  overflow: visible;
+  white-space: normal;
+}
+
+/* 日期文本样式 */
+.date-text {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+/* 删除按钮样式（表格模式） */
+.subtask-delete-btn {
+  padding: 4px 8px;
+  border: none;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-size: 0.75rem;
+  transition: all var(--subtask-transition-duration) ease;
+}
+
+.subtask-delete-btn:hover {
+  background: var(--danger);
+  color: white;
+}
+
+/* 表格容器滚动条样式 */
+.subtasks-list.table-mode::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.subtasks-list.table-mode::-webkit-scrollbar-track {
+  background: var(--tag-bg);
+  border-radius: 4px;
+}
+
+.subtasks-list.table-mode::-webkit-scrollbar-thumb {
+  background: var(--border-light);
+  border-radius: 4px;
+  transition: background 0.2s;
+}
+
+.subtasks-list.table-mode::-webkit-scrollbar-thumb:hover {
+  background: var(--text-secondary);
+}
+
+/* ========================================
+   卡片模式样式
+   ======================================== */
+
+/* 卡片容器样式 */
+.subtask-grid {
+  display: grid;
+  gap: var(--subtask-card-gap);
+  padding: var(--subtask-card-padding);
+  background: var(--bg-page);
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+}
+
+/* 卡片样式 */
+.subtask-card {
+  background: var(--card-bg);
+  border-radius: var(--subtask-card-border-radius);
+  border: 1px solid var(--border-light);
+  overflow: hidden;
+  transition: all var(--subtask-transition-duration) ease;
+  box-shadow: var(--shadow-sm);
+}
+
+.subtask-card:hover {
+  border-color: var(--accent-blue);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+/* 卡片头部样式 */
+.subtask-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 12px;
+  border-bottom: 1px solid var(--border-light);
+  background: var(--tag-bg);
+}
+
+.subtask-title {
+  font-weight: 500;
+  font-size: 0.9rem;
+  color: var(--text-primary);
+  cursor: pointer;
+  flex: 1;
+  margin: 0;
+  transition: color var(--subtask-transition-duration) ease;
+}
+
+.subtask-title:hover {
+  color: var(--accent-blue);
+}
+
+/* 编辑输入框样式（卡片模式） */
+.edit-input {
+  flex: 1;
+  padding: 6px 10px;
+  border: 1px solid var(--border-light);
+  border-radius: 4px;
+  background: var(--card-bg);
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  transition: all var(--subtask-transition-duration) ease;
+}
+
+.edit-input:focus {
+  outline: none;
+  border-color: var(--accent-blue);
+  box-shadow: 0 0 0 2px rgba(var(--accent-blue-rgb, 0, 119, 200), 0.1);
+}
+
+/* 删除按钮样式（卡片模式） */
+.subtask-card-header .subtask-delete-btn {
+  padding: 6px 10px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-size: 0.8rem;
+  transition: all var(--subtask-transition-duration) ease;
+}
+
+.subtask-card-header .subtask-delete-btn:hover {
+  background: var(--danger);
+  color: white;
+}
+
+/* 卡片主体样式 */
+.subtask-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 12px;
+}
+
+/* 元数据行样式 */
+.task-meta-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 8px;
+}
+
+/* 元数据项样式 */
+.task-meta-row .meta-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 8px;
+  background: var(--tag-bg);
+  border-radius: 6px;
+  transition: background var(--subtask-transition-duration) ease;
+}
+
+.task-meta-row .meta-item:hover {
+  background: var(--tree-hover);
+}
+
+.meta-label {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.meta-text {
+  font-size: 0.85rem;
+  color: var(--text-primary);
+}
+
+/* 元数据下拉框样式 */
+.meta-select {
+  flex: 1;
+  padding: 4px 6px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--text-primary);
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all var(--subtask-transition-duration) ease;
+}
+
+.meta-select:hover {
+  border-color: var(--border-light);
+  background: var(--card-bg);
+}
+
+.meta-select:focus {
+  outline: none;
+  border-color: var(--accent-blue);
+  box-shadow: 0 0 0 2px rgba(var(--accent-blue-rgb, 0, 119, 200), 0.1);
+}
+
+/* 详细信息区域样式 */
+.task-detail-section {
+  background: var(--tag-bg);
+  border-radius: 8px;
+  padding: 10px;
+}
+
+.detail-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+}
+
+.detail-textarea {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  background: var(--card-bg);
+  color: var(--text-primary);
+  font-size: 0.85rem;
+  font-family: inherit;
+  resize: vertical;
+  min-height: 60px;
+  transition: all var(--subtask-transition-duration) ease;
+}
+
+.detail-textarea:hover {
+  border-color: var(--border-light);
+}
+
+.detail-textarea:focus {
+  outline: none;
+  border-color: var(--accent-blue);
+  box-shadow: 0 0 0 2px rgba(var(--accent-blue-rgb, 0, 119, 200), 0.1);
+}
+
+/* ========================================
+   响应式布局
+   ======================================== */
+
+/* 小屏断点（≤600px） */
+@media (max-width: 600px) {
+  .subtask-table {
+    min-width: 500px;
+  }
+
+  .subtask-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .task-meta-row {
+    grid-template-columns: 1fr;
+  }
+
+  .subtask-card-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .subtask-card-header .subtask-delete-btn {
+    align-self: flex-end;
+  }
+}
+
+/* 中屏断点（600px - 1024px） */
+@media (min-width: 601px) and (max-width: 1024px) {
+  .subtask-table {
+    min-width: 600px;
+  }
+
+  .subtask-grid {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  }
+
+  .task-meta-row {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* 大屏断点（≥1024px） */
+@media (min-width: 1025px) {
+  .subtask-grid {
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  }
+
+  .task-meta-row {
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  }
+}
+
+/* 容器溢出处理 */
+.subtasks-list.table-mode {
+  max-height: 500px;
+}
+
+.subtasks-list:not(.table-mode) {
+  overflow-x: hidden;
+  overflow-y: auto;
+  max-height: 500px;
+}
+
+/* 滚动条样式（卡片模式） */
+.subtasks-list:not(.table-mode)::-webkit-scrollbar {
+  width: 8px;
+}
+
+.subtasks-list:not(.table-mode)::-webkit-scrollbar-track {
+  background: var(--tag-bg);
+  border-radius: 4px;
+}
+
+.subtasks-list:not(.table-mode)::-webkit-scrollbar-thumb {
+  background: var(--border-light);
+  border-radius: 4px;
+  transition: background 0.2s;
+}
+
+.subtasks-list:not(.table-mode)::-webkit-scrollbar-thumb:hover {
+  background: var(--text-secondary);
+}

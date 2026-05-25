@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
+
 import { useAdvancedSearch } from '../../composables/useAdvancedSearch'
 import type { Task } from '../../types'
 
@@ -95,10 +96,7 @@ function handleBlur() {
         <i class="fas fa-sliders-h"></i>
       </button>
 
-      <button class="search-btn" @click="executeSearch">
-        <i class="fas fa-search">搜索</i>
-        搜索
-      </button>
+      <button class="search-btn" @click="executeSearch"><i class="fas fa-search"></i> 搜索</button>
 
       <div v-if="showHistory && searchHistory.length > 0" class="history-dropdown">
         <div class="history-header">
@@ -139,11 +137,11 @@ function handleBlur() {
 
       <div class="option-group checkbox-group">
         <label>
-          <input type="checkbox" v-model="enableRegex" />
+          <input v-model="enableRegex" type="checkbox" />
           正则表达式
         </label>
         <label>
-          <input type="checkbox" v-model="enableFuzzy" />
+          <input v-model="enableFuzzy" type="checkbox" />
           模糊搜索
         </label>
       </div>
