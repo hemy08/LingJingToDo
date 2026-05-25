@@ -240,107 +240,6 @@ input:checked + .slider:before {
   white-space: pre-wrap;
 }
 
-.subtask-grid {
-  display: grid;
-  gap: 10px;
-  padding: 12px;
-  background: var(--bg-page);
-}
-
-.subtask-card {
-  background: var(--card-bg);
-  border-radius: 18px;
-  border: 1px solid var(--border-light);
-  overflow: hidden;
-  transition: all 0.1s;
-  scroll-margin: 80px;
-}
-
-.subtask-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 8px 10px 4px;
-  gap: 6px;
-  flex-wrap: wrap;
-}
-
-.subtask-title-area {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  flex: 1;
-}
-
-.drag-sub-handle {
-  cursor: grab;
-  color: var(--text-secondary);
-  font-size: 0.8em;
-}
-
-.subtask-title {
-  font-weight: 500;
-  font-size: 0.9em;
-  word-break: break-word;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  cursor: pointer;
-}
-
-.subtask-title-text {
-  border-bottom: 1px dashed transparent;
-}
-
-.subtask-title-text:hover {
-  border-bottom-color: var(--accent-blue);
-}
-
-.subtask-right-actions {
-  display: flex;
-  gap: 4px;
-}
-
-.checklist-area {
-  padding: 6px 10px 8px;
-  background: var(--checklist-bg);
-  border-top: 1px solid var(--border-light);
-  max-height: 150px;
-  overflow-y: auto;
-}
-
-.checklist-item {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 4px 0;
-  font-size: 0.8em;
-}
-
-.checklist-item input {
-  margin: 0;
-  cursor: pointer;
-  width: 16px;
-  height: 16px;
-}
-
-.checklist-item span {
-  flex: 1;
-  word-break: break-word;
-}
-
-.checklist-item .checked {
-  text-decoration: line-through;
-  color: var(--text-secondary);
-  opacity: 0.7;
-}
-
-.empty-checklist {
-  font-size: 0.75em;
-  color: var(--text-secondary);
-  text-align: center;
-  padding: 8px;
-}
 
 .add-main-task {
   margin-top: 28px;
@@ -514,5 +413,6 @@ footer {
   cursor: col-resize;
 }
 
-/* 导入子任务样式 */
+/* 导入任务样式 */
+@import './tasks/task-styles.css';
 @import './tasks/subtask-styles.css';

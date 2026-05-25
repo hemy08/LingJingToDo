@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import FileManager from '../file/FileManager.vue'
 import ConfigManager from '../config/ConfigManager.vue'
+import FileManager from '../file/FileManager.vue'
+
 import UndoRedoButtons from './UndoRedoButtons.vue'
 
 defineProps<{
@@ -31,7 +32,7 @@ const emit = defineEmits<{
     <div class="toolbar-right">
       <UndoRedoButtons />
       <button class="btn-sm" :class="{ active: showFilter }" @click="emit('toggle-filter')">
-        <i class="fas fa-filter"></i> 筛选
+        <i class="fas fa-search"></i> 搜索筛选
       </button>
       <button class="btn-sm" @click="emit('open-theme')">
         <i class="fas fa-palette"></i> 主题

@@ -10,12 +10,6 @@
       <i class="fas fa-plus"></i>
       添加
     </button>
-    <SearchBar
-      :tasks="tasks"
-      class="search-wrapper"
-      @search="handleSearch"
-      @clear="handleClearSearch"
-    />
   </div>
 </template>
 
@@ -24,20 +18,16 @@ import { ref } from 'vue'
 
 import { taskApi } from '../../../connections/task_apis.ts'
 import type { Task, TaskStatus } from '../../../types.ts'
-import SearchBar from '../../common/SearchBar.vue'
 
 const props = defineProps<{
   statuses: TaskStatus[]
   currentDate: string | null
   isDirty: boolean
-  tasks?: Task[]
 }>()
 
 const emit = defineEmits<{
   'update:isDirty': [value: boolean]
   'task-added': [task: Task]
-  'search': [keyword: string]
-  'clear-search': []
 }>()
 
 const newTaskTitle = ref('')
@@ -71,13 +61,5 @@ const handleAddTask = async () => {
   } catch (error) {
     console.error('生成任务 ID 失败:', error)
   }
-}
-
-const handleSearch = (keyword: string) => {
-  emit('search', keyword)
-}
-
-const handleClearSearch = () => {
-  emit('clear-search')
 }
 </script>

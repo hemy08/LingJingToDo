@@ -1,0 +1,224 @@
+/* ========================================
+   UnifiedSearchFilter 组件样式
+   搜索筛选组件全局样式
+   ======================================== */
+
+.unified-search-filter {
+  background: var(--card-bg);
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin-bottom: 16px;
+}
+
+.unified-search-filter .filter-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.unified-search-filter .filter-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.unified-search-filter .filter-group label {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.unified-search-filter .filter-select {
+  padding: 6px 10px;
+  border: 1px solid var(--border-light);
+  border-radius: 4px;
+  background: var(--card-bg);
+  color: var(--text-primary);
+  font-size: 0.85rem;
+  cursor: pointer;
+  min-width: 100px;
+}
+
+.unified-search-filter .filter-select:focus {
+  outline: none;
+  border-color: var(--accent-blue);
+}
+
+.unified-search-filter .search-group {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex: 0 1 auto;
+  min-width: 180px;
+  max-width: 300px;
+  position: relative;
+}
+
+.unified-search-filter .search-input {
+  width: 100%;
+  padding: 6px 28px 6px 10px;
+  border: 1px solid var(--border-light);
+  border-radius: 4px;
+  background: var(--card-bg);
+  color: var(--text-primary);
+  font-size: 0.85rem;
+}
+
+.unified-search-filter .search-input:focus {
+  outline: none;
+  border-color: var(--accent-blue);
+}
+
+.unified-search-filter .clear-search-btn {
+  position: absolute;
+  right: 8px;
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: 4px;
+  font-size: 0.75rem;
+}
+
+.unified-search-filter .clear-search-btn:hover {
+  color: var(--danger);
+}
+
+.unified-search-filter .search-btn {
+  padding: 6px 16px;
+  background: var(--accent-blue);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+.unified-search-filter .search-btn:hover {
+  background: var(--accent-blue-dark, #005a9e);
+  transform: translateY(-1px);
+}
+
+.unified-search-filter .clear-all-btn {
+  padding: 6px 12px;
+  background: transparent;
+  color: var(--text-secondary);
+  border: 1px solid var(--border-light);
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+.unified-search-filter .clear-all-btn:hover {
+  background: var(--tag-bg);
+  color: var(--danger);
+  border-color: var(--danger);
+}
+
+.unified-search-filter .filter-count {
+  padding: 4px 10px;
+  background: var(--accent-blue-light);
+  color: var(--accent-blue);
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  flex-shrink: 0;
+}
+
+/* 响应式布局 */
+@media (max-width: 1400px) {
+  .unified-search-filter .filter-row {
+    gap: 12px;
+  }
+  
+  .unified-search-filter .filter-select {
+    min-width: 90px;
+  }
+  
+  .unified-search-filter .search-group {
+    min-width: 150px;
+    max-width: 250px;
+  }
+}
+
+@media (max-width: 1200px) {
+  .unified-search-filter .filter-row {
+    gap: 10px;
+  }
+  
+  .unified-search-filter .filter-select {
+    min-width: 80px;
+  }
+  
+  .unified-search-filter .search-group {
+    min-width: 130px;
+    max-width: 200px;
+  }
+}
+
+@media (max-width: 900px) {
+  .unified-search-filter .filter-row {
+    gap: 8px;
+  }
+  
+  .unified-search-filter .filter-group {
+    gap: 6px;
+  }
+  
+  .unified-search-filter .filter-select {
+    min-width: 70px;
+  }
+  
+  .unified-search-filter .search-group {
+    min-width: 120px;
+    max-width: 180px;
+  }
+}
+
+@media (max-width: 768px) {
+  .unified-search-filter .filter-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+  
+  .unified-search-filter .filter-group {
+    width: 100%;
+    justify-content: space-between;
+  }
+  
+  .unified-search-filter .filter-select {
+    flex: 1;
+    min-width: 0;
+  }
+  
+  .unified-search-filter .search-group {
+    width: 100%;
+    min-width: 0;
+    max-width: none;
+  }
+  
+  .unified-search-filter .search-btn {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .unified-search-filter .clear-all-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}

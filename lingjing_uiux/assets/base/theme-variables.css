@@ -58,6 +58,33 @@
   /* 内联控件样式变量 */
   --subtask-inline-padding: 4px 8px;
   --subtask-inline-border-radius: 4px;
+
+  /* 通用柔和样式变量 */
+  --soft-border-color: rgba(0, 0, 0, 0.08);
+  --soft-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  --soft-transition-timing: 0.2s ease;
+
+  /* 表格柔和样式变量 */
+  --subtask-table-border-radius: 12px;
+  --subtask-table-border-opacity: 0.15;
+  --subtask-table-header-gradient: linear-gradient(to bottom, var(--tag-bg), var(--card-bg));
+  --subtask-table-row-hover-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+
+  /* 内联控件柔和样式变量 */
+  --subtask-inline-border-color-hover: rgba(0, 119, 200, 0.2);
+  --subtask-inline-border-color-focus: var(--accent-blue);
+  --subtask-inline-shadow-focus: 0 0 0 3px rgba(0, 119, 200, 0.15);
+
+  /* 模态框柔和样式变量 */
+  --modal-border-radius: 16px;
+  --modal-shadow: 0 12px 48px rgba(0, 0, 0, 0.15);
+  --modal-input-border-radius: 8px;
+  --modal-input-shadow-focus: 0 0 0 3px rgba(0, 119, 200, 0.15);
+
+  /* RGB值变量（支持半透明颜色计算） */
+  --accent-blue-rgb: 0, 119, 200;
+  --text-secondary-rgb: 90, 110, 124;
+  --border-light-rgb: 233, 236, 239;
 }
 
 body.dark {
@@ -77,6 +104,12 @@ body.dark {
   --toolbar-button-bg: #0f172a;
   --toolbar-button-text: #ffffff;
   --toolbar-border: rgba(59, 130, 246, 0.3);
+
+  /* 深色主题RGB变量覆盖 */
+  --accent-blue-rgb: 59, 130, 246;
+  --text-secondary-rgb: 148, 163, 184;
+  --border-light-rgb: 45, 58, 78;
+  --soft-border-color: rgba(255, 255, 255, 0.08);
 }
 
 body.eye {
@@ -96,6 +129,34 @@ body.eye {
   --toolbar-button-bg: #1b5e20;
   --toolbar-button-text: #ffffff;
   --toolbar-border: rgba(46, 125, 50, 0.3);
+
+  /* RGB变量 */
+  --accent-blue-rgb: 46, 125, 50;
+  --text-secondary-rgb: 93, 110, 94;
+  --border-light-rgb: 200, 230, 201;
+
+  /* 柔和样式变量 */
+  --soft-border-color: rgba(0, 0, 0, 0.08);
+  --soft-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  --soft-transition-timing: 0.2s ease;
+
+  /* 表格专用变量 */
+  --subtask-table-min-width: 700px;
+  --subtask-table-border-radius: 12px;
+  --subtask-table-border-opacity: 0.15;
+  --subtask-table-header-gradient: linear-gradient(to bottom, var(--tag-bg), var(--card-bg));
+  --subtask-table-row-hover-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+
+  /* 内联控件变量 */
+  --subtask-inline-border-color-hover: rgba(46, 125, 50, 0.2);
+  --subtask-inline-border-color-focus: var(--accent-blue);
+  --subtask-inline-shadow-focus: 0 0 0 3px rgba(46, 125, 50, 0.15);
+
+  /* 模态框变量 */
+  --modal-border-radius: 16px;
+  --modal-shadow: 0 12px 48px rgba(0, 0, 0, 0.15);
+  --modal-input-border-radius: 8px;
+  --modal-input-shadow-focus: 0 0 0 3px rgba(46, 125, 50, 0.15);
 }
 
 body.orange {
@@ -115,6 +176,34 @@ body.orange {
   --toolbar-button-bg: #e65100;
   --toolbar-button-text: #ffffff;
   --toolbar-border: rgba(255, 109, 0, 0.3);
+
+  /* RGB变量 */
+  --accent-blue-rgb: 230, 126, 34;
+  --text-secondary-rgb: 182, 106, 26;
+  --border-light-rgb: 255, 224, 179;
+
+  /* 柔和样式变量 */
+  --soft-border-color: rgba(0, 0, 0, 0.08);
+  --soft-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  --soft-transition-timing: 0.2s ease;
+
+  /* 表格专用变量 */
+  --subtask-table-min-width: 700px;
+  --subtask-table-border-radius: 12px;
+  --subtask-table-border-opacity: 0.15;
+  --subtask-table-header-gradient: linear-gradient(to bottom, var(--tag-bg), var(--card-bg));
+  --subtask-table-row-hover-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+
+  /* 内联控件变量 */
+  --subtask-inline-border-color-hover: rgba(230, 126, 34, 0.2);
+  --subtask-inline-border-color-focus: var(--accent-blue);
+  --subtask-inline-shadow-focus: 0 0 0 3px rgba(230, 126, 34, 0.15);
+
+  /* 模态框变量 */
+  --modal-border-radius: 16px;
+  --modal-shadow: 0 12px 48px rgba(0, 0, 0, 0.15);
+  --modal-input-border-radius: 8px;
+  --modal-input-shadow-focus: 0 0 0 3px rgba(230, 126, 34, 0.15);
 }
 
 body.purple {
@@ -134,6 +223,34 @@ body.purple {
   --toolbar-button-bg: #4a148c;
   --toolbar-button-text: #ffffff;
   --toolbar-border: rgba(123, 31, 162, 0.3);
+
+  /* RGB变量 */
+  --accent-blue-rgb: 142, 68, 173;
+  --text-secondary-rgb: 126, 90, 166;
+  --border-light-rgb: 217, 200, 240;
+
+  /* 柔和样式变量 */
+  --soft-border-color: rgba(0, 0, 0, 0.08);
+  --soft-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  --soft-transition-timing: 0.2s ease;
+
+  /* 表格专用变量 */
+  --subtask-table-min-width: 700px;
+  --subtask-table-border-radius: 12px;
+  --subtask-table-border-opacity: 0.15;
+  --subtask-table-header-gradient: linear-gradient(to bottom, var(--tag-bg), var(--card-bg));
+  --subtask-table-row-hover-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+
+  /* 内联控件变量 */
+  --subtask-inline-border-color-hover: rgba(142, 68, 173, 0.2);
+  --subtask-inline-border-color-focus: var(--accent-blue);
+  --subtask-inline-shadow-focus: 0 0 0 3px rgba(142, 68, 173, 0.15);
+
+  /* 模态框变量 */
+  --modal-border-radius: 16px;
+  --modal-shadow: 0 12px 48px rgba(0, 0, 0, 0.15);
+  --modal-input-border-radius: 8px;
+  --modal-input-shadow-focus: 0 0 0 3px rgba(142, 68, 173, 0.15);
 }
 
 body.red {
@@ -153,6 +270,34 @@ body.red {
   --toolbar-button-bg: #b71c1c;
   --toolbar-button-text: #ffffff;
   --toolbar-border: rgba(198, 40, 40, 0.3);
+
+  /* RGB变量 */
+  --accent-blue-rgb: 231, 76, 60;
+  --text-secondary-rgb: 192, 57, 43;
+  --border-light-rgb: 255, 201, 201;
+
+  /* 柔和样式变量 */
+  --soft-border-color: rgba(0, 0, 0, 0.08);
+  --soft-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  --soft-transition-timing: 0.2s ease;
+
+  /* 表格专用变量 */
+  --subtask-table-min-width: 700px;
+  --subtask-table-border-radius: 12px;
+  --subtask-table-border-opacity: 0.15;
+  --subtask-table-header-gradient: linear-gradient(to bottom, var(--tag-bg), var(--card-bg));
+  --subtask-table-row-hover-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+
+  /* 内联控件变量 */
+  --subtask-inline-border-color-hover: rgba(231, 76, 60, 0.2);
+  --subtask-inline-border-color-focus: var(--accent-blue);
+  --subtask-inline-shadow-focus: 0 0 0 3px rgba(231, 76, 60, 0.15);
+
+  /* 模态框变量 */
+  --modal-border-radius: 16px;
+  --modal-shadow: 0 12px 48px rgba(0, 0, 0, 0.15);
+  --modal-input-border-radius: 8px;
+  --modal-input-shadow-focus: 0 0 0 3px rgba(231, 76, 60, 0.15);
 }
 
 body.skyblue {
@@ -172,6 +317,34 @@ body.skyblue {
   --toolbar-button-bg: #01579b;
   --toolbar-button-text: #ffffff;
   --toolbar-border: rgba(2, 136, 209, 0.3);
+
+  /* RGB变量 */
+  --accent-blue-rgb: 2, 132, 199;
+  --text-secondary-rgb: 2, 132, 199;
+  --border-light-rgb: 186, 230, 253;
+
+  /* 柔和样式变量 */
+  --soft-border-color: rgba(0, 0, 0, 0.08);
+  --soft-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  --soft-transition-timing: 0.2s ease;
+
+  /* 表格专用变量 */
+  --subtask-table-min-width: 700px;
+  --subtask-table-border-radius: 12px;
+  --subtask-table-border-opacity: 0.15;
+  --subtask-table-header-gradient: linear-gradient(to bottom, var(--tag-bg), var(--card-bg));
+  --subtask-table-row-hover-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+
+  /* 内联控件变量 */
+  --subtask-inline-border-color-hover: rgba(2, 132, 199, 0.2);
+  --subtask-inline-border-color-focus: var(--accent-blue);
+  --subtask-inline-shadow-focus: 0 0 0 3px rgba(2, 132, 199, 0.15);
+
+  /* 模态框变量 */
+  --modal-border-radius: 16px;
+  --modal-shadow: 0 12px 48px rgba(0, 0, 0, 0.15);
+  --modal-input-border-radius: 8px;
+  --modal-input-shadow-focus: 0 0 0 3px rgba(2, 132, 199, 0.15);
 }
 
 body.navy {
@@ -191,6 +364,34 @@ body.navy {
   --toolbar-button-bg: #0f172a;
   --toolbar-button-text: #ffffff;
   --toolbar-border: rgba(59, 130, 246, 0.3);
+
+  /* RGB变量 */
+  --accent-blue-rgb: 59, 130, 246;
+  --text-secondary-rgb: 148, 163, 184;
+  --border-light-rgb: 51, 65, 85;
+
+  /* 柔和样式变量（深色主题） */
+  --soft-border-color: rgba(255, 255, 255, 0.08);
+  --soft-shadow: 0 2px 12px rgba(255, 255, 255, 0.06);
+  --soft-transition-timing: 0.2s ease;
+
+  /* 表格专用变量 */
+  --subtask-table-min-width: 700px;
+  --subtask-table-border-radius: 12px;
+  --subtask-table-border-opacity: 0.15;
+  --subtask-table-header-gradient: linear-gradient(to bottom, var(--tag-bg), var(--card-bg));
+  --subtask-table-row-hover-shadow: 0 4px 16px rgba(255, 255, 255, 0.08);
+
+  /* 内联控件变量 */
+  --subtask-inline-border-color-hover: rgba(59, 130, 246, 0.2);
+  --subtask-inline-border-color-focus: var(--accent-blue);
+  --subtask-inline-shadow-focus: 0 0 0 3px rgba(59, 130, 246, 0.15);
+
+  /* 模态框变量 */
+  --modal-border-radius: 16px;
+  --modal-shadow: 0 12px 48px rgba(0, 0, 0, 0.15);
+  --modal-input-border-radius: 8px;
+  --modal-input-shadow-focus: 0 0 0 3px rgba(59, 130, 246, 0.15);
 }
 
 body.deep-purple {
@@ -210,6 +411,34 @@ body.deep-purple {
   --toolbar-button-bg: #1e1b4b;
   --toolbar-button-text: #ffffff;
   --toolbar-border: rgba(139, 92, 246, 0.3);
+
+  /* RGB变量 */
+  --accent-blue-rgb: 139, 92, 246;
+  --text-secondary-rgb: 199, 210, 254;
+  --border-light-rgb: 67, 56, 202;
+
+  /* 柔和样式变量（深色主题） */
+  --soft-border-color: rgba(255, 255, 255, 0.08);
+  --soft-shadow: 0 2px 12px rgba(255, 255, 255, 0.06);
+  --soft-transition-timing: 0.2s ease;
+
+  /* 表格专用变量 */
+  --subtask-table-min-width: 700px;
+  --subtask-table-border-radius: 12px;
+  --subtask-table-border-opacity: 0.15;
+  --subtask-table-header-gradient: linear-gradient(to bottom, var(--tag-bg), var(--card-bg));
+  --subtask-table-row-hover-shadow: 0 4px 16px rgba(255, 255, 255, 0.08);
+
+  /* 内联控件变量 */
+  --subtask-inline-border-color-hover: rgba(139, 92, 246, 0.2);
+  --subtask-inline-border-color-focus: var(--accent-blue);
+  --subtask-inline-shadow-focus: 0 0 0 3px rgba(139, 92, 246, 0.15);
+
+  /* 模态框变量 */
+  --modal-border-radius: 16px;
+  --modal-shadow: 0 12px 48px rgba(0, 0, 0, 0.15);
+  --modal-input-border-radius: 8px;
+  --modal-input-shadow-focus: 0 0 0 3px rgba(139, 92, 246, 0.15);
 }
 
 body.titian-red {
@@ -227,6 +456,38 @@ body.titian-red {
   --toolbar-button-bg: #8b2942;
   --toolbar-button-text: #ffffff;
   --toolbar-border: rgba(192, 64, 91, 0.3);
+
+  /* accent-color映射 */
+  --accent-blue: var(--accent-color);
+  --accent-blue-light: var(--accent-light);
+
+  /* RGB变量 */
+  --accent-blue-rgb: 192, 64, 91;
+  --text-secondary-rgb: 168, 84, 107;
+  --border-light-rgb: 232, 197, 207;
+
+  /* 柔和样式变量 */
+  --soft-border-color: rgba(0, 0, 0, 0.08);
+  --soft-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  --soft-transition-timing: 0.2s ease;
+
+  /* 表格专用变量 */
+  --subtask-table-min-width: 700px;
+  --subtask-table-border-radius: 12px;
+  --subtask-table-border-opacity: 0.15;
+  --subtask-table-header-gradient: linear-gradient(to bottom, var(--tag-bg), var(--card-bg));
+  --subtask-table-row-hover-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+
+  /* 内联控件变量 */
+  --subtask-inline-border-color-hover: rgba(192, 64, 91, 0.2);
+  --subtask-inline-border-color-focus: var(--accent-blue);
+  --subtask-inline-shadow-focus: 0 0 0 3px rgba(192, 64, 91, 0.15);
+
+  /* 模态框变量 */
+  --modal-border-radius: 16px;
+  --modal-shadow: 0 12px 48px rgba(0, 0, 0, 0.15);
+  --modal-input-border-radius: 8px;
+  --modal-input-shadow-focus: 0 0 0 3px rgba(192, 64, 91, 0.15);
 }
 
 /* ���˹������ */

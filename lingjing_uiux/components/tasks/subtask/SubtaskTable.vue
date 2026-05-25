@@ -116,7 +116,7 @@
               @mousedown.stop
               @click.stop
             >
-              <i class="fas fa-trash">删除</i>
+              <i class="fas fa-trash">DEL</i>
             </button>
           </td>
         </tr>

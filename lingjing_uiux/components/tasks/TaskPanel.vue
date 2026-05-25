@@ -9,12 +9,9 @@
       @task-added="emit('task-added', $event)"
     />
 
-    <!-- 设置区域 -->
-    <SettingsPanel :config="config" @update:config="handleConfigUpdate" />
-
     <!-- 图例说明 -->
     <div class="legend-bar">
-      <span class="legend-emoji">任务属性</span>
+      <span class="legend-emoji">任务属性说明：</span>
       <div class="legend-item">
         <span class="legend-emoji">🕐</span>
         <span class="legend-text">创建日期</span>
@@ -37,9 +34,13 @@
       </div>
     </div>
 
-    <!-- 过滤面板 -->
-    <FilterPanel
+    <!-- 设置区域 -->
+    <SettingsPanel :config="config" @update:config="handleConfigUpdate" />
+
+    <!-- 统一搜索筛选面板 -->
+    <UnifiedSearchFilter
       v-if="showFilterPanel"
+      :tasks="tasks"
       :statuses="statuses"
       :priorities="priorities"
       :types="types"
@@ -246,6 +247,7 @@
 import { ref } from 'vue'
 
 import type { Task, TaskStatus, TaskType, TaskPriority } from '../../types'
+import UnifiedSearchFilter from '../common/UnifiedSearchFilter.vue'
 
 import SettingsPanel from './common/SettingsPanel.vue'
 import TaskAddArea from './common/TaskAddArea.vue'
@@ -256,7 +258,6 @@ import TreeLayout from './layout/TreeLayout.vue'
 import SubtaskCard from './subtask/SubtaskCard.vue'
 import SubtaskModal from './subtask/SubtaskModal.vue'
 import SubtaskTable from './subtask/SubtaskTable.vue'
-import FilterPanel from '../common/FilterPanel.vue'
 const props = defineProps<{
   selectedTaskId?: string | null
   tasks: Task[]
@@ -281,6 +282,7 @@ const emit = defineEmits<{
   'task-added': [task: Task]
   'task-updated': [task: Task]
   'task-deleted': [taskId: string]
+  'filter-change': [filteredTasks: Task[]]
 }>()
 
 // 本地状态
@@ -306,8 +308,8 @@ const dragMode = ref<'insert' | 'swap'>(props.config?.dragMode || 'insert')
 const layoutMode = ref<'masonry' | 'list' | 'tree'>(props.config?.layoutMode || 'masonry')
 const listColumns = ref(props.config?.listColumns || 2)
 
-const handleFilterChange = () => {
-  // 过滤状态变化，由FilterPanel内部处理
+const handleFilterChange = (filteredTasks: Task[]) => {
+  emit('filter-change', filteredTasks)
 }
 
 // 切换子任务显示模式

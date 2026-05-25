@@ -36,41 +36,6 @@
   color: var(--danger-color, var(--danger, #f44336));
 }
 
-.filter-controls {
-  display: flex;
-  gap: 16px;
-  flex-wrap: wrap;
-}
-
-.filter-group {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  min-width: 120px;
-}
-
-.filter-group label {
-  font-size: 11px;
-  color: var(--text-secondary);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.filter-select {
-  padding: 6px 8px;
-  border: 1px solid var(--border-light);
-  border-radius: 4px;
-  font-size: 13px;
-  background: var(--bg-secondary, var(--tag-bg));
-  color: var(--text-primary);
-  cursor: pointer;
-}
-
-.filter-select:focus {
-  outline: none;
-  border-color: var(--accent-color, var(--accent-blue));
-}
-
 .active-conditions {
   margin-top: 12px;
   padding-top: 12px;

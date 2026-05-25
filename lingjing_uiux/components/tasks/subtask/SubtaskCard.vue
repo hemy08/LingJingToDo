@@ -15,7 +15,7 @@
         @click.stop
       />
       <button class="subtask-delete-btn" @click="onDeleteSubtask" @mousedown.stop @click.stop>
-        <i class="fas fa-trash">删除</i>
+        <i class="fas fa-trash">DEL</i>
       </button>
     </div>
     <div class="subtask-card-body">

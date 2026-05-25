@@ -1,4 +1,157 @@
 /* ========================================
+   主任务样式
+   包含主任务卡片、列表、布局等样式定义
+   ======================================== */
+
+/* ========================================
+   主任务动画效果
+   ======================================== */
+
+@keyframes task-highlight-flash {
+  0% {
+    box-shadow: 0 0 0 0 rgba(var(--accent-blue-rgb), 0.7);
+    border-color: var(--accent-blue);
+    background: var(--accent-blue-light);
+  }
+
+  50% {
+    box-shadow: 0 0 0 6px rgba(var(--accent-blue-rgb), 0);
+    border-color: var(--accent-blue);
+    background: var(--accent-blue-light);
+  }
+
+  100% {
+    box-shadow: 0 0 0 0 rgba(var(--accent-blue-rgb), 0);
+    border-color: var(--border-light);
+    background: var(--card-bg);
+  }
+}
+
+.task-highlight {
+  animation: task-highlight-flash 0.8s ease-in-out;
+  border-color: var(--accent-blue) !important;
+  background: var(--accent-blue-light) !important;
+}
+
+/* ========================================
+   主任务容器
+   ======================================== */
+
+#mainTasksContainer {
+  display: grid;
+  gap: 20px;
+}
+
+/* ========================================
+   主任务卡片样式
+   ======================================== */
+
+.main-task-card {
+  background: var(--card-bg);
+  border-radius: 24px;
+  border: 1px solid var(--border-light);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.1s;
+  scroll-margin: 80px;
+}
+
+.main-task-card.due-warning {
+  background: var(--due-warning) !important;
+  border-left: 4px solid var(--danger);
+}
+
+/* 主任务卡片头部 */
+.main-card-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 12px 6px;
+  flex-wrap: wrap;
+}
+
+.drag-handle-main {
+  cursor: grab;
+  color: var(--text-secondary);
+}
+
+.main-title {
+  font-weight: 600;
+  font-size: 1.1em;
+  flex: 1;
+  word-break: break-word;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.main-title-text {
+  cursor: pointer;
+  border-bottom: 1px dashed transparent;
+  transition: border-color 0.1s;
+}
+
+.main-title-text:hover {
+  border-bottom-color: var(--accent-blue);
+}
+
+.edit-title-icon {
+  opacity: 0;
+  font-size: 0.8em;
+  transition: opacity 0.1s;
+  color: var(--text-secondary);
+}
+
+.main-title:hover .edit-title-icon {
+  opacity: 1;
+}
+
+.main-actions {
+  display: flex;
+  gap: 6px;
+  margin-left: auto;
+  align-items: center;
+}
+
+/* 主任务描述区域 */
+.main-desc-area {
+  padding: 8px 12px;
+  font-size: 0.85em;
+  color: var(--text-secondary);
+  background: rgba(0, 0, 0, 0.02);
+  border-top: 1px solid var(--border-light);
+  cursor: pointer;
+  max-height: 100px;
+  overflow-y: auto;
+  white-space: pre-wrap;
+}
+
+/* ========================================
+   添加主任务区域
+   ======================================== */
+
+.add-main-task {
+  margin-top: 28px;
+  display: flex;
+  gap: 12px;
+}
+
+.add-main-task input {
+  flex: 1;
+  padding: 6px 12px;
+  border-radius: 60px;
+  border: 1px solid var(--border-light);
+  background: var(--card-bg);
+  color: var(--text-primary);
+  font-size: 0.9em;
+}
+
+.add-main-task button {
+  border-radius: 60px;
+}
+
+/* ========================================
    TaskPanel 组件样式
    ======================================== */
 
@@ -7,8 +160,8 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  min-height: 0; /* 重要：允许flex子项收缩 */
-  overflow: hidden; /* 防止内容溢出 */
+  min-height: 0;
+  overflow: hidden;
 }
 
 .task-add-area {
@@ -64,7 +217,11 @@
   font-size: 0.85rem;
 }
 
-/* 任务列表 - 瀑布流布局 */
+/* ========================================
+   任务列表布局
+   ======================================== */
+
+/* 瀑布流布局 */
 .task-list {
   column-count: 2;
   width: 100%;
@@ -106,55 +263,9 @@
   margin-left: 0;
 }
 
-/* 树形布局的子任务缩进 */
-.task-list.tree-layout .subtasks-section {
-  margin-left: 40px;
-  margin-top: 12px;
-  padding-top: 12px;
-  border-left: 2px solid var(--accent-blue);
-  border-top: none;
-  padding-left: 16px;
-}
-
-.task-list.tree-layout .subtasks-list {
-  position: relative;
-}
-
-.task-list.tree-layout .subtasks-list::before {
-  content: '';
-  position: absolute;
-  left: -16px;
-  top: 0;
-  bottom: 0;
-  width: 2px;
-  background: var(--border-light);
-}
-
-.task-list.tree-layout .subtask-card {
-  position: relative;
-  margin-left: 0;
-}
-
-.task-list.tree-layout .subtask-card::before {
-  content: '';
-  position: absolute;
-  left: -16px;
-  top: 50%;
-  width: 12px;
-  height: 2px;
-  background: var(--border-light);
-}
-
-/* 树形布局的连接线 */
-.task-list.tree-layout .subtask-card:last-child::after {
-  content: '';
-  position: absolute;
-  left: -16px;
-  top: 50%;
-  bottom: 0;
-  width: 2px;
-  background: var(--card-bg);
-}
+/* ========================================
+   任务卡片样式（通用）
+   ======================================== */
 
 .task-card {
   background: var(--card-bg);
@@ -212,6 +323,7 @@
   opacity: 1 !important;
 }
 
+/* 任务卡片头部 */
 .task-card-header {
   display: flex;
   justify-content: space-between;
@@ -281,7 +393,10 @@
   gap: 12px;
 }
 
-/* 状态、类型、优先级在一行 */
+/* ========================================
+   任务元数据样式
+   ======================================== */
+
 .task-meta-row {
   display: flex;
   gap: 12px;
@@ -328,14 +443,10 @@
   border-radius: 6px;
 }
 
-/* 子任务列表样式 */
-.subtasks-section {
-  margin-top: 8px;
-  padding-top: 12px;
-  border-top: 1px solid var(--border-light);
-}
+/* ========================================
+   任务详细信息区域
+   ======================================== */
 
-/* 任务详细信息区域 */
 .task-detail-section {
   margin-top: 12px;
   padding: 12px;
@@ -378,73 +489,48 @@
   opacity: 0.6;
 }
 
-.subtasks-header {
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: var(--text-primary);
-  margin-bottom: 8px;
+/* ========================================
+   主任务元数据行
+   ======================================== */
+
+.meta-row {
   display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 6px 12px;
+  font-size: 0.8em;
+  color: var(--text-secondary);
+  flex-wrap: wrap;
+  border-top: 1px solid var(--border-light);
+  border-bottom: 1px solid var(--border-light);
+  background: var(--checklist-bg);
+}
+
+.meta-row .meta-item {
+  display: inline-flex;
   align-items: center;
   gap: 6px;
-}
-
-.subtasks-list {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-/* 子任务卡片 */
-.subtask-card {
-  background: var(--tag-bg);
-  border: 1px solid var(--border-light);
-  border-radius: 8px;
-  padding: 12px;
-  position: relative;
-  transition: all 0.2s;
-}
-
-.subtask-card:hover {
-  border-color: var(--accent-blue);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-.subtask-drag-handle {
-  top: 6px;
-  left: 6px;
-  padding: 2px 4px;
-  font-size: 0.75rem;
-}
-
-.subtask-card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 8px;
-  padding-left: 20px;
-}
-
-.subtask-title {
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: var(--text-primary);
-  flex: 1;
-}
-
-.subtask-delete-btn {
-  padding: 4px 8px;
-  border: none;
-  width: 40px;
-  border-radius: 4px;
-  background: #fee;
-  color: #dc2626;
   cursor: pointer;
-  font-size: 0.75rem;
-  transition: all 0.2s;
+  background: var(--tag-bg);
+  padding: 2px 8px;
+  border-radius: 40px;
 }
 
-.subtask-delete-btn:hover {
-  background: #dc2626;
-  color: white;
+.action-buttons {
+  display: inline-flex;
+  gap: 8px;
+  margin-left: auto;
 }
 
+.icon-text-btn {
+  background: var(--accent-blue-light);
+  border: none;
+  border-radius: 40px;
+  padding: 3px 8px;
+  font-size: 0.8em;
+  cursor: pointer;
+  color: var(--accent-blue);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
