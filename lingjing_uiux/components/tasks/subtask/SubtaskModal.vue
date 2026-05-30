@@ -86,12 +86,16 @@ watch(
   () => props.visible,
   newVal => {
     if (newVal) {
+      const now = new Date()
+      const oneMonthLater = new Date(now.getFullYear(), now.getMonth() + 1, now.getDate())
+      const dueDateStr = oneMonthLater.toISOString().split('T')[0] || ''
+      
       formData.value = {
         title: '',
-        status_id: props.statuses[0]?.id || '',
-        type_id: props.types[0]?.id || '',
-        priority_id: props.priorities[0]?.id || '',
-        due_date: '',
+        status_id: 'st_default',
+        type_id: 'ty_requirement',
+        priority_id: 'p3',
+        due_date: dueDateStr,
       }
     }
   }

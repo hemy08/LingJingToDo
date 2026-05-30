@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
+
 import { useTaskExport } from '../../composables/useTaskExport'
 import type { Task } from '../../types'
 
@@ -87,11 +88,11 @@ async function handleExport() {
           <label>导出格式</label>
           <div class="format-options">
             <label class="radio-label">
-              <input type="radio" v-model="exportFormat" value="CSV" />
+              <input v-model="exportFormat" type="radio" value="CSV" />
               CSV
             </label>
             <label class="radio-label">
-              <input type="radio" v-model="exportFormat" value="JSON" />
+              <input v-model="exportFormat" type="radio" value="JSON" />
               JSON
             </label>
           </div>
@@ -126,7 +127,7 @@ async function handleExport() {
 
         <div v-if="exportFormat === 'CSV'" class="option-section">
           <label class="checkbox-label">
-            <input type="checkbox" v-model="includeHeaders" />
+            <input v-model="includeHeaders" type="checkbox" />
             包含表头
           </label>
         </div>

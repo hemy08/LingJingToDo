@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
+
 import type { Task, HighlightRange, SearchResult } from '../types'
 import { SearchScope } from '../types'
 import type { SearchHistoryItem, AdvancedSearchCondition } from '../types/enhancements'

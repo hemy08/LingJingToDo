@@ -25,6 +25,14 @@
       />
       <div class="task-actions">
         <button
+          class="components-action-btn add-subtask-btn"
+          @click="toggleCollapse"
+          @mousedown.stop
+          @click.stop
+        >
+          {{ isCollapsed ? '展开' : '折叠' }}
+        </button>
+        <button
           class="components-action-btn toggle-subtask-btn"
           :title="subtaskDisplayMode === 'card' ? '切换为表格显示' : '切换为卡片显示'"
           @click="$emit('toggle-subtask-mode', task.id)"
@@ -70,12 +78,11 @@
             type="date"
             class="meta-select"
             :value="task.due_date"
-            @change="onUpdateTask({ ...task, due_date: ($event.target as HTMLInputElement).value })"
+            @change="onUpdateDueDate"
           />
         </div>
         <!-- 类型 -->
         <div class="meta-item">
-          <label class="meta-label">🏷️</label>
           <select
             class="meta-select"
             :value="task.type_id"
@@ -88,7 +95,6 @@
         </div>
         <!-- 状态 -->
         <div class="meta-item">
-          <label class="meta-label">📌</label>
           <select
             class="meta-select"
             :value="task.status_id"
@@ -104,7 +110,6 @@
         </div>
         <!-- 优先级 -->
         <div class="meta-item">
-          <label class="meta-label">📁</label>
           <select
             class="meta-select"
             :value="task.priority_id"
@@ -117,10 +122,25 @@
             </option>
           </select>
         </div>
+        <!-- 责任人 -->
+        <div class="meta-item">
+          <select
+            class="meta-select"
+            :value="task.owner_id || ''"
+            @change="
+              onUpdateTask({ ...task, owner_id: ($event.target as HTMLSelectElement).value || undefined })
+            "
+          >
+            <option value="">未分配</option>
+            <option v-for="owner in owners" :key="owner.id" :value="owner.id">
+              {{ owner.emoji }} {{ owner.name }}
+            </option>
+          </select>
+        </div>
       </div>
 
       <!-- 详细信息编辑区域 -->
-      <div class="task-detail-section">
+      <div v-show="!isCollapsed" class="task-detail-section">
         <div class="detail-header">
           <i class="fas fa-info-circle"></i>
           <span>详细信息</span>
@@ -135,7 +155,7 @@
       </div>
 
       <!-- 子任务区域 -->
-      <div v-if="taskSubtasks && taskSubtasks.length > 0" class="subtasks-section">
+      <div v-show="!isCollapsed" v-if="taskSubtasks && taskSubtasks.length > 0" class="subtasks-section">
         <div class="subtasks-header">
           <i class="fas fa-tasks"></i>
           子任务 ({{ taskSubtasks.length }})
@@ -149,14 +169,17 @@
 <script setup lang="ts">
 import { ref, computed, nextTick, type Ref } from 'vue'
 
+import { useTaskCollapseStore } from '../../../stores/taskCollapse'
 import { useTaskHighlightStore } from '../../../stores/taskHighlight.ts'
-import type { Task, TaskStatus, TaskType, TaskPriority } from '../../../types.ts'
+import type { Task, TaskStatus, TaskType, TaskPriority, TaskOwner } from '../../../types.ts'
+import { validateDueDate } from '../../../utils/validators/DueDateValidator.ts'
 
 const props = defineProps<{
   task: Task
   statuses: TaskStatus[]
   types: TaskType[]
   priorities: TaskPriority[]
+  owners: TaskOwner[]
   subtaskDisplayMode: 'card' | 'table'
   selectedTaskId?: string | null
   currentDate: string
@@ -169,10 +192,22 @@ const emit = defineEmits<{
   select: [taskId: string | null]
   update: [task: Task]
   delete: [taskId: string]
+  'show-status': [message: string, detail?: string, type?: 'success' | 'error' | 'warning' | 'info']
 }>()
 
 // 任务高亮状态
 const taskHighlight = useTaskHighlightStore()
+
+// 任务折叠状态
+const taskCollapse = useTaskCollapseStore()
+
+// 折叠状态（从store读取）
+const isCollapsed = computed(() => taskCollapse.isTaskCollapsed(props.task.id))
+
+// 切换折叠状态
+const toggleCollapse = () => {
+  taskCollapse.toggleTaskCollapse(props.task.id)
+}
 
 // 检查是否高亮
 const isHighlighted = computed(() => taskHighlight.isHighlighted(props.task.id))
@@ -238,6 +273,21 @@ const cancelEdit = () => {
 // 处理任务更新
 const onUpdateTask = (updatedTask: Task) => {
   emit('update', updatedTask)
+}
+
+// 处理截止日期更新（带校验）
+const onUpdateDueDate = (event: Event) => {
+  const target = event.target as HTMLInputElement
+  const newDueDate = target.value
+  
+  const result = validateDueDate(newDueDate, props.task.created_date)
+  
+  if (!result.isValid && result.correctedValue) {
+    emit('show-status', result.message || '截止日期已自动修正', '', 'warning')
+    onUpdateTask({ ...props.task, due_date: result.correctedValue })
+  } else {
+    onUpdateTask({ ...props.task, due_date: newDueDate })
+  }
 }
 
 // 处理任务删除

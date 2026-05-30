@@ -21,6 +21,7 @@ const emit = defineEmits<{
   'task-updated': [task: Task]
   'task-deleted': [taskId: string]
   'update:isDirty': [value: boolean]
+  'open-owner-config': []
 }>()
 </script>
 
@@ -45,12 +46,14 @@ const emit = defineEmits<{
         :statuses="config.statuses"
         :types="config.types"
         :priorities="config.priorities"
+        :owners="config.owners"
         :is-dirty="isDirty"
         :show-filter-panel="showFilterPanel"
         @update:is-dirty="emit('update:isDirty', $event)"
         @task-added="emit('task-added', $event)"
         @task-updated="emit('task-updated', $event)"
         @task-deleted="emit('task-deleted', $event)"
+        @open-owner-config="emit('open-owner-config')"
       />
     </div>
   </div>

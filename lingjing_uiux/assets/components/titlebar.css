@@ -17,7 +17,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  color: var(--toolbar-text);
+  color: var(--toolbar-button-text);
   cursor: default;
   user-select: none;
 }
@@ -27,6 +27,7 @@
 }
 
 .app-title {
+  color: var( --toolbar-button-text);
   font-size: 13px;
   font-weight: 500;
 }

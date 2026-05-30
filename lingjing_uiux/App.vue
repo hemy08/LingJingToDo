@@ -140,7 +140,26 @@ const createNewProject = async () => {
     <!-- 自定义标题栏 -->
     <div class="app-titlebar" data-tauri-drag-region>
       <div class="app-titlebar-left" data-tauri-drag-region>
-        <span class="app-icon">✨</span>
+        <span class="app-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="20" height="20">
+            <defs>
+              <linearGradient id="bgGradient2" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#1E293B"/>
+                <stop offset="100%" stop-color="#020617"/>
+              </linearGradient>
+              <linearGradient id="strokeGradient2" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#00F2FE"/>
+                <stop offset="100%" stop-color="#4F46E5"/>
+              </linearGradient>
+            </defs>
+            <rect width="256" height="256" rx="56" fill="url(#bgGradient2)"/>
+            <rect width="256" height="256" rx="56" fill="none" stroke="url(#strokeGradient2)" stroke-width="6"/>
+            <polygon points="128,44 212,86 212,170 128,212 44,170 44,86" fill="none" stroke="#4F46E5" stroke-width="12" stroke-linejoin="round"/>
+            <path d="M 84 128 L 116 160 L 172 96" fill="none" stroke="#00F2FE" stroke-width="24" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="172" cy="96" r="10" fill="#4F46E5"/>
+            <circle cx="172" cy="96" r="4" fill="#00F2FE"/>
+          </svg>
+        </span>
         <span class="app-title">灵境待办</span>
       </div>
       <div class="titlebar-right">
@@ -175,7 +194,39 @@ const createNewProject = async () => {
       <!-- Logo 和标题 -->
       <div class="welcome-header">
         <div class="logo-container">
-          <div class="logo-icon">✨</div>
+          <div class="logo-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="64" height="64">
+              <defs>
+                <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#1E293B"/>
+                  <stop offset="100%" stop-color="#020617"/>
+                </linearGradient>
+                <linearGradient id="strokeGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#00F2FE"/>
+                  <stop offset="100%" stop-color="#4F46E5"/>
+                </linearGradient>
+                <filter id="neonGlow" x="-50%" y="-50%" width="200%" height="200%">
+                  <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+                  <feMerge>
+                    <feMergeNode in="coloredBlur"/>
+                    <feMergeNode in="SourceGraphic"/>
+                  </feMerge>
+                </filter>
+              </defs>
+              <rect width="256" height="256" rx="56" fill="url(#bgGradient)"/>
+              <rect width="256" height="256" rx="56" fill="none" stroke="url(#strokeGradient)" stroke-width="6"/>
+              <g opacity="0.15">
+                <path d="M 40 120 L 216 120 M 40 136 L 216 136 M 120 40 L 120 216 M 136 40 L 136 216" stroke="#00F2FE" stroke-width="2"/>
+              </g>
+              <polygon points="128,44 212,86 212,170 128,212 44,170 44,86" fill="none" stroke="#4F46E5" stroke-width="12" stroke-linejoin="round"/>
+              <path d="M 128 44 L 128 84 M 128 172 L 128 212 M 44 128 L 84 128 M 172 128 L 212 128" stroke="#00F2FE" stroke-width="6" stroke-linecap="round" opacity="0.6"/>
+              <path d="M 84 128 L 116 160 L 172 96" fill="none" stroke="#00F2FE" stroke-width="24" stroke-linecap="round" stroke-linejoin="round" filter="url(#neonGlow)"/>
+              <circle cx="172" cy="96" r="10" fill="#4F46E5" filter="url(#neonGlow)"/>
+              <circle cx="172" cy="96" r="4" fill="#00F2FE"/>
+              <path d="M 208 48 L 220 48 L 220 60" fill="none" stroke="#00F2FE" stroke-width="4" stroke-linecap="round"/>
+              <path d="M 36 196 L 48 196 L 48 208" fill="none" stroke="#4F46E5" stroke-width="4" stroke-linecap="round"/>
+            </svg>
+          </div>
           <div class="logo-glow"></div>
         </div>
         <h1 class="welcome-title">灵境待办</h1>

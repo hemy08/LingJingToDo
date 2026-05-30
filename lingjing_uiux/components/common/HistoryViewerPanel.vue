@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
+
 import { useHistoryViewer } from '../../composables/useHistoryViewer'
 import type { HistoryDisplayItem } from '../../types/enhancements'
 

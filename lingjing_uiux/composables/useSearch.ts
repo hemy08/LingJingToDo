@@ -1,4 +1,5 @@
 import { watch, ref } from 'vue'
+
 import { useSearchStore } from '../stores/searchStore'
 import { useTaskStore } from '../stores/taskStore'
 import type { HighlightRange } from '../types'

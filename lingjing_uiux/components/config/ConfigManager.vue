@@ -3,6 +3,7 @@ export interface ConfigManagerEmits {
   (e: 'open-status'): void
   (e: 'open-type'): void
   (e: 'open-priority'): void
+  (e: 'open-owner'): void
 }
 
 const emit = defineEmits<ConfigManagerEmits>()
@@ -18,6 +19,10 @@ const handleOpenTypeModal = () => {
 const handleOpenPriorityModal = () => {
   emit('open-priority')
 }
+
+const handleOpenOwnerModal = () => {
+  emit('open-owner')
+}
 </script>
 
 <template>
@@ -30,6 +35,9 @@ const handleOpenPriorityModal = () => {
     </button>
     <button class="btn-sm" title="优先级配置" @click="handleOpenPriorityModal">
       <i class="fas fa-flag"></i> 优先级
+    </button>
+    <button class="btn-sm" title="责任人配置" @click="handleOpenOwnerModal">
+      <i class="fas fa-users"></i> 责任人
     </button>
   </div>
 </template>

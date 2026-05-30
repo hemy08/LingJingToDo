@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import OwnerConfigModal from '../config/OwnerConfigModal.vue'
 import PriorityModal from '../config/PriorityModal.vue'
 import StatusModal from '../config/StatusModal.vue'
 import TypeModal from '../config/TypeModal.vue'
@@ -10,6 +11,7 @@ defineProps<{
   showStatusModal: boolean
   showTypeModal: boolean
   showPriorityModal: boolean
+  showOwnerModal: boolean
 }>()
 
 const emit = defineEmits<{
@@ -17,9 +19,11 @@ const emit = defineEmits<{
   'update:showStatusModal': [value: boolean]
   'update:showTypeModal': [value: boolean]
   'update:showPriorityModal': [value: boolean]
+  'update:showOwnerModal': [value: boolean]
   'status-updated': [statuses: any]
   'type-updated': [types: any]
   'priority-updated': [priorities: any]
+  'owner-updated': [owners: any]
 }>()
 
 const handleStatusUpdated = (statuses: any) => {
@@ -32,6 +36,10 @@ const handleTypeUpdated = (types: any) => {
 
 const handlePriorityUpdated = (priorities: any) => {
   emit('priority-updated', priorities)
+}
+
+const handleOwnerUpdated = (owners: any) => {
+  emit('owner-updated', owners)
 }
 </script>
 
@@ -61,6 +69,13 @@ const handlePriorityUpdated = (priorities: any) => {
       :priorities="config.priorities"
       @update:visible="emit('update:showPriorityModal', $event)"
       @updated="handlePriorityUpdated"
+    />
+
+    <OwnerConfigModal
+      :visible="showOwnerModal"
+      :owners="config.owners"
+      @update:visible="emit('update:showOwnerModal', $event)"
+      @updated="handleOwnerUpdated"
     />
   </div>
 </template>

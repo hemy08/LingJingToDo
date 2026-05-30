@@ -1,6 +1,6 @@
 import { invoke } from '@tauri-apps/api/core'
 
-import type { TaskStatus, TaskType, TaskPriority } from '../types'
+import type { TaskStatus, TaskType, TaskPriority, TaskOwner } from '../types'
 
 /**
  * 状态相关 API
@@ -77,5 +77,31 @@ export const priorityApi = {
    */
   async delete(id: string): Promise<TaskPriority[]> {
     return await invoke<TaskPriority[]>('delete_priority', { id })
+  },
+}
+
+/**
+ * 责任人相关 API
+ */
+export const ownerApi = {
+  /**
+   * 获取所有责任人
+   */
+  async getAll(): Promise<TaskOwner[]> {
+    return await invoke<TaskOwner[]>('get_owners')
+  },
+
+  /**
+   * 更新责任人列表
+   */
+  async update(owners: TaskOwner[]): Promise<TaskOwner[]> {
+    return await invoke<TaskOwner[]>('update_owners', { owners })
+  },
+
+  /**
+   * 删除责任人
+   */
+  async delete(id: string): Promise<TaskOwner[]> {
+    return await invoke<TaskOwner[]>('delete_owner', { id })
   },
 }

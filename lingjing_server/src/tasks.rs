@@ -14,6 +14,7 @@ pub struct Task {
     pub status_id: String,
     pub type_id: String,
     pub priority_id: String,
+    pub owner_id: Option<String>,
     pub due_date: Option<String>,
     pub subtasks: Option<Vec<Task>>,
     pub remark: Option<String>,

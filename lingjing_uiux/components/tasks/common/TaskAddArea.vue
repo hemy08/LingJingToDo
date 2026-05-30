@@ -17,10 +17,12 @@
 import { ref } from 'vue'
 
 import { taskApi } from '../../../connections/task_apis.ts'
-import type { Task, TaskStatus } from '../../../types.ts'
+import type { Task, TaskStatus, TaskType, TaskPriority } from '../../../types.ts'
 
 const props = defineProps<{
   statuses: TaskStatus[]
+  types: TaskType[]
+  priorities: TaskPriority[]
   currentDate: string | null
   isDirty: boolean
 }>()
@@ -38,6 +40,12 @@ const markDirty = () => {
   }
 }
 
+const getDueDateOneMonthLater = () => {
+  const now = new Date()
+  const oneMonthLater = new Date(now.getFullYear(), now.getMonth() + 1, now.getDate())
+  return oneMonthLater.toISOString().split('T')[0]
+}
+
 const handleAddTask = async () => {
   if (!newTaskTitle.value.trim()) return
   if (!props.currentDate) return
@@ -48,10 +56,10 @@ const handleAddTask = async () => {
     const newTask: Task = {
       id: taskId,
       title: newTaskTitle.value.trim(),
-      status_id: props.statuses[0]?.id || '',
-      type_id: '',
-      priority_id: '',
-      due_date: undefined,
+      status_id: 'st_default',
+      type_id: 'ty_requirement',
+      priority_id: 'p3',
+      due_date: getDueDateOneMonthLater(),
       created_date: new Date().toISOString(),
     }
 

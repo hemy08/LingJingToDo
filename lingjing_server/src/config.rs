@@ -30,6 +30,16 @@ pub struct Priority {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct Owner {
+    pub id: String,
+    pub name: String,
+    pub color: String,
+    pub emoji: String,
+    pub skills: Option<Vec<String>>,
+    pub types: Option<Vec<String>>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Theme {
     pub id: String,
     pub name: String,
@@ -44,6 +54,7 @@ pub struct Config {
     pub statuses: Vec<Status>,
     pub types: Vec<Type>,
     pub priorities: Vec<Priority>,
+    pub owners: Vec<Owner>,
     pub themes: Vec<Theme>,
     pub recent_files: Vec<String>,
 }
@@ -60,6 +71,11 @@ impl Default for Config {
                 Status { id: "st_closed".to_string(), name: "已关闭".to_string(), color: "#9ca3af".to_string(), emoji: "🔒".to_string() },
             ],
             types: vec![
+                Type { id: "ty_requirement".to_string(), name: "需求".to_string(), color: "#0d6efd".to_string(), emoji: "📋".to_string() },
+                Type { id: "ty_issue".to_string(), name: "问题".to_string(), color: "#dc2626".to_string(), emoji: "🐛".to_string() },
+                Type { id: "ty_feature".to_string(), name: "入项".to_string(), color: "#10b981".to_string(), emoji: "✨".to_string() },
+                Type { id: "ty_research".to_string(), name: "攻关".to_string(), color: "#f59e0b".to_string(), emoji: "🔬".to_string() },
+                Type { id: "ty_maintenance".to_string(), name: "维护".to_string(), color: "#6b7280".to_string(), emoji: "🔧".to_string() },
                 Type { id: "ty_work".to_string(), name: "工作".to_string(), color: "#0d6efd".to_string(), emoji: "💼".to_string() },
                 Type { id: "ty_study".to_string(), name: "学习".to_string(), color: "#6f42c1".to_string(), emoji: "📚".to_string() },
                 Type { id: "ty_life".to_string(), name: "生活".to_string(), color: "#20c997".to_string(), emoji: "🏠".to_string() },
@@ -72,6 +88,9 @@ impl Default for Config {
                 Priority { id: "p4".to_string(), name: "P4 - 低".to_string(), color: "#2ecc71".to_string(), emoji: "🟢".to_string() },
                 Priority { id: "p5".to_string(), name: "P5 - N".to_string(), color: "#95a5a6".to_string(), emoji: "⚪".to_string() },
                 Priority { id: "p6".to_string(), name: "不紧急".to_string(), color: "#bdc3c7".to_string(), emoji: "💤".to_string() },
+            ],
+            owners: vec![
+                Owner { id: "owner_default".to_string(), name: "默认责任人".to_string(), color: "#6c757d".to_string(), emoji: "👤".to_string(), skills: Some(vec![]), types: Some(vec![]) },
             ],
             themes: vec![
                 Theme { id: "theme_default".to_string(), name: "默认".to_string(), primary: "#0077c8".to_string(), secondary: "#6c757d".to_string(), background: "#ffffff".to_string(), text: "#333333".to_string() },
@@ -208,5 +227,35 @@ pub fn delete_priority(state: tauri::State<ConfigState>, id: String) -> Vec<Prio
 pub fn get_themes(state: tauri::State<ConfigState>) -> Vec<Theme> {
     let config = state.config.lock().unwrap();
     config.themes.clone()
+}
+
+#[tauri::command]
+pub fn get_owners(state: tauri::State<ConfigState>) -> Vec<Owner> {
+    let config = state.config.lock().unwrap();
+    let result = config.owners.clone();
+    info!("获取责任人列表: {} 个责任人", result.len());
+    result
+}
+
+#[tauri::command]
+pub fn update_owners(state: tauri::State<ConfigState>, owners: Vec<Owner>) -> Vec<Owner> {
+    let mut config = state.config.lock().unwrap();
+    info!("全量更新责任人列表: {} 个责任人", owners.len());
+    config.owners = owners;
+    let result = config.owners.clone();
+    drop(config);
+    state.save();
+    result
+}
+
+#[tauri::command]
+pub fn delete_owner(state: tauri::State<ConfigState>, id: String) -> Vec<Owner> {
+    let mut config = state.config.lock().unwrap();
+    info!("删除责任人: {}", id);
+    config.owners.retain(|o| o.id != id);
+    let result = config.owners.clone();
+    drop(config);
+    state.save();
+    result
 }
 

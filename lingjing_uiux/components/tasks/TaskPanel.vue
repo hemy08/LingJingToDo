@@ -3,6 +3,8 @@
     <!-- 任务添加区域 -->
     <TaskAddArea
       :statuses="statuses"
+      :types="types"
+      :priorities="priorities"
       :current-date="currentDate"
       :is-dirty="isDirty"
       @update:is-dirty="emit('update:isDirty', $event)"
@@ -11,7 +13,7 @@
 
     <!-- 图例说明 -->
     <div class="legend-bar">
-      <span class="legend-emoji">任务属性说明：</span>
+      <span class="legend-emoji">属性说明：</span>
       <div class="legend-item">
         <span class="legend-emoji">🕐</span>
         <span class="legend-text">创建日期</span>
@@ -35,7 +37,13 @@
     </div>
 
     <!-- 设置区域 -->
-    <SettingsPanel :config="config" @update:config="handleConfigUpdate" />
+    <SettingsPanel 
+      :config="config" 
+      :total-tasks="tasks.length"
+      @update:config="handleConfigUpdate"
+      @collapse-all-tasks="handleCollapseAllTasks"
+      @open-owner-config="emit('open-owner-config')"
+    />
 
     <!-- 统一搜索筛选面板 -->
     <UnifiedSearchFilter
@@ -64,6 +72,7 @@
           :statuses="statuses"
           :types="types"
           :priorities="priorities"
+          :owners="owners"
           :subtask-display-mode="getSubtaskDisplayMode(task.id)"
           :selected-task-id="selectedTaskId"
           :current-date="currentDate || ''"
@@ -73,6 +82,7 @@
           @select="$emit('select-task', String($event))"
           @update="handleTaskUpdate"
           @delete="handleTaskDelete"
+          @show-status="$emit('show-status', $event)"
         >
           <template #subtasks="{ subtasks, displayMode }">
             <SubtaskTable
@@ -81,13 +91,14 @@
               :statuses="statuses"
               :types="types"
               :priorities="priorities"
+              :owners="owners"
               :parent-id="task.id"
               :current-date="currentDate || ''"
               :tasks="tasks"
               @update="handleSubtaskCardUpdate(task.id, $event)"
               @delete="handleSubtaskCardDelete(task.id, $event)"
             />
-            <div v-else class="subtasks-list">
+            <div v-else class="subtasks-list subtask-grid">
               <SubtaskCard
                 v-for="subtask in subtasks"
                 :key="subtask.id"
@@ -95,6 +106,7 @@
                 :statuses="statuses"
                 :types="types"
                 :priorities="priorities"
+                :owners="owners"
                 :parent-id="task.id"
                 :current-date="currentDate || ''"
                 :tasks="tasks"
@@ -121,6 +133,7 @@
           :statuses="statuses"
           :types="types"
           :priorities="priorities"
+          :owners="owners"
           :subtask-display-mode="getSubtaskDisplayMode(task.id)"
           :selected-task-id="selectedTaskId"
           :current-date="currentDate || ''"
@@ -130,6 +143,7 @@
           @select="$emit('select-task', String($event))"
           @update="handleTaskUpdate"
           @delete="handleTaskDelete"
+          @show-status="$emit('show-status', $event)"
         >
           <template #subtasks="{ subtasks, displayMode }">
             <SubtaskTable
@@ -138,13 +152,14 @@
               :statuses="statuses"
               :types="types"
               :priorities="priorities"
+              :owners="owners"
               :parent-id="task.id"
               :current-date="currentDate || ''"
               :tasks="tasks"
               @update="handleSubtaskCardUpdate(task.id, $event)"
               @delete="handleSubtaskCardDelete(task.id, $event)"
             />
-            <div v-else class="subtasks-list">
+            <div v-else class="subtasks-list subtask-grid">
               <SubtaskCard
                 v-for="subtask in subtasks"
                 :key="subtask.id"
@@ -152,6 +167,7 @@
                 :statuses="statuses"
                 :types="types"
                 :priorities="priorities"
+                :owners="owners"
                 :parent-id="task.id"
                 :current-date="currentDate || ''"
                 :tasks="tasks"
@@ -177,6 +193,7 @@
           :statuses="statuses"
           :types="types"
           :priorities="priorities"
+          :owners="owners"
           :subtask-display-mode="getSubtaskDisplayMode(task.id)"
           :selected-task-id="selectedTaskId"
           :current-date="currentDate || ''"
@@ -186,6 +203,7 @@
           @select="$emit('select-task', String($event))"
           @update="handleTaskUpdate"
           @delete="handleTaskDelete"
+          @show-status="$emit('show-status', $event)"
         >
           <template #subtasks="{ subtasks, displayMode }">
             <SubtaskTable
@@ -194,13 +212,14 @@
               :statuses="statuses"
               :types="types"
               :priorities="priorities"
+              :owners="owners"
               :parent-id="task.id"
               :current-date="currentDate || ''"
               :tasks="tasks"
               @update="handleSubtaskCardUpdate(task.id, $event)"
               @delete="handleSubtaskCardDelete(task.id, $event)"
             />
-            <div v-else class="subtasks-list">
+            <div v-else class="subtasks-list subtask-grid">
               <SubtaskCard
                 v-for="subtask in subtasks"
                 :key="subtask.id"
@@ -208,6 +227,7 @@
                 :statuses="statuses"
                 :types="types"
                 :priorities="priorities"
+                :owners="owners"
                 :parent-id="task.id"
                 :current-date="currentDate || ''"
                 :tasks="tasks"
@@ -246,7 +266,8 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 
-import type { Task, TaskStatus, TaskType, TaskPriority } from '../../types'
+import { useTaskCollapseStore } from '../../stores/taskCollapse'
+import type { Task, TaskStatus, TaskType, TaskPriority, TaskOwner, TaskPanelConfig } from '../../types'
 import UnifiedSearchFilter from '../common/UnifiedSearchFilter.vue'
 
 import SettingsPanel from './common/SettingsPanel.vue'
@@ -264,15 +285,11 @@ const props = defineProps<{
   statuses: TaskStatus[]
   types: TaskType[]
   priorities: TaskPriority[]
+  owners: TaskOwner[]
   currentDate: string | null
   isDirty: boolean
   showFilterPanel?: boolean
-  config?: {
-    fontSize?: string
-    dragMode?: 'insert' | 'swap'
-    layoutMode?: 'masonry' | 'list' | 'tree'
-    listColumns?: number
-  }
+  config?: TaskPanelConfig
 }>()
 
 const emit = defineEmits<{
@@ -283,12 +300,20 @@ const emit = defineEmits<{
   'task-updated': [task: Task]
   'task-deleted': [taskId: string]
   'filter-change': [filteredTasks: Task[]]
+  'open-owner-config': []
 }>()
 
 // 本地状态
 
+// 任务折叠store
+const taskCollapse = useTaskCollapseStore()
+
 // 子任务显示模式
 const subtaskDisplayMode = ref<Record<string, 'card' | 'table'>>({})
+const independentTaskIds = ref<Set<string>>(new Set())
+
+// 全局子任务显示模式
+const globalSubtaskDisplayMode = ref<'card' | 'table'>(props.config?.globalSubtaskDisplayMode || 'table')
 
 // 子任务模态窗口
 const showSubtaskModal = ref(false)
@@ -297,11 +322,27 @@ const currentParentTask = ref<Task | null>(null)
 // 处理任务添加
 // 处理配置更新
 const handleConfigUpdate = (newConfig: any) => {
-  // 更新本地配置状态
   fontSize.value = newConfig.fontSize
   dragMode.value = newConfig.dragMode
   layoutMode.value = newConfig.layoutMode
   listColumns.value = newConfig.listColumns
+  
+  if (newConfig.globalSubtaskDisplayMode !== undefined) {
+    const newGlobalMode = newConfig.globalSubtaskDisplayMode
+    const oldGlobalMode = globalSubtaskDisplayMode.value
+    
+    globalSubtaskDisplayMode.value = newGlobalMode
+    
+    if (newGlobalMode !== oldGlobalMode) {
+      for (const task of props.tasks) {
+        const currentMode = getSubtaskDisplayMode(task.id)
+        if (currentMode !== newGlobalMode) {
+          subtaskDisplayMode.value[task.id] = newGlobalMode
+        }
+      }
+      independentTaskIds.value.clear()
+    }
+  }
 }
 const fontSize = ref(props.config?.fontSize || 'medium')
 const dragMode = ref<'insert' | 'swap'>(props.config?.dragMode || 'insert')
@@ -314,13 +355,18 @@ const handleFilterChange = (filteredTasks: Task[]) => {
 
 // 切换子任务显示模式
 const toggleSubtaskDisplayMode = (taskId: string) => {
-  const currentMode = subtaskDisplayMode.value[taskId] || 'table'
-  subtaskDisplayMode.value[taskId] = currentMode === 'table' ? 'card' : 'table'
+  const currentMode = getSubtaskDisplayMode(taskId)
+  const newMode = currentMode === 'table' ? 'card' : 'table'
+  subtaskDisplayMode.value[taskId] = newMode
+  independentTaskIds.value.add(taskId)
 }
 
 // 获取子任务显示模式
 const getSubtaskDisplayMode = (taskId: string): 'card' | 'table' => {
-  return subtaskDisplayMode.value[taskId] || 'table'
+  if (subtaskDisplayMode.value[taskId] !== undefined) {
+    return subtaskDisplayMode.value[taskId]
+  }
+  return globalSubtaskDisplayMode.value
 }
 
 // 打开子任务模态窗口
@@ -383,5 +429,11 @@ const handleSubtaskCardDelete = (parentId: string, subtaskId: string) => {
 // 处理任务删除
 const handleTaskDelete = (taskId: string) => {
   emit('task-deleted', taskId)
+}
+
+// 处理全局折叠所有任务
+const handleCollapseAllTasks = () => {
+  const taskIds = props.tasks.map(t => t.id)
+  taskCollapse.collapseAll(taskIds)
 }
 </script>

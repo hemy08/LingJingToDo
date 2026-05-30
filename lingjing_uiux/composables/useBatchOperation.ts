@@ -1,6 +1,7 @@
 import { ref } from 'vue'
-import { useTaskStore } from '../stores/taskStore'
+
 import { useHistoryStore } from '../stores/historyStore'
+import { useTaskStore } from '../stores/taskStore'
 import type { Task } from '../types'
 import type { BatchOperationConfig, BatchOperationResult, BatchSelectionState, ExecutedOperation } from '../types/enhancements'
 

@@ -8,6 +8,7 @@
 import Sortable from 'sortablejs'
 import { ref, onMounted, watch, onUpdated, nextTick, onUnmounted, type Ref } from 'vue'
 
+import { useTaskCollapseStore } from '../../../stores/taskCollapse'
 import type { Task } from '../../../types.ts'
 import { handleReorderTasks } from '../common/tasks_common.ts'
 
@@ -20,6 +21,8 @@ const props = defineProps<{
 
 const layoutRef = ref<HTMLElement | null>(null)
 let sortableInstance: Sortable | null = null
+
+const taskCollapse = useTaskCollapseStore()
 
 // 瀑布流布局计算
 const layoutMasonry = () => {
@@ -148,5 +151,15 @@ watch(
     })
   },
   { deep: true }
+)
+
+// 监听折叠状态变化，触发布局重新计算
+watch(
+  () => taskCollapse.collapsedTaskIds.size,
+  () => {
+    nextTick(() => {
+      layoutMasonry()
+    })
+  }
 )
 </script>

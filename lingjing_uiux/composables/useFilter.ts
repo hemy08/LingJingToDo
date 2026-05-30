@@ -1,4 +1,5 @@
 import { watch } from 'vue'
+
 import { useFilterStore } from '../stores/filterStore'
 import { useTaskStore } from '../stores/taskStore'
 import type { FilterType, DateRange, Task } from '../types'

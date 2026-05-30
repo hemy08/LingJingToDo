@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Task, TaskStatus, TaskType, TaskPriority } from '../../types'
+import type { Task, TaskStatus, TaskType, TaskPriority, TaskOwner } from '../../types'
 import TaskPanel from '../tasks/TaskPanel.vue'
 
 export interface MainContentAreaProps {
@@ -8,6 +8,7 @@ export interface MainContentAreaProps {
   statuses: TaskStatus[]
   types: TaskType[]
   priorities: TaskPriority[]
+  owners: TaskOwner[]
   isDirty: boolean
 }
 
@@ -39,12 +40,14 @@ const handleTaskDeleted = (taskId: string) => {
     <slot name="toolbar"></slot>
 
     <TaskPanel
-      v-model:is-dirty="isDirty"
+      :is-dirty="isDirty"
       :tasks="tasks"
       :current-date="currentDate"
       :statuses="statuses"
       :types="types"
       :priorities="priorities"
+      :owners="owners"
+      @update:is-dirty="emit('update:isDirty', $event)"
       @task-added="handleTaskAdded"
       @task-updated="handleTaskUpdated"
       @task-deleted="handleTaskDeleted"

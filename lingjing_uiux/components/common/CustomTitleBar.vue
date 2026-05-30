@@ -1,7 +1,26 @@
 <template>
   <div class="app-titlebar" data-tauri-drag-region>
     <div class="app-titlebar-left" data-tauri-drag-region>
-      <span class="app-icon">✨</span>
+      <span class="app-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="20" height="20">
+          <defs>
+            <linearGradient id="bgGradient2" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#1E293B"/>
+              <stop offset="100%" stop-color="#020617"/>
+            </linearGradient>
+            <linearGradient id="strokeGradient2" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#00F2FE"/>
+              <stop offset="100%" stop-color="#4F46E5"/>
+            </linearGradient>
+          </defs>
+          <rect width="256" height="256" rx="56" fill="url(#bgGradient2)"/>
+          <rect width="256" height="256" rx="56" fill="none" stroke="url(#strokeGradient2)" stroke-width="6"/>
+          <polygon points="128,44 212,86 212,170 128,212 44,170 44,86" fill="none" stroke="#4F46E5" stroke-width="12" stroke-linejoin="round"/>
+          <path d="M 84 128 L 116 160 L 172 96" fill="none" stroke="#00F2FE" stroke-width="24" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="172" cy="96" r="10" fill="#4F46E5"/>
+          <circle cx="172" cy="96" r="4" fill="#00F2FE"/>
+        </svg>
+      </span>
       <span class="app-title">灵境待办</span>
     </div>
     <div class="titlebar-right">

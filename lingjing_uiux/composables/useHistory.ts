@@ -1,4 +1,5 @@
 import { onMounted, onUnmounted } from 'vue'
+
 import { useHistoryStore } from '../stores/historyStore'
 import { useTaskStore } from '../stores/taskStore'
 import type { Task, OperationType } from '../types'

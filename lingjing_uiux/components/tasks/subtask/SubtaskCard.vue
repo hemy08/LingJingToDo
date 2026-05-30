@@ -41,7 +41,6 @@
         </div>
         <!-- 类型 -->
         <div class="meta-item">
-          <label class="meta-label">🏷️</label>
           <select
             class="meta-select"
             :value="subtask.type_id"
@@ -56,7 +55,6 @@
         </div>
         <!-- 状态 -->
         <div class="meta-item">
-          <label class="meta-label">📌</label>
           <select
             class="meta-select"
             :value="subtask.status_id"
@@ -71,7 +69,6 @@
         </div>
         <!-- 优先级 -->
         <div class="meta-item">
-          <label class="meta-label">📁</label>
           <select
             class="meta-select"
             :value="subtask.priority_id"
@@ -84,6 +81,24 @@
           >
             <option v-for="priority in priorities" :key="priority.id" :value="priority.id">
               {{ priority.emoji }} {{ priority.name }}
+            </option>
+          </select>
+        </div>
+        <!-- 责任人 -->
+        <div class="meta-item">
+          <select
+            class="meta-select"
+            :value="subtask.owner_id || ''"
+            @change="
+              onUpdateSubtask({
+                ...subtask,
+                owner_id: ($event.target as HTMLSelectElement).value || undefined,
+              })
+            "
+          >
+            <option value="">未分配</option>
+            <option v-for="owner in owners" :key="owner.id" :value="owner.id">
+              {{ owner.emoji }} {{ owner.name }}
             </option>
           </select>
         </div>
@@ -112,13 +127,14 @@
 <script setup lang="ts">
 import { ref, nextTick, type Ref } from 'vue'
 
-import type { Task, TaskStatus, TaskType, TaskPriority } from '../../../types.ts'
+import type { Task, TaskStatus, TaskType, TaskPriority, TaskOwner } from '../../../types.ts'
 
 const props = defineProps<{
   subtask: Task
   statuses: TaskStatus[]
   types: TaskType[]
   priorities: TaskPriority[]
+  owners: TaskOwner[]
   parentId: string
   currentDate: string
   tasks: Task[] | Ref<Task[]>

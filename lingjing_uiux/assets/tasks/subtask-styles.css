@@ -8,8 +8,7 @@
    ======================================== */
 
 .subtasks-section {
-  margin-top: 8px;
-  padding-top: 12px;
+  padding: 4px 16px;
   border-top: 1px solid var(--border-light);
 }
 
@@ -287,7 +286,7 @@
   gap: var(--subtask-card-gap);
   padding: var(--subtask-card-padding);
   background: var(--bg-page);
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(420px, 1fr));
 }
 
 /* 卡片样式 */
@@ -505,7 +504,7 @@
   }
 
   .subtask-grid {
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(375px, 1fr));
   }
 
   .task-meta-row {
@@ -516,7 +515,7 @@
 /* 大屏断点（≥1024px） */
 @media (min-width: 1025px) {
   .subtask-grid {
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(450px, 1fr));
   }
 
   .task-meta-row {

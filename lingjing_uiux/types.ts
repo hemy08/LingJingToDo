@@ -4,6 +4,7 @@ export interface Task {
   status_id: string
   type_id: string
   priority_id: string
+  owner_id?: string
   due_date?: string
   subtasks?: Task[]
   remark?: string
@@ -30,6 +31,39 @@ export interface TaskPriority {
   name: string
   color: string
   emoji: string
+}
+
+export interface TaskOwner {
+  id: string
+  name: string
+  color: string
+  emoji: string
+  skills?: string[]
+  types?: string[]
+}
+
+export interface OwnerSkill {
+  id: string
+  name: string
+  color: string
+  emoji: string
+}
+
+export interface OwnerType {
+  id: string
+  name: string
+  color: string
+  emoji: string
+}
+
+export type SubtaskDisplayMode = 'card' | 'table'
+
+export interface TaskPanelConfig {
+  fontSize?: string
+  dragMode?: 'insert' | 'swap'
+  layoutMode?: 'masonry' | 'list' | 'tree'
+  listColumns?: number
+  globalSubtaskDisplayMode?: SubtaskDisplayMode
 }
 
 /**
@@ -182,11 +216,11 @@ export interface RecentFile {
 /**
  * 文件类型工具函数
  */
-export namespace FileTypeUtils {
+export const FileTypeUtils = {
   /**
    * 根据文件路径推断文件类型
    */
-  export function inferFromFile(path: string): FileType {
+  inferFromFile(path: string): FileType {
     const ext = path.split('.').pop()?.toLowerCase()
     switch (ext) {
       case 'json':
@@ -199,12 +233,12 @@ export namespace FileTypeUtils {
       default:
         return FileType.JSON
     }
-  }
+  },
 
   /**
    * 获取文件类型显示名称
    */
-  export function getDisplayName(type: FileType): string {
+  getDisplayName(type: FileType): string {
     switch (type) {
       case FileType.JSON:
         return 'JSON'
@@ -215,12 +249,12 @@ export namespace FileTypeUtils {
       default:
         return 'Unknown'
     }
-  }
+  },
 
   /**
    * 获取文件类型图标
    */
-  export function getIcon(type: FileType): string {
+  getIcon(type: FileType): string {
     switch (type) {
       case FileType.JSON:
         return '📄'
@@ -231,12 +265,12 @@ export namespace FileTypeUtils {
       default:
         return '📁'
     }
-  }
+  },
 
   /**
    * 获取文件类型颜色
    */
-  export function getColor(type: FileType): string {
+  getColor(type: FileType): string {
     switch (type) {
       case FileType.JSON:
         return '#4CAF50'
@@ -247,12 +281,12 @@ export namespace FileTypeUtils {
       default:
         return '#9E9E9E'
     }
-  }
+  },
 
   /**
    * 获取文件扩展名
    */
-  export function getExtension(type: FileType): string {
+  getExtension(type: FileType): string {
     switch (type) {
       case FileType.JSON:
         return '.json'
@@ -263,7 +297,7 @@ export namespace FileTypeUtils {
       default:
         return ''
     }
-  }
+  },
 }
 
 export enum OperationType {

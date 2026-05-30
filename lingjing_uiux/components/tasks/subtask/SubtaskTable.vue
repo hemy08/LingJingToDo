@@ -9,6 +9,7 @@
         <col style="width: 120px" />
         <col style="width: 120px" />
         <col style="width: 120px" />
+        <col style="width: 120px" />
         <col style="width: 300px" />
         <col style="width: 40px" />
       </colgroup>
@@ -21,6 +22,7 @@
           <th>🏷️状态</th>
           <th>📌类型</th>
           <th>📁优先级</th>
+          <th>👤责任人</th>
           <th>备注</th>
           <th>Op</th>
         </tr>
@@ -99,6 +101,23 @@
             </select>
           </td>
           <td>
+            <select
+              class="inline-select"
+              :value="subtask.owner_id || ''"
+              @change="
+                onUpdateSubtask({
+                  ...subtask,
+                  owner_id: ($event.target as HTMLSelectElement).value || undefined,
+                })
+              "
+            >
+              <option value="">未分配</option>
+              <option v-for="owner in owners" :key="owner.id" :value="owner.id">
+                {{ owner.emoji }} {{ owner.name }}
+              </option>
+            </select>
+          </td>
+          <td>
             <div class="cell-content" :title="subtask.remark || ''">
               <input
                 type="text"
@@ -128,13 +147,14 @@
 <script setup lang="ts">
 import { type Ref } from 'vue'
 
-import type { Task, TaskStatus, TaskType, TaskPriority } from '../../../types.ts'
+import type { Task, TaskStatus, TaskType, TaskPriority, TaskOwner } from '../../../types.ts'
 
 const props = defineProps<{
   subtasks: Task[]
   statuses: TaskStatus[]
   types: TaskType[]
   priorities: TaskPriority[]
+  owners: TaskOwner[]
   parentId: string
   currentDate: string
   tasks: Task[] | Ref<Task[]>

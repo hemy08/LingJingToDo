@@ -1,4 +1,5 @@
 import { computed } from 'vue'
+
 import { useHistoryStore } from '../stores/historyStore'
 import { useTaskStore } from '../stores/taskStore'
 import type { OperationSnapshot } from '../types'

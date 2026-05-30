@@ -16,6 +16,7 @@ const emit = defineEmits<{
   'open-status': []
   'open-type': []
   'open-priority': []
+  'open-owner': []
   'file-opened': []
   'file-saved': []
   'file-save-as': []
@@ -41,6 +42,7 @@ const emit = defineEmits<{
         @open-status="emit('open-status')"
         @open-type="emit('open-type')"
         @open-priority="emit('open-priority')"
+        @open-owner="emit('open-owner')"
       />
       <FileManager
         :current-file-path="currentFilePath"

@@ -10,6 +10,7 @@ import { useGlobalHotkeys } from '../composables/useGlobalHotkeys'
 import { useSplitterDrag } from '../composables/useSplitterDrag'
 import { useStatusNotification } from '../composables/useStatusNotification'
 import { useTaskOperations } from '../composables/useTaskOperations'
+import { taskApi } from '../connections/task_apis'
 
 import AppHeader from './common/AppHeader.vue'
 import AppLayout from './common/AppLayout.vue'
@@ -24,8 +25,14 @@ const props = defineProps<{
 
 const { dialogState, handleButtonClick, handleOverlayClick, showConfirmWithClose } = useDialog()
 
-const { config, loadConfig, handleStatusUpdated, handleTypeUpdated, handlePriorityUpdated } =
-  useConfig()
+const {
+  config,
+  loadConfig,
+  handleStatusUpdated,
+  handleTypeUpdated,
+  handlePriorityUpdated,
+  handleOwnerUpdated,
+} = useConfig()
 
 const { statusVisible, statusMessage, statusDetail, statusType, showStatus } =
   useStatusNotification()
@@ -103,6 +110,7 @@ const showThemeModal = ref(false)
 const showStatusModal = ref(false)
 const showTypeModal = ref(false)
 const showPriorityModal = ref(false)
+const showOwnerModal = ref(false)
 const showFilterPanel = ref(false)
 
 const handleStatusUpdatedWithNotify = (statuses: any) => {
@@ -118,6 +126,11 @@ const handleTypeUpdatedWithNotify = (types: any) => {
 const handlePriorityUpdatedWithNotify = (priorities: any) => {
   handlePriorityUpdated(priorities)
   showStatus('优先级配置已更新', '优先级列表已成功保存', 'success')
+}
+
+const handleOwnerUpdatedWithNotify = (owners: any) => {
+  handleOwnerUpdated(owners)
+  showStatus('责任人配置已更新', '责任人列表已成功保存', 'success')
 }
 
 const handleDateChange = (date: string) => {
@@ -239,7 +252,6 @@ onMounted(async () => {
       })
       allTasks.value = tasks
 
-      const { taskApi } = await import('../connections/task_apis')
       await taskApi.importTasks(data)
 
       currentFilePath.value = filePath
@@ -262,7 +274,6 @@ onMounted(async () => {
     }
   } else {
     try {
-      const { taskApi } = await import('../connections/task_apis')
       allTasks.value = await taskApi.getAllUnfinishedTasks()
     } catch (error) {
       console.error('加载任务失败:', error)
@@ -308,6 +319,7 @@ onMounted(async () => {
         @task-added="handleTaskAdded"
         @task-updated="handleTaskUpdated"
         @task-deleted="handleTaskDeleted"
+        @open-owner-config="showOwnerModal = true"
       >
         <template #header>
           <AppHeader
@@ -319,6 +331,7 @@ onMounted(async () => {
             @open-status="showStatusModal = true"
             @open-type="showTypeModal = true"
             @open-priority="showPriorityModal = true"
+            @open-owner="showOwnerModal = true"
             @toggle-filter="showFilterPanel = !showFilterPanel"
             @file-opened="handleFileOpened"
             @file-saved="handleFileSaved"
@@ -339,13 +352,16 @@ onMounted(async () => {
         :show-status-modal="showStatusModal"
         :show-type-modal="showTypeModal"
         :show-priority-modal="showPriorityModal"
+        :show-owner-modal="showOwnerModal"
         @update:show-theme-modal="showThemeModal = $event"
         @update:show-status-modal="showStatusModal = $event"
         @update:show-type-modal="showTypeModal = $event"
         @update:show-priority-modal="showPriorityModal = $event"
+        @update:show-owner-modal="showOwnerModal = $event"
         @status-updated="handleStatusUpdatedWithNotify"
         @type-updated="handleTypeUpdatedWithNotify"
         @priority-updated="handlePriorityUpdatedWithNotify"
+        @owner-updated="handleOwnerUpdatedWithNotify"
       />
 
       <div v-if="dialogState.visible" class="dialog-overlay" @click="handleOverlayClick">

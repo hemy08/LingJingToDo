@@ -1,4 +1,5 @@
 import { computed } from 'vue'
+
 import { useFilterStore } from '../stores/filterStore'
 import type { FilterScheme } from '../types/enhancements'
 
