@@ -385,3 +385,15 @@ export interface CompoundFilterConfig {
   logicOperator: LogicOperator
   enabled: boolean
 }
+
+export interface SimpleFilterState {
+  status: string
+  priority: string
+  type: string
+  keyword: string
+}
+
+export interface FilterButtonState {
+  isActive: boolean
+  activeConditionCount: number
+}

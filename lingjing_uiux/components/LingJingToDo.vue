@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { invoke } from '@tauri-apps/api/core'
 import { exit } from '@tauri-apps/plugin-process'
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 
 import { useConfig } from '../composables/useConfig'
 import { useDialog } from '../composables/useDialog'
@@ -11,6 +11,7 @@ import { useSplitterDrag } from '../composables/useSplitterDrag'
 import { useStatusNotification } from '../composables/useStatusNotification'
 import { useTaskOperations } from '../composables/useTaskOperations'
 import { taskApi } from '../connections/task_apis'
+import { useFilterStore } from '../stores/filterStore'
 
 import AppHeader from './common/AppHeader.vue'
 import AppLayout from './common/AppLayout.vue'
@@ -48,13 +49,36 @@ const {
   currentDate,
   isDirty,
   taskStatistics,
-  tasksFromDate,
+  tasksFromDateWithCompleted,
   handleTaskAdded,
   handleTaskUpdated,
   handleTaskDeleted,
   fetchTaskStatistics,
   loadTasksFromFile,
+  loadAllTasks,
 } = useTaskOperations()
+
+const filterStore = useFilterStore()
+
+const displayTasks = computed(() => {
+  if (filterStore.isFilterActive && filterStore.hasFilters) {
+    return filterStore.applyFilters(tasksFromDateWithCompleted.value)
+  }
+  return tasksFromDateWithCompleted.value
+})
+
+const handleFilterSync = () => {}
+
+const handleToggleFilterPanel = () => {
+  filterStore.clearAndDeactivate()
+  showFilterPanel.value = !showFilterPanel.value
+}
+
+const handleRefreshTasks = async () => {
+  filterStore.clearAndDeactivate()
+  await loadAllTasks()
+  showStatus('刷新成功', '已重新加载所有任务', 'success')
+}
 
 const { currentFilePath, currentFileType, handleOpenFile, handleSaveFile, handleSaveAs } =
   useFileOperations({
@@ -307,7 +331,7 @@ onMounted(async () => {
     <div class="app-container">
       <AppLayout
         :current-date="currentDate"
-        :tasks-from-date="tasksFromDate"
+        :tasks-from-date="displayTasks"
         :task-statistics="taskStatistics"
         :sidebar-width-percent="sidebarWidthPercent"
         :is-splitter-active="isSplitterActive"
@@ -320,6 +344,7 @@ onMounted(async () => {
         @task-updated="handleTaskUpdated"
         @task-deleted="handleTaskDeleted"
         @open-owner-config="showOwnerModal = true"
+        @filter-sync="handleFilterSync"
       >
         <template #header>
           <AppHeader
@@ -332,7 +357,8 @@ onMounted(async () => {
             @open-type="showTypeModal = true"
             @open-priority="showPriorityModal = true"
             @open-owner="showOwnerModal = true"
-            @toggle-filter="showFilterPanel = !showFilterPanel"
+            @toggle-filter="handleToggleFilterPanel"
+            @refresh-tasks="handleRefreshTasks"
             @file-opened="handleFileOpened"
             @file-saved="handleFileSaved"
             @file-save-as="handleFileSaveAs"

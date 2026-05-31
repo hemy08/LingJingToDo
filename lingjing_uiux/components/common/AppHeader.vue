@@ -21,6 +21,7 @@ const emit = defineEmits<{
   'file-saved': []
   'file-save-as': []
   'toggle-filter': []
+  'refresh-tasks': []
 }>()
 </script>
 
@@ -34,6 +35,9 @@ const emit = defineEmits<{
       <UndoRedoButtons />
       <button class="btn-sm" :class="{ active: showFilter }" @click="emit('toggle-filter')">
         <i class="fas fa-search"></i> 搜索筛选
+      </button>
+      <button class="btn-sm" @click="emit('refresh-tasks')">
+        <i class="fas fa-sync-alt"></i> 刷新
       </button>
       <button class="btn-sm" @click="emit('open-theme')">
         <i class="fas fa-palette"></i> 主题

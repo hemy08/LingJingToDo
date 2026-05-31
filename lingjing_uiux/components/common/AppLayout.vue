@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Task } from '../../types'
+import type { Task, SimpleFilterState } from '../../types'
 import SidebarContainer from '../sidebar/SidebarContainer.vue'
 import TaskPanel from '../tasks/TaskPanel.vue'
 
@@ -22,6 +22,7 @@ const emit = defineEmits<{
   'task-deleted': [taskId: string]
   'update:isDirty': [value: boolean]
   'open-owner-config': []
+  'filter-sync': [state: SimpleFilterState]
 }>()
 </script>
 
@@ -54,6 +55,7 @@ const emit = defineEmits<{
         @task-updated="emit('task-updated', $event)"
         @task-deleted="emit('task-deleted', $event)"
         @open-owner-config="emit('open-owner-config')"
+        @filter-change="(...args: any[]) => emit('filter-sync', args[1])"
       />
     </div>
   </div>

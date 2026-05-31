@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 
-import type { Task, TaskStatus, TaskPriority, TaskType } from '../../types'
+import type { Task, TaskStatus, TaskPriority, TaskType, SimpleFilterState } from '../../types'
 
 const props = withDefaults(
   defineProps<{
@@ -18,7 +18,7 @@ const props = withDefaults(
 )
 
 const emit = defineEmits<{
-  'filter-change': [filteredTasks: Task[]]
+  'filter-change': [filteredTasks: Task[], filterState: SimpleFilterState]
   'search-trigger': [keyword: string, filters: FilterState]
 }>()
 
@@ -54,7 +54,13 @@ const activeFilterCount = computed(() => {
 
 function handleSearch() {
   const filteredTasks = filterTasks()
-  emit('filter-change', filteredTasks)
+  const filterState: SimpleFilterState = {
+    status: selectedStatus.value,
+    priority: selectedPriority.value,
+    type: selectedType.value,
+    keyword: searchKeyword.value,
+  }
+  emit('filter-change', filteredTasks, filterState)
   emit('search-trigger', searchKeyword.value, {
     status: selectedStatus.value,
     priority: selectedPriority.value,
@@ -95,7 +101,7 @@ function clearAllFilters() {
   selectedPriority.value = ''
   selectedType.value = ''
   searchKeyword.value = ''
-  emit('filter-change', props.tasks)
+  emit('filter-change', props.tasks, { status: '', priority: '', type: '', keyword: '' })
 }
 
 function clearSearch() {

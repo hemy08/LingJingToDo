@@ -46,6 +46,27 @@ export function useTaskOperations() {
     })
   })
 
+  const tasksFromDateWithCompleted = computed(() => {
+    if (!currentDate.value) return allTasks.value
+
+    const selectedDate = currentDate.value
+    const today = new Date().toISOString().split('T')[0] || ''
+
+    return allTasks.value.filter((task: Task) => {
+      if (selectedDate <= today) {
+        const createdDate = task.created_date?.split('T')[0] || ''
+        return createdDate <= selectedDate
+      }
+
+      if (selectedDate > today) {
+        if (!task.due_date) return true
+        return task.due_date >= selectedDate
+      }
+
+      return true
+    })
+  })
+
   const handleTaskAdded = async (newTask: Task) => {
     try {
       const date = currentDate.value || getTodayStr()
@@ -60,9 +81,12 @@ export function useTaskOperations() {
   const handleTaskUpdated = async (updatedTask: Task) => {
     try {
       const date = currentDate.value || getTodayStr()
-      const updatedTasks = await taskApi.updateTask(date, updatedTask)
-      if (updatedTasks) {
-        allTasks.value = updatedTasks
+      await taskApi.updateTask(date, updatedTask)
+      const index = allTasks.value.findIndex(t => t.id === updatedTask.id)
+      if (index !== -1) {
+        allTasks.value[index] = updatedTask
+      } else {
+        allTasks.value.push(updatedTask)
       }
       isDirty.value = true
     } catch (error) {
@@ -73,10 +97,8 @@ export function useTaskOperations() {
   const handleTaskDeleted = async (taskId: string) => {
     try {
       const date = currentDate.value || getTodayStr()
-      const updatedTasks = await taskApi.deleteTask(date, taskId)
-      if (updatedTasks) {
-        allTasks.value = updatedTasks
-      }
+      await taskApi.deleteTask(date, taskId)
+      allTasks.value = allTasks.value.filter(t => t.id !== taskId)
       isDirty.value = true
     } catch (error) {
       console.error('删除任务失败:', error)
@@ -99,6 +121,19 @@ export function useTaskOperations() {
     })
     allTasks.value = tasks
     await taskApi.importTasks(data)
+  }
+
+  const loadAllTasks = async () => {
+    try {
+      const data = await taskApi.getAllTasks()
+      const tasks: Task[] = []
+      Object.values(data).forEach(taskList => {
+        tasks.push(...taskList)
+      })
+      allTasks.value = tasks
+    } catch (error) {
+      console.error('加载全部任务失败:', error)
+    }
   }
 
   const loadUnfinishedTasks = async () => {
@@ -127,11 +162,13 @@ export function useTaskOperations() {
     isDirty,
     taskStatistics,
     tasksFromDate,
+    tasksFromDateWithCompleted,
     handleTaskAdded,
     handleTaskUpdated,
     handleTaskDeleted,
     fetchTaskStatistics,
     loadTasksFromFile,
+    loadAllTasks,
     loadUnfinishedTasks,
   }
 }

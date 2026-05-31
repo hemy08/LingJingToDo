@@ -5,6 +5,8 @@ import type {
   Task,
   FilterCondition,
   DateRange,
+  SimpleFilterState,
+  FilterButtonState,
 } from '../types'
 import { FilterType, FilterOperator, LogicOperator } from '../types'
 import type { FilterScheme } from '../types/enhancements'
@@ -23,25 +25,19 @@ function matchCondition(task: Task, condition: FilterCondition): boolean {
   switch (type) {
     case 'STATUS':
       if (typeof value === 'string') {
-        return operator === 'EQUALS'
-          ? task.status_id === value
-          : task.status_id !== value
+        return operator === 'EQUALS' ? task.status_id === value : task.status_id !== value
       }
       break
 
     case 'PRIORITY':
       if (typeof value === 'string') {
-        return operator === 'EQUALS'
-          ? task.priority_id === value
-          : task.priority_id !== value
+        return operator === 'EQUALS' ? task.priority_id === value : task.priority_id !== value
       }
       break
 
     case 'TYPE':
       if (typeof value === 'string') {
-        return operator === 'EQUALS'
-          ? task.type_id === value
-          : task.type_id !== value
+        return operator === 'EQUALS' ? task.type_id === value : task.type_id !== value
       } else if (Array.isArray(value)) {
         return operator === 'CONTAINS'
           ? value.includes(task.type_id)
@@ -82,10 +78,22 @@ export const useFilterStore = defineStore('filter', () => {
   const logicOperator = ref<LogicOperator>('AND')
   const enabled = ref<boolean>(true)
   const filteredTasks = ref<Task[]>([])
+  const isFilterActive = ref<boolean>(false)
+  const searchKeyword = ref<string>('')
 
-  const hasFilters = computed(() => conditions.value.some(c => c.enabled))
+  const hasFilters = computed(
+    () => conditions.value.some(c => c.enabled) || searchKeyword.value !== ''
+  )
   const activeConditions = computed(() => conditions.value.filter(c => c.enabled))
-  const activeConditionCount = computed(() => activeConditions.value.length)
+  const activeConditionCount = computed(() => {
+    let count = activeConditions.value.length
+    if (searchKeyword.value) count++
+    return count
+  })
+  const filterButtonState = computed<FilterButtonState>(() => ({
+    isActive: isFilterActive.value,
+    activeConditionCount: activeConditionCount.value,
+  }))
 
   function addCondition(
     type: FilterType,
@@ -141,24 +149,87 @@ export const useFilterStore = defineStore('filter', () => {
   }
 
   function applyFilters(tasks: Task[]): Task[] {
-    if (!enabled.value || !hasFilters.value) {
+    if (!enabled.value) {
       filteredTasks.value = tasks
       return tasks
     }
 
-    const filtered = tasks.filter(task => {
+    let result = [...tasks]
+
+    if (searchKeyword.value) {
+      const keyword = searchKeyword.value.toLowerCase()
+      result = result.filter(task => {
+        const titleMatch = task.title.toLowerCase().includes(keyword)
+        const remarkMatch = task.remark && task.remark.toLowerCase().includes(keyword)
+        return titleMatch || remarkMatch
+      })
+    }
+
+    if (hasFilters.value) {
       const active = activeConditions.value
-      if (active.length === 0) return true
-
-      if (logicOperator.value === 'AND') {
-        return active.every(condition => matchCondition(task, condition))
-      } else {
-        return active.some(condition => matchCondition(task, condition))
+      if (active.length > 0) {
+        result = result.filter(task => {
+          if (logicOperator.value === 'AND') {
+            return active.every(condition => matchCondition(task, condition))
+          } else {
+            return active.some(condition => matchCondition(task, condition))
+          }
+        })
       }
-    })
+    }
 
-    filteredTasks.value = filtered
-    return filtered
+    filteredTasks.value = result
+    return result
+  }
+
+  function toggleFilterActive(): void {
+    if (isFilterActive.value) {
+      clearAndDeactivate()
+    } else if (hasFilters.value) {
+      isFilterActive.value = true
+      saveToLocalStorage()
+    }
+  }
+
+  function syncFilterState(
+    state: SimpleFilterState,
+    nameMap?: {
+      statuses?: { id: string; name: string }[]
+      priorities?: { id: string; name: string }[]
+      types?: { id: string; name: string }[]
+    }
+  ): void {
+    clearAllConditions()
+    searchKeyword.value = state.keyword
+
+    if (state.status) {
+      const statusName = nameMap?.statuses?.find(s => s.id === state.status)?.name || state.status
+      filterByStatus(state.status, statusName)
+    }
+    if (state.priority) {
+      const priorityName =
+        nameMap?.priorities?.find(p => p.id === state.priority)?.name || state.priority
+      filterByPriority(state.priority, priorityName)
+    }
+    if (state.type) {
+      const typeName = nameMap?.types?.find(t => t.id === state.type)?.name || state.type
+      filterByType(state.type, typeName)
+    }
+
+    if (hasFilters.value) {
+      isFilterActive.value = true
+    } else {
+      isFilterActive.value = false
+    }
+
+    saveToLocalStorage()
+  }
+
+  function clearAndDeactivate(): void {
+    clearAllConditions()
+    searchKeyword.value = ''
+    isFilterActive.value = false
+    saveToLocalStorage()
   }
 
   function saveToLocalStorage(): void {
@@ -167,6 +238,8 @@ export const useFilterStore = defineStore('filter', () => {
         conditions: conditions.value,
         logicOperator: logicOperator.value,
         enabled: enabled.value,
+        isFilterActive: isFilterActive.value,
+        searchKeyword: searchKeyword.value,
       }
       localStorage.setItem(STORAGE_KEY, JSON.stringify(config))
     } catch (error) {
@@ -182,12 +255,16 @@ export const useFilterStore = defineStore('filter', () => {
         conditions.value = config.conditions || []
         logicOperator.value = config.logicOperator || 'AND'
         enabled.value = config.enabled ?? true
+        isFilterActive.value = config.isFilterActive ?? false
+        searchKeyword.value = config.searchKeyword ?? ''
       }
     } catch (error) {
       console.warn('Failed to load filter config from localStorage:', error)
       conditions.value = []
       logicOperator.value = 'AND'
       enabled.value = true
+      isFilterActive.value = false
+      searchKeyword.value = ''
     }
   }
 
@@ -350,9 +427,12 @@ export const useFilterStore = defineStore('filter', () => {
     logicOperator,
     enabled,
     filteredTasks,
+    isFilterActive,
+    searchKeyword,
     hasFilters,
     activeConditions,
     activeConditionCount,
+    filterButtonState,
     addCondition,
     removeCondition,
     updateCondition,
@@ -360,6 +440,9 @@ export const useFilterStore = defineStore('filter', () => {
     setLogicOperator,
     clearAllConditions,
     applyFilters,
+    toggleFilterActive,
+    syncFilterState,
+    clearAndDeactivate,
     saveToLocalStorage,
     loadFromLocalStorage,
     setEnabled,

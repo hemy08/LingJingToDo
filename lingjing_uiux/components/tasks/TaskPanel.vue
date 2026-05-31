@@ -37,8 +37,8 @@
     </div>
 
     <!-- 设置区域 -->
-    <SettingsPanel 
-      :config="config" 
+    <SettingsPanel
+      :config="config"
       :total-tasks="tasks.length"
       @update:config="handleConfigUpdate"
       @collapse-all-tasks="handleCollapseAllTasks"
@@ -266,8 +266,17 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 
+import { useFilterStore } from '../../stores/filterStore'
 import { useTaskCollapseStore } from '../../stores/taskCollapse'
-import type { Task, TaskStatus, TaskType, TaskPriority, TaskOwner, TaskPanelConfig } from '../../types'
+import type {
+  Task,
+  TaskStatus,
+  TaskType,
+  TaskPriority,
+  TaskOwner,
+  TaskPanelConfig,
+  SimpleFilterState,
+} from '../../types'
 import UnifiedSearchFilter from '../common/UnifiedSearchFilter.vue'
 
 import SettingsPanel from './common/SettingsPanel.vue'
@@ -299,21 +308,21 @@ const emit = defineEmits<{
   'task-added': [task: Task]
   'task-updated': [task: Task]
   'task-deleted': [taskId: string]
-  'filter-change': [filteredTasks: Task[]]
+  'filter-change': [filteredTasks: Task[], filterState: SimpleFilterState]
   'open-owner-config': []
 }>()
 
-// 本地状态
-
-// 任务折叠store
 const taskCollapse = useTaskCollapseStore()
+const filterStore = useFilterStore()
 
 // 子任务显示模式
 const subtaskDisplayMode = ref<Record<string, 'card' | 'table'>>({})
 const independentTaskIds = ref<Set<string>>(new Set())
 
 // 全局子任务显示模式
-const globalSubtaskDisplayMode = ref<'card' | 'table'>(props.config?.globalSubtaskDisplayMode || 'table')
+const globalSubtaskDisplayMode = ref<'card' | 'table'>(
+  props.config?.globalSubtaskDisplayMode || 'table'
+)
 
 // 子任务模态窗口
 const showSubtaskModal = ref(false)
@@ -326,13 +335,13 @@ const handleConfigUpdate = (newConfig: any) => {
   dragMode.value = newConfig.dragMode
   layoutMode.value = newConfig.layoutMode
   listColumns.value = newConfig.listColumns
-  
+
   if (newConfig.globalSubtaskDisplayMode !== undefined) {
     const newGlobalMode = newConfig.globalSubtaskDisplayMode
     const oldGlobalMode = globalSubtaskDisplayMode.value
-    
+
     globalSubtaskDisplayMode.value = newGlobalMode
-    
+
     if (newGlobalMode !== oldGlobalMode) {
       for (const task of props.tasks) {
         const currentMode = getSubtaskDisplayMode(task.id)
@@ -349,8 +358,14 @@ const dragMode = ref<'insert' | 'swap'>(props.config?.dragMode || 'insert')
 const layoutMode = ref<'masonry' | 'list' | 'tree'>(props.config?.layoutMode || 'masonry')
 const listColumns = ref(props.config?.listColumns || 2)
 
-const handleFilterChange = (filteredTasks: Task[]) => {
-  emit('filter-change', filteredTasks)
+const handleFilterChange = (filteredTasks: Task[], filterState: SimpleFilterState) => {
+  const nameMap = {
+    statuses: props.statuses.map(s => ({ id: s.id, name: s.name })),
+    priorities: props.priorities.map(p => ({ id: p.id, name: p.name })),
+    types: props.types.map(t => ({ id: t.id, name: t.name })),
+  }
+  filterStore.syncFilterState(filterState, nameMap)
+  emit('filter-change', filteredTasks, filterState)
 }
 
 // 切换子任务显示模式
